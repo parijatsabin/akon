@@ -33,9 +33,10 @@ export const NAV_LINKS = [
 ];
 
 export const HERO = {
-  smallLabel: "EXTRAIT DE PARFUM",
-  mainHeading: `Crafting Scents\nThat Define Elegance`,
-  description: "Discover timeless fragrances crafted with precision, inspired by sophistication and designed for those who appreciate true luxury.",
+  smallLabel: "LUXURY &",
+  smallLabelHighlight: "PREMIUM",
+  mainHeading: `Revel The Beauty\nInside You`,
+  description: "Timeless Fragrances, Crafted With Passion, Embody Individuality, Elegance, And Sophistication, Leaving A Lasting Impression Always.",
   ctaPrimary: { label: "Explore Collection", href: "#collection" },
   ctaSecondary: { label: "Our Story", href: "#about" },
 };
@@ -262,30 +263,44 @@ export const NEWSLETTER = {
 
 export const FOOTER = {
   brand: BRAND,
-  address: {
-    label: "Our Location",
-    lines: BRAND.location.split(", "),
-  },
-  contact: {
-    label: "Contact Info",
-    email: BRAND.email,
-    phone: BRAND.phoneDisplay,
-  },
-  hours: {
-    label: "Opening Hours",
-    times: BRAND.hours,
-  },
-  social: {
-    label: "Social Media",
-    links: [
-      { platform: "Instagram", href: BRAND.socialLinks.instagram },
-      { platform: "Facebook", href: BRAND.socialLinks.facebook },
-      { platform: "Pinterest", href: BRAND.socialLinks.pinterest },
-    ],
-  },
-  legal: [
-    { label: "Terms and Conditions", href: "#" },
-    { label: "Privacy Policy", href: "#" },
+  tagline: "Refresh Your Senses With Exclusive Fragrances, Product Launches, And Special Offers Delivered To Your Inbox.",
+  navColumns: [
+    {
+      heading: "Shop",
+      links: [
+        { label: "Signature Collection", href: "#collection" },
+        { label: "Luxury Collection", href: "#collection" },
+        { label: "Limited Editions", href: "#collection" },
+        { label: "Seasonal Fragrances", href: "#collection" },
+      ],
+    },
+    // {
+    //   heading: "Company",
+    //   links: [
+    //     { label: "About Us", href: "#about" },
+    //     { label: "Our Story", href: "#about" },
+    //     { label: "Careers", href: "#" },
+    //   ],
+    // },
+    {
+      heading: "Support",
+      links: [
+        { label: "FAQs", href: "#" },
+        { label: "Shipping", href: "#" },
+        { label: "Returns", href: "#" },
+        { label: "Privacy Policy", href: "#" },
+        { label: "Terms of Use", href: "#" },
+      ],
+    },
+    {
+      heading: "Extras",
+      links: [
+        { label: "Fragrance Guide", href: "#" },
+        { label: "Look Book", href: "#" },
+        { label: "Gift Sets", href: "#" },
+      ],
+    },
   ],
+  credit: { label: "AbionSoft", href: "#" },
   copyright: `© ${new Date().getFullYear()} ${BRAND.name}. All Rights Reserved.`,
 };

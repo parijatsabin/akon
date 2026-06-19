@@ -1,89 +1,218 @@
 import React, { useState } from "react";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-import { TESTIMONIALS } from "../data/siteContent";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { TESTIMONIALS, BRAND } from "../data/siteContent";
 
-// Avatar placeholder
-const Avatar: React.FC<{ name: string }> = ({ name }) => {
-  const initials = name.split(" ").map(w => w[0]).join("").slice(0, 2);
-  return (
-    <div style={{
-      width: 56, height: 56, borderRadius: "50%",
-      background: "linear-gradient(135deg, var(--gold-light), var(--gold-dark))",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.1rem", color: "#fff",
-      flexShrink: 0,
-    }}>{initials}</div>
-  );
-};
+// Brand wordmark shown on each card
+const BrandMark: React.FC = () => (
+  <div style={{
+    fontFamily: "var(--font-display)",
+    fontWeight: 800,
+    fontSize: "1.25rem",
+    letterSpacing: "0.15em",
+    color: "var(--charcoal)",
+    textTransform: "uppercase",
+    userSelect: "none",
+  }}>
+    {BRAND.name}
+  </div>
+);
+
+// Large teal opening quote glyph
+const QuoteMark: React.FC = () => (
+  <div style={{
+    fontSize: "2.8rem",
+    lineHeight: 1,
+    color: "#3a8fa3",
+    fontFamily: "Georgia, serif",
+    fontWeight: 700,
+    marginBottom: 12,
+    userSelect: "none",
+  }}>"</div>
+);
+
+// Single testimonial card
+interface CardProps {
+  quote: string;
+  author: string;
+  title: string;
+  index?: number;
+}
+
+const TestimonialCard: React.FC<CardProps> = ({ quote, author, title, index = 0 }) => (
+  <div style={{
+    flex: "1 1 0",
+    minWidth: 0,
+    background: "transparent",
+    padding: "32px 28px 28px",
+    display: "flex",
+    flexDirection: "column",
+    gap: 0,
+    borderLeft: index > 0 ? "1px solid rgba(0,0,0,0.08)" : "none",
+    transition: "background 0.2s",
+  }}>
+    <QuoteMark />
+    <p style={{
+      fontFamily: "var(--font-body)",
+      fontSize: "0.9rem",
+      lineHeight: 1.7,
+      color: "#3d3d3d",
+      marginBottom: 24,
+      flexGrow: 1,
+    }}>
+      "{quote}"
+    </p>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+      <div>
+        <div style={{
+          fontFamily: "var(--font-body)",
+          fontWeight: 700,
+          fontSize: "0.88rem",
+          color: "#3a8fa3",
+          marginBottom: 2,
+        }}>{author}</div>
+        <div style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "0.78rem",
+          color: "var(--text-muted)",
+        }}>{title}</div>
+      </div>
+      <BrandMark />
+    </div>
+  </div>
+);
+
+const CARDS_PER_PAGE = 3;
 
 const Testimonials: React.FC = () => {
-  const [idx, setIdx] = useState(0);
+  const [page, setPage] = useState(0);
   const items = TESTIMONIALS.items;
-  const prev = () => setIdx((i) => (i - 1 + items.length) % items.length);
-  const next = () => setIdx((i) => (i + 1) % items.length);
-  const t = items[idx];
+  const totalPages = Math.ceil(items.length / CARDS_PER_PAGE);
+
+  const prev = () => setPage((p) => (p - 1 + totalPages) % totalPages);
+  const next = () => setPage((p) => (p + 1) % totalPages);
+
+  const visible = items.slice(
+    page * CARDS_PER_PAGE,
+    page * CARDS_PER_PAGE + CARDS_PER_PAGE,
+  );
+
+  // Pad to always show 3 cards
+  while (visible.length < CARDS_PER_PAGE) {
+    visible.push(items[visible.length % items.length]);
+  }
 
   return (
-    <section id="reviews" className="section" style={{ background: "var(--warm-white)" }}>
-      <div className="container" style={{ maxWidth: 850, margin: "0 auto", textAlign: "center" }}>
-        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 3.5vw, 3rem)", fontWeight: 700, color: "var(--charcoal)", marginBottom: 48 }}>
-          {TESTIMONIALS.headline}
-        </h2>
-
+    <section
+      id="reviews"
+      className="section"
+      style={{
+        background: "linear-gradient(135deg, #eef4f7 0%, #f5f8f0 100%)",
+      }}
+    >
+      <div className="container">
+        {/* Header row */}
         <div style={{
-          background: "var(--section-bg)", borderRadius: 20,
-          padding: "56px 48px", position: "relative",
-          boxShadow: "var(--shadow-lg)",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          marginBottom: 40,
+          gap: 16,
+          flexWrap: "wrap",
         }}>
-          {/* Quote mark */}
-          <div style={{
-            fontFamily: "var(--font-display)", fontSize: "6rem",
-            color: "var(--gold)", opacity: 0.2, lineHeight: 1,
-            position: "absolute", top: 16, left: 32, userSelect: "none",
-          }}>"</div>
+          <h2 style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(1.5rem, 2.8vw, 2.2rem)",
+            fontWeight: 600,
+            color: "var(--charcoal)",
+            lineHeight: 1.2,
+            maxWidth: 340,
+          }}>
+            {TESTIMONIALS.headline}
+          </h2>
 
-          {/* Stars */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 4, marginBottom: 24 }}>
-            {Array.from({ length: t.rating }).map((_, i) => (
-              <Star key={i} size={20} fill="var(--gold)" color="var(--gold)" />
-            ))}
-          </div>
-
-          {/* Quote */}
-          <p style={{
-            fontFamily: "var(--font-display)", fontStyle: "italic",
-            fontSize: "clamp(1.2rem, 2vw, 1.5rem)", lineHeight: 1.7,
-            color: "var(--text-main)", marginBottom: 36, maxWidth: 620, margin: "0 auto 36px",
-          }}>"{t.quote}"</p>
-
-          {/* Author */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
-            <Avatar name={t.author} />
-            <div style={{ textAlign: "left" }}>
-              <div style={{ fontWeight: 700, color: "var(--charcoal)", fontSize: "1.1rem" }}>{t.author}</div>
-              <div style={{ fontSize: "0.95rem", color: "var(--text-muted)" }}>{t.title}</div>
-            </div>
+          {/* Navigation arrows — top right */}
+          <div style={{ display: "flex", gap: 10, alignSelf: "center" }}>
+            <button
+              onClick={prev}
+              aria-label="Previous testimonials"
+              style={{
+                width: 40, height: 40,
+                border: "1.5px solid #c8d4d8",
+                borderRadius: 6,
+                background: "#fff",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer",
+                color: "var(--charcoal)",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = "#e8eff3")}
+              onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={next}
+              aria-label="Next testimonials"
+              style={{
+                width: 40, height: 40,
+                border: "1.5px solid #c8d4d8",
+                borderRadius: 6,
+                background: "#fff",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer",
+                color: "var(--charcoal)",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = "#e8eff3")}
+              onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
         </div>
 
-        {/* Controls */}
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 16, marginTop: 36 }}>
-          <button onClick={prev} className="btn btn-outline" style={{ padding: "8px 12px", borderRadius: "50%" }} aria-label="Previous">
-            <ChevronLeft size={20} />
-          </button>
-          <div style={{ display: "flex", gap: 8 }}>
-            {items.map((_, i) => (
-              <button key={i} onClick={() => setIdx(i)} style={{
-                width: i === idx ? 24 : 8, height: 8, borderRadius: 4, padding: 0,
-                background: i === idx ? "var(--gold)" : "var(--border)",
-                border: "none", transition: "all 0.3s", cursor: "pointer",
-              }} aria-label={`Review ${i + 1}`} />
+        {/* Cards row */}
+        <div
+          className="testimonials-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 0,
+            background: "rgba(255,255,255,0.55)",
+            borderRadius: 12,
+            border: "1px solid rgba(0,0,0,0.07)",
+            overflow: "hidden",
+            backdropFilter: "blur(6px)",
+          }}
+        >
+          {visible.map((t, i) => (
+            <TestimonialCard
+              key={`${t.id}-${i}`}
+              quote={t.quote}
+              author={t.author}
+              title={t.title}
+              index={i}
+            />
+          ))}
+        </div>
+
+        {/* Dot indicators */}
+        {totalPages > 1 && (
+          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 28 }}>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i)}
+                aria-label={`Page ${i + 1}`}
+                style={{
+                  width: i === page ? 22 : 8, height: 8, borderRadius: 4, padding: 0,
+                  background: i === page ? "#3a8fa3" : "#c8d4d8",
+                  border: "none", transition: "all 0.3s", cursor: "pointer",
+                }}
+              />
             ))}
           </div>
-          <button onClick={next} className="btn btn-gold" style={{ padding: "8px 12px", borderRadius: "50%" }} aria-label="Next">
-            <ChevronRight size={20} />
-          </button>
-        </div>
+        )}
       </div>
     </section>
   );

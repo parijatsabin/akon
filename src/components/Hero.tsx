@@ -50,7 +50,7 @@ const Hero: React.FC = () => {
         alignItems: "center",
         justifyContent: "flex-start",
         position: "relative",
-        zIndex: 10,
+        zIndex: 40,
         paddingTop: "76px",
       }}>
         {/* Left Content Block - Optimized */}
@@ -60,30 +60,38 @@ const Hero: React.FC = () => {
           <div style={{
             display: "flex",
             alignItems: "center",
-            gap: "1.5rem",
+            gap: "0.75rem",
             marginBottom: "1.5rem",
           }}>
-            <div style={{
-              width: "48px",
-              height: "1px",
-              background: "var(--gold)",
-            }} />
             <span style={{
               fontFamily: "var(--font-body)",
               fontWeight: 500,
-              fontSize: "0.85rem",
-              letterSpacing: "0.2em",
+              fontSize: "0.82rem",
+              letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "var(--gold)",
+              color: "rgba(255,255,255,0.85)",
             }}>
               {HERO.smallLabel}
+            </span>
+            <span style={{
+              fontFamily: "var(--font-body)",
+              fontWeight: 600,
+              fontSize: "0.82rem",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "#fff",
+              background: "rgba(180,120,80,0.72)",
+              padding: "4px 14px",
+              borderRadius: "4px",
+            }}>
+              {HERO.smallLabelHighlight}
             </span>
           </div>
           <h1 style={{
             fontFamily: "var(--font-display)",
-            fontSize: "clamp(3rem, 6vw, 5rem)",
+            fontSize: "clamp(2.8rem, 5.5vw, 5rem)",
             fontWeight: 700,
-            lineHeight: 1.08,
+            lineHeight: 1.05,
             color: "#fff",
             marginBottom: "1.75rem",
             whiteSpace: "pre-line",
