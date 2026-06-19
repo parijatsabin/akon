@@ -13,8 +13,7 @@ const Hero: React.FC = () => {
     }}>
       {/* Background Video */}
       <video
-        // src={`${import.meta.env.BASE_URL}hero_video.mp4`}
-        src="https://www.pexels.com/download/video/33233525"
+        src="https://videos.pexels.com/video-files/33233525/14160278_3840_2160_25fps.mp4"
         autoPlay
         muted
         loop
@@ -105,7 +104,7 @@ const Hero: React.FC = () => {
             alignItems: "center",
             gap: "1.5rem",
           }}>
-            <a 
+            <a
               href={HERO.ctaPrimary.href}
               className="btn btn-gold"
               style={{
@@ -116,7 +115,7 @@ const Hero: React.FC = () => {
             >
               {HERO.ctaPrimary.label}
             </a>
-            <a 
+            <a
               href={HERO.ctaSecondary.href}
               style={{
                 fontFamily: "var(--font-body)",
