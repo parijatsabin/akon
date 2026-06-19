@@ -13,7 +13,8 @@ const Hero: React.FC = () => {
     }}>
       {/* Background Video */}
       <video
-        src={`${import.meta.env.BASE_URL}hero_video.mp4`}
+        // src={`${import.meta.env.BASE_URL}hero_video.mp4`}
+        src="https://www.pexels.com/download/video/33233525"
         autoPlay
         muted
         loop
