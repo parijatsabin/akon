@@ -1,0 +1,112 @@
+/* ─── CSS Variables ──────────────────────────────────────── */
+:root {
+  --cream: #faf7f2;
+  --warm-white: #fff9f3;
+  --gold: #c9992c;
+  --gold-light: #e8b84b;
+  --gold-dark: #a07820;
+  --charcoal: #1c1c1c;
+  --text-main: #2d2d2d;
+  --text-muted: #7a7262;
+  --border: #e8e0d4;
+  --section-bg: #f5f0e8;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Jost", system-ui, sans-serif;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.13);
+}
+
+/* ─── Reset ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { 
+  scroll-behavior: smooth; 
+  font-size: 18px; 
+  scroll-padding-top: 35px; 
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--warm-white);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+ul { list-style: none; }
+
+/* ─── Utilities ──────────────────────────────────────────── */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.section { 
+  padding: 88px 0; 
+  scroll-margin-top:  35px; 
+}
+.section-sm { 
+  padding: 56px 0; 
+  scroll-margin-top: 35px; 
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.btn-gold {
+  background: var(--gold);
+  color: #fff;
+}
+.btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); }
+.btn-outline {
+  background: transparent;
+  color: var(--text-main);
+  border: 1.5px solid var(--charcoal);
+}
+.btn-outline:hover { background: var(--charcoal); color: #fff; }
+.btn-dark {
+  background: var(--charcoal);
+  color: #fff;
+}
+.btn-dark:hover { background: #333; transform: translateY(-1px); }
+
+.tag {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+/* ─── Animations ─────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-fade-up { animation: fadeUp 0.7s ease both; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
