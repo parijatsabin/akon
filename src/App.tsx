@@ -4,7 +4,6 @@ import Hero from "./components/Hero";
 import StatsBar from "./components/StatsBar";
 import About from "./components/About";
 import Collection from "./components/Collection";
-import WhyChooseUs from "./components/WhyChooseUs";
 import Testimonials from "./components/Testimonials";
 import Commitment from "./components/Commitment";
 import Newsletter from "./components/Newsletter";
@@ -17,7 +16,6 @@ const App: React.FC = () => (
     <StatsBar />
     <About />
     <Collection />
-    <WhyChooseUs />
     <Testimonials />
     <Commitment />
     <Newsletter />
