@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import { BRAND, NAV_LINKS } from "../data/siteContent";
+import { useSiteData } from "../PublicSite";
 
 const Navbar: React.FC = () => {
+    const { brand: BRAND, navLinks: NAV_LINKS } = useSiteData();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -36,10 +37,7 @@ const Navbar: React.FC = () => {
                 }}
             >
                 {/* ── Logo ── */}
-                <a
-                    href="#home"
-                    style={{ display: "flex", alignItems: "center", flexShrink: 0 }}
-                >
+                <a href="#home" style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
                     <img
                         src={`${import.meta.env.BASE_URL}logo.png`}
                         alt={BRAND.name}
@@ -97,10 +95,7 @@ const Navbar: React.FC = () => {
                 </nav>
 
                 {/* ── Right: CTA + mobile toggle ── */}
-                <div
-                    style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}
-                >
-                    {/* Desktop CTA */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
                     <a
                         href="#collection"
                         className="desktop-nav"
@@ -137,7 +132,6 @@ const Navbar: React.FC = () => {
                         Shop Now
                     </a>
 
-                    {/* Mobile hamburger */}
                     <button
                         className="mobile-menu-btn"
                         onClick={() => setMobileOpen(!mobileOpen)}
@@ -192,20 +186,10 @@ const Navbar: React.FC = () => {
                                 transition: "color 0.2s",
                             }}
                             onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
-                            onMouseLeave={(e) =>
-                                (e.currentTarget.style.color = "var(--text-main)")
-                            }
+                            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-main)")}
                         >
                             {link.label}
-                            <svg
-                                width="16" height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M5 12h14M12 5l7 7-7 7" />
                             </svg>
                         </a>

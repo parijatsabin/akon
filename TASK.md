@@ -1,280 +1,72 @@
-# ANOK Hero Section Redesign — Video Background Implementation
+# CRM Development for Centralized Website Content Management
 
-Keep the existing ANOK luxury branding exactly as it is.
+We currently have a website where all content is managed from a single centralized data source/file. The goal is to design and implement a scalable CRM (Content Management System) that becomes the primary source of truth for all website content and configurations.
 
-DO NOT change:
+## Objectives
 
-* Existing color palette
-* Typography system
-* Brand identity
-* Luxury aesthetic
-* Navigation design
-* Premium spacing system
-* Gold accent colors
-* Existing animations unless improving performance
+* Analyze the entire project structure, architecture, and current content management workflow.
+* Identify all website sections, pages, components, and dynamic content currently driven by the centralized data source.
+* Design a CRM that allows non-technical users to manage website content without modifying code.
+* Ensure every content-driven section of the website can be controlled through the CRM.
+* Replace the current static content management approach with a reactive and maintainable CMS-driven architecture.
+* Maintain consistency between CRM data and frontend rendering.
+* Build the system with future backend/API integration in mind.
 
----
+## Requirements
 
-## Objective
+### Project Analysis
 
-Redesign the Hero Section into a modern luxury perfume showcase using a fullscreen background video.
+* Perform a detailed audit of the existing project.
+* Map all content sources currently used by the website.
+* Identify reusable content models and relationships.
+* Document areas that should become CRM-managed.
 
-The hero section should feel premium, cinematic, elegant, and minimal.
+### CRM Features
 
-Use the provided `.mp4` video from the assets folder as the hero background instead of a static image.
+* Dashboard overview.
+* Content management for all website sections.
+* Page management.
+* Hero section management.
+* Media/Image/Video management.
+* SEO metadata management.
+* Global settings management.
+* Navigation/Menu management.
+* Footer management.
+* Reusable content blocks/components.
+* Draft and publish workflow (if applicable).
 
-The video should immediately communicate luxury and fragrance craftsmanship while keeping all content highly readable.
+### Frontend Integration
 
----
+* Refactor the website to consume data from the CRM instead of static files.
+* Ensure changes in the CRM are reflected immediately in the website architecture.
+* Create a clean abstraction layer between UI components and data sources.
+* Keep the frontend prepared for future API-based data fetching.
 
-## Hero Layout Structure
+### Architecture Requirements
 
-### Fullscreen Hero (100vh)
+* Follow scalable and modular architecture principles.
+* Use reusable content schemas/models.
+* Minimize future migration effort when a backend/API is introduced.
+* Separate presentation, business logic, and data layers.
+* Design the CRM as if it will eventually become a full backend-powered system.
 
-Structure:
+### Future Readiness
 
-```text
---------------------------------------------------
-| Navigation                                      |
-|                                                  |
-|  Left Content       Center Focus      Right Info |
-|                                                  |
-|                                                  |
---------------------------------------------------
-```
+The initial version may use local storage, JSON files, Firebase, or another lightweight solution, but the architecture must be designed so that:
 
-### Background
+* Future backend integration requires minimal frontend changes.
+* Content models remain unchanged when moving to APIs.
+* Authentication, roles, permissions, and multi-user support can be added later.
 
-Use:
+## Expected Deliverables
 
-```dart
-assets/videos/hero_video.mp4
-```
+1. Complete project analysis report.
+2. Content structure and data model design.
+3. CRM architecture proposal.
+4. Database/content schema design.
+5. Frontend integration strategy.
+6. Migration plan from the current centralized content file.
+7. Implementation roadmap with phases and priorities.
+8. Recommendations for future backend/API integration.
 
-(or the existing video path in the project)
-
-Requirements:
-
-* Autoplay
-* Muted
-* Loop
-* Plays inline
-* No controls visible
-* Optimized loading
-* Smooth fade-in on page load
-
----
-
-## Video Overlay
-
-Add multiple overlays for readability.
-
-### Layer 1
-
-Dark overlay:
-
-```css
-rgba(0,0,0,0.45)
-```
-
-### Layer 2
-
-Luxury gradient:
-
-```css
-linear-gradient(
-  90deg,
-  rgba(0,0,0,0.75) 0%,
-  rgba(0,0,0,0.25) 50%,
-  rgba(0,0,0,0.65) 100%
-)
-```
-
-This ensures text remains readable while preserving video visibility.
-
----
-
-## Left Content Block
-
-Position:
-
-* Vertically centered
-* Left aligned
-* Maximum width: 500px
-
-Content:
-
-### Small Label
-
-```text
-EXTRAIT DE PARFUM
-```
-
-Luxury letter spacing.
-
----
-
-### Main Heading
-
-```text
-Crafting Scents
-That Define Elegance
-```
-
-Large luxury typography.
-
-Desktop:
-
-```css
-font-size: clamp(56px, 7vw, 92px)
-```
-
----
-
-### Description
-
-```text
-Discover timeless fragrances crafted with precision, inspired by sophistication and designed for those who appreciate true luxury.
-```
-
-Maximum 2–3 lines.
-
----
-
-### CTA Buttons
-
-Primary:
-
-```text
-Explore Collection
-```
-
-Luxury gold button.
-
-Secondary:
-
-```text
-Our Story
-```
-
-Transparent outline button.
-
-Buttons should be elegant and subtle.
-
-Avoid oversized CTAs.
-
----
-
-## Center Area
-
-Keep visually open.
-
-Do NOT place cards or floating panels.
-
-Allow the video itself to become the hero visual.
-
-The perfume bottle appearing in the video becomes the focal point.
-
-Less UI = More luxury.
-
----
-
-## Right Side
-
-Minimal vertical fragrance showcase.
-
-Example:
-
-```text
-Signature Collection
-
-Noir Élégance
-Amber Essence
-Velvet Oud
-Midnight Bloom
-```
-
-Behavior:
-
-* Active fragrance highlighted in gold.
-* Others remain subtle.
-* Hover interaction optional.
-* Very minimal visual weight.
-
----
-
-## Motion Design
-
-Implement subtle luxury animations only.
-
-### On Load
-
-* Fade in content
-* Slight upward reveal
-* Duration: 0.8s–1.2s
-
-### Buttons
-
-* Soft hover glow
-* Gentle scale effect
-
-### Background Video
-
-* No zoom effects
-* No parallax
-* Let the cinematic footage speak for itself
-
----
-
-## Mobile Experience
-
-Stack content vertically.
-
-Order:
-
-```text
-Heading
-Description
-Buttons
-Collection Indicator
-```
-
-Video remains fullscreen.
-
-Ensure text remains readable with stronger overlay if necessary.
-
----
-
-## Performance Requirements
-
-* Lazy load video
-* Preload hero video only
-* Compress video for web
-* Use hardware acceleration
-* Prevent layout shifts
-* Smooth playback across devices
-
----
-
-## Luxury Design Rules
-
-Avoid:
-
-* Glassmorphism cards
-* Floating panels
-* Heavy gradients
-* Large shadows
-* Excessive animations
-* Busy layouts
-* Multiple competing focal points
-
-Focus on:
-
-* Simplicity
-* Cinematic storytelling
-* Elegant typography
-* Premium spacing
-* Strong visual hierarchy
-* Luxury restraint
-
-The final hero section should feel similar to high-end fragrance brands such as Tom Ford, Byredo, Le Labo, and Maison Francis Kurkdjian, where the video creates the atmosphere and the interface remains clean, minimal, and sophisticated.
+**Important:** Before implementation, thoroughly analyze the existing project. If any requirement, content flow, architecture decision, or future scalability concern is unclear, STOP and ASK for clarification before proceeding.
