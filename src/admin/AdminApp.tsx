@@ -1,9 +1,3 @@
-/**
- * AdminApp — all /admin/* routes live here.
- * Imported lazily from the main App so the admin bundle never loads
- * on the public site.
- */
-
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthContext";
@@ -14,24 +8,17 @@ import AdminLayout from "./components/AdminLayout";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import GlobalSettingsPage from "./pages/GlobalSettingsPage";
-import HeroPage from "./pages/HeroPage";
-import StatsPage from "./pages/StatsPage";
-import AboutPage from "./pages/AboutPage";
 import CollectionPage from "./pages/CollectionPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
-import CommitmentPage from "./pages/CommitmentPage";
-import NewsletterPage from "./pages/NewsletterPage";
-import NavigationPage from "./pages/NavigationPage";
-import FooterPage from "./pages/FooterPage";
 
 const AdminApp: React.FC = () => (
     <AuthProvider>
         <ToastProvider>
             <Routes>
-                {/* Public login — no layout wrapper */}
+                {/* Public — no layout */}
                 <Route path="login" element={<LoginPage />} />
 
-                {/* All protected routes share the AdminLayout */}
+                {/* Protected — all share AdminLayout */}
                 <Route
                     path="*"
                     element={
@@ -40,16 +27,16 @@ const AdminApp: React.FC = () => (
                                 <Routes>
                                     <Route index element={<DashboardPage />} />
                                     <Route path="settings" element={<GlobalSettingsPage />} />
-                                    <Route path="hero" element={<HeroPage />} />
-                                    <Route path="stats" element={<StatsPage />} />
-                                    <Route path="about" element={<AboutPage />} />
                                     <Route path="collection" element={<CollectionPage />} />
                                     <Route path="testimonials" element={<TestimonialsPage />} />
-                                    <Route path="commitment" element={<CommitmentPage />} />
-                                    <Route path="newsletter" element={<NewsletterPage />} />
-                                    <Route path="navigation" element={<NavigationPage />} />
-                                    <Route path="footer" element={<FooterPage />} />
-                                    {/* Catch-all → dashboard */}
+                                    {/* Legacy route redirects — in case any bookmark exists */}
+                                    <Route path="hero" element={<Navigate to="/admin/settings" replace />} />
+                                    <Route path="stats" element={<Navigate to="/admin/settings" replace />} />
+                                    <Route path="about" element={<Navigate to="/admin/settings" replace />} />
+                                    <Route path="commitment" element={<Navigate to="/admin/settings" replace />} />
+                                    <Route path="newsletter" element={<Navigate to="/admin/settings" replace />} />
+                                    <Route path="navigation" element={<Navigate to="/admin/settings" replace />} />
+                                    <Route path="footer" element={<Navigate to="/admin/settings" replace />} />
                                     <Route path="*" element={<Navigate to="/admin" replace />} />
                                 </Routes>
                             </AdminLayout>
