@@ -3,101 +3,225 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { COLLECTION } from "../data/siteContent";
 
 const SIZES = ["100 ml", "50 ml", "30 ml", "10 ml"];
-const VISIBLE = 4;      // cards visible at once
-const AUTO_DELAY = 3500;  // ms per slide
-const RESUME_AFTER = 6000;// ms before auto resumes after manual interaction
+const VISIBLE = 4;
+const AUTO_DELAY = 3500;
+const RESUME_AFTER = 6000;
 
-// ── Single product card ──────────────────────────────────────
 interface Item {
-    id: string; name: string; collection: string; price: string;
-    badge: string | null; imageUrl: string; productUrl: string;
-    description: string; notes: { top: string[]; heart: string[]; base: string[] };
+    id: string;
+    name: string;
+    collection: string;
+    price: string;
+    badge: string | null;
+    imageUrl: string;
+    productUrl: string;
+    description: string;
+    notes: { top: string[]; heart: string[]; base: string[] };
 }
 
+/* ── Single product card ────────────────────────────────────── */
 const ProductCard: React.FC<{ item: Item }> = ({ item }) => {
     const [selectedSize, setSelectedSize] = useState(SIZES[0]);
+    const [hovered, setHovered] = useState(false);
+
     return (
-        <div style={{ display: "flex", flexDirection: "column", background: "#fff", minWidth: 0 }}>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                background: "#fff",
+                minWidth: 0,
+                borderRadius: "var(--radius-sm)",
+                overflow: "hidden",
+                border: "1px solid var(--border)",
+                transition: "box-shadow 0.28s, transform 0.28s",
+                boxShadow: hovered ? "var(--shadow-gold)" : "var(--shadow)",
+                transform: hovered ? "translateY(-4px)" : "translateY(0)",
+            }}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+        >
             {/* Image */}
-            <div style={{ position: "relative", width: "100%", aspectRatio: "3/4", background: "#f0ecec", overflow: "hidden", marginBottom: 14, borderRadius: 2 }}>
+            <div
+                style={{
+                    position: "relative",
+                    width: "100%",
+                    aspectRatio: "3/4",
+                    background: "var(--parchment)",
+                    overflow: "hidden",
+                }}
+            >
                 <img
-                    src={item.imageUrl} alt={item.name}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease", display: "block" }}
-                    onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.05)")}
-                    onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+                    src={item.imageUrl}
+                    alt={item.name}
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        transition: "transform 0.55s ease",
+                        display: "block",
+                        transform: hovered ? "scale(1.06)" : "scale(1)",
+                    }}
                 />
                 {item.badge && (
-                    <div style={{ position: "absolute", top: 12, left: 12, background: "rgba(255,255,255,0.93)", color: "#5a2d2d", fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.04em", padding: "4px 10px", borderRadius: 2 }}>
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: 12, left: 12,
+                            background: "var(--charcoal)",
+                            color: "var(--gold-light)",
+                            fontSize: "0.65rem",
+                            fontWeight: 700,
+                            letterSpacing: "0.10em",
+                            textTransform: "uppercase",
+                            padding: "5px 12px",
+                            borderRadius: "3px",
+                        }}
+                    >
                         {item.badge}
                     </div>
                 )}
             </div>
-            {/* Name */}
-            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.88rem", color: "#2a1a14", marginBottom: 4 }}>{item.name}</div>
-            {/* Price */}
-            <div style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.95rem", color: "#5a2d2d", marginBottom: 12 }}>{item.price}</div>
-            {/* Sizes */}
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
-                {SIZES.map(s => (
-                    <button key={s} onClick={() => setSelectedSize(s)} style={{
-                        fontSize: "0.68rem", fontWeight: 500, padding: "4px 9px", borderRadius: 3, border: "1px solid",
-                        cursor: "pointer", transition: "all 0.18s", fontFamily: "var(--font-body)",
-                        background: s === selectedSize ? "#5a2d2d" : "transparent",
-                        borderColor: s === selectedSize ? "#5a2d2d" : "#c0a89a",
-                        color: s === selectedSize ? "#fff" : "#7a5a52",
-                    }}>{s}</button>
-                ))}
+
+            {/* Card body */}
+            <div style={{ padding: "16px 18px 20px", display: "flex", flexDirection: "column", gap: 0, flex: 1 }}>
+                {/* Collection label */}
+                <div
+                    style={{
+                        fontSize: "0.65rem",
+                        fontWeight: 600,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        color: "var(--gold)",
+                        marginBottom: 5,
+                    }}
+                >
+                    {item.collection}
+                </div>
+
+                {/* Name */}
+                <div
+                    style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "1rem",
+                        fontWeight: 600,
+                        color: "var(--text-main)",
+                        marginBottom: 6,
+                        lineHeight: 1.25,
+                    }}
+                >
+                    {item.name}
+                </div>
+
+                {/* Price */}
+                <div
+                    style={{
+                        fontFamily: "var(--font-body)",
+                        fontWeight: 700,
+                        fontSize: "0.92rem",
+                        color: "var(--gold-dim)",
+                        marginBottom: 14,
+                    }}
+                >
+                    {item.price}
+                </div>
+
+                {/* Sizes */}
+                <div
+                    style={{
+                        display: "flex",
+                        gap: 6,
+                        flexWrap: "wrap",
+                        marginBottom: 14,
+                    }}
+                >
+                    {SIZES.map((s) => (
+                        <button
+                            key={s}
+                            onClick={() => setSelectedSize(s)}
+                            style={{
+                                fontSize: "0.65rem",
+                                fontWeight: 600,
+                                letterSpacing: "0.06em",
+                                padding: "5px 10px",
+                                borderRadius: "3px",
+                                border: "1px solid",
+                                cursor: "pointer",
+                                transition: "all 0.18s",
+                                fontFamily: "var(--font-body)",
+                                background: s === selectedSize ? "var(--charcoal)" : "transparent",
+                                borderColor:
+                                    s === selectedSize ? "var(--charcoal)" : "var(--border)",
+                                color:
+                                    s === selectedSize ? "#fff" : "var(--text-muted)",
+                            }}
+                        >
+                            {s}
+                        </button>
+                    ))}
+                </div>
+
+                {/* CTA */}
+                <button
+                    style={{
+                        width: "100%",
+                        padding: "12px 0",
+                        background: "var(--gold)",
+                        color: "#fff",
+                        fontFamily: "var(--font-body)",
+                        fontWeight: 700,
+                        fontSize: "0.78rem",
+                        letterSpacing: "0.09em",
+                        textTransform: "uppercase",
+                        border: "none",
+                        borderRadius: "var(--radius-sm)",
+                        cursor: "pointer",
+                        transition: "background 0.22s, box-shadow 0.22s",
+                        marginTop: "auto",
+                        boxShadow: "0 4px 14px rgba(162,127,63,0.22)",
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "var(--gold-dim)";
+                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(162,127,63,0.35)";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "var(--gold)";
+                        e.currentTarget.style.boxShadow = "0 4px 14px rgba(162,127,63,0.22)";
+                    }}
+                >
+                    Add To Cart
+                </button>
             </div>
-            {/* CTA */}
-            <button style={{ width: "100%", padding: "11px 0", background: "#5a2d2d", color: "#fff", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "0.82rem", letterSpacing: "0.06em", border: "none", borderRadius: 3, cursor: "pointer", transition: "background 0.2s", marginTop: "auto" }}
-                onMouseEnter={e => (e.currentTarget.style.background = "#3e1e1e")}
-                onMouseLeave={e => (e.currentTarget.style.background = "#5a2d2d")}>
-                Add To Cart
-            </button>
         </div>
     );
 };
 
-// ── Main carousel ────────────────────────────────────────────
+/* ── Carousel ──────────────────────────────────────────────── */
 const Collection: React.FC = () => {
     const items = COLLECTION.items;
     const total = items.length;
-    const maxStart = total - VISIBLE;  // 0–4 for 8 items
+    const maxStart = total - VISIBLE;
 
-    const [index, setIndex] = useState(0);   // 0-based slide index (0..maxStart)
-    const [paused, setPaused] = useState(false);
-    const [progress, setProgress] = useState(0); // 0-100 for progress bar
+    const [index, setIndex] = useState(0);
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-    const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const resumeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const clearTimers = () => {
         if (timerRef.current) clearInterval(timerRef.current);
-        if (progressRef.current) clearInterval(progressRef.current);
         if (resumeRef.current) clearTimeout(resumeRef.current);
     };
 
     const startAuto = useCallback(() => {
-        setProgress(0);
-        // progress ticks every 30ms → 100 steps over AUTO_DELAY ms
-        const step = 100 / (AUTO_DELAY / 30);
-        progressRef.current = setInterval(() => {
-            setProgress(p => Math.min(p + step, 100));
-        }, 30);
         timerRef.current = setInterval(() => {
-            setIndex(i => (i >= maxStart ? 0 : i + 1));
-            setProgress(0);
+            setIndex((i) => (i >= maxStart ? 0 : i + 1));
         }, AUTO_DELAY);
     }, [maxStart]);
 
     const stopAuto = useCallback(() => {
         clearTimers();
-        setPaused(true);
-        setProgress(0);
     }, []);
 
     const resumeAuto = useCallback(() => {
-        setPaused(false);
         startAuto();
     }, [startAuto]);
 
@@ -112,41 +236,80 @@ const Collection: React.FC = () => {
         resumeRef.current = setTimeout(resumeAuto, RESUME_AFTER);
     };
 
-    // Translate = index * (100% / VISIBLE) per card width
     const translatePct = -(index * (100 / VISIBLE));
 
     return (
-        <section id="collection" className="section" style={{ background: "#fff" }}>
+        <section id="collection" className="section" style={{ background: "var(--parchment)" }}>
             <div className="container">
 
-                {/* Heading */}
-                <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem, 3vw, 2.6rem)", fontWeight: 600, fontStyle: "italic", color: "var(--charcoal)", textAlign: "center", marginBottom: 40 }}>
-                    {COLLECTION.headline}
-                </h2>
+                {/* Heading block */}
+                <div style={{ textAlign: "center", marginBottom: 52 }}>
+                    <span className="tag">Curated for You</span>
+                    <h2
+                        style={{
+                            fontFamily: "var(--font-display)",
+                            fontSize: "clamp(1.8rem, 3vw, 2.8rem)",
+                            fontWeight: 700,
+                            fontStyle: "italic",
+                            color: "var(--text-main)",
+                            lineHeight: 1.15,
+                        }}
+                    >
+                        {COLLECTION.headline}
+                    </h2>
+                </div>
 
-                {/* Carousel outer — clips the sliding track */}
+                {/* Carousel outer */}
                 <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
 
                     {/* Left arrow */}
-                    <button onClick={() => go(index - 1)} aria-label="Previous"
-                        style={{ position: "absolute", left: -28, zIndex: 10, width: 40, height: 40, border: "1.5px solid #ccc", borderRadius: 4, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--charcoal)", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", transition: "all 0.2s", flexShrink: 0, opacity: index === 0 ? 0.4 : 1 }}
-                        onMouseEnter={e => e.currentTarget.style.background = "#f5f0eb"}
-                        onMouseLeave={e => e.currentTarget.style.background = "#fff"}>
+                    <button
+                        onClick={() => go(index - 1)}
+                        aria-label="Previous"
+                        disabled={index === 0}
+                        style={{
+                            position: "absolute",
+                            left: -36,
+                            zIndex: 10,
+                            width: 42, height: 42,
+                            border: "1.5px solid var(--border)",
+                            borderRadius: "var(--radius-sm)",
+                            background: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: index === 0 ? "not-allowed" : "pointer",
+                            color: "var(--text-main)",
+                            boxShadow: "var(--shadow)",
+                            transition: "all 0.22s",
+                            flexShrink: 0,
+                            opacity: index === 0 ? 0.35 : 1,
+                        }}
+                        onMouseEnter={(e) => { if (index !== 0) e.currentTarget.style.borderColor = "var(--gold)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
+                    >
                         <ChevronLeft size={18} />
                     </button>
 
                     {/* Clipping viewport */}
                     <div style={{ overflow: "hidden", width: "100%" }}>
-                        {/* Sliding track — holds ALL cards side by side */}
-                        <div style={{
-                            display: "flex",
-                            gap: 24,
-                            transform: `translateX(calc(${translatePct}% - ${index * 24 / VISIBLE}px))`,
-                            transition: "transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                            willChange: "transform",
-                        }}>
-                            {items.map(item => (
-                                <div key={item.id} style={{ flex: `0 0 calc(${100 / VISIBLE}% - ${24 * (VISIBLE - 1) / VISIBLE}px)`, minWidth: 0 }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                gap: 20,
+                                transform: `translateX(calc(${translatePct}% - ${(index * 20) / VISIBLE}px))`,
+                                transition: "transform 0.58s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                                willChange: "transform",
+                            }}
+                        >
+                            {items.map((item) => (
+                                <div
+                                    key={item.id}
+                                    style={{
+                                        flex: `0 0 calc(${100 / VISIBLE}% - ${(20 * (VISIBLE - 1)) / VISIBLE}px)`,
+                                        minWidth: 0,
+                                    }}
+                                >
                                     <ProductCard item={item} />
                                 </div>
                             ))}
@@ -154,41 +317,71 @@ const Collection: React.FC = () => {
                     </div>
 
                     {/* Right arrow */}
-                    <button onClick={() => go(index + 1)} aria-label="Next"
-                        style={{ position: "absolute", right: -28, zIndex: 10, width: 40, height: 40, border: "1.5px solid #ccc", borderRadius: 4, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--charcoal)", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", transition: "all 0.2s", flexShrink: 0, opacity: index === maxStart ? 0.4 : 1 }}
-                        onMouseEnter={e => e.currentTarget.style.background = "#f5f0eb"}
-                        onMouseLeave={e => e.currentTarget.style.background = "#fff"}>
+                    <button
+                        onClick={() => go(index + 1)}
+                        aria-label="Next"
+                        disabled={index === maxStart}
+                        style={{
+                            position: "absolute",
+                            right: -36,
+                            zIndex: 10,
+                            width: 42, height: 42,
+                            border: "1.5px solid var(--border)",
+                            borderRadius: "var(--radius-sm)",
+                            background: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: index === maxStart ? "not-allowed" : "pointer",
+                            color: "var(--text-main)",
+                            boxShadow: "var(--shadow)",
+                            transition: "all 0.22s",
+                            flexShrink: 0,
+                            opacity: index === maxStart ? 0.35 : 1,
+                        }}
+                        onMouseEnter={(e) => { if (index !== maxStart) e.currentTarget.style.borderColor = "var(--gold)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
+                    >
                         <ChevronRight size={18} />
                     </button>
                 </div>
 
-                {/* ── Indicators ── */}
-                <div style={{ marginTop: 32, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-
-                    {/* Progress bar
-                    {!paused && (
-                        <div style={{ width: 160, height: 2, background: "#e8ddd6", borderRadius: 2, overflow: "hidden" }}>
-                            <div style={{ height: "100%", width: `${progress}%`, background: "#5a2d2d", borderRadius: 2, transition: "width 0.03s linear" }} />
-                        </div>
-                    )} */}
-
-                    {/* Dot indicators */}
-                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                        {Array.from({ length: maxStart + 1 }).map((_, i) => (
-                            <button key={i} onClick={() => go(i)} aria-label={`Go to slide ${i + 1}`}
-                                style={{ padding: 0, border: "none", cursor: "pointer", background: "none", display: "flex", alignItems: "center" }}>
-                                <div style={{
-                                    width: i === index ? 28 : 8,
+                {/* Dot indicators */}
+                <div
+                    style={{
+                        marginTop: 36,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 10,
+                    }}
+                >
+                    {Array.from({ length: maxStart + 1 }).map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => go(i)}
+                            aria-label={`Go to slide ${i + 1}`}
+                            style={{
+                                padding: 0,
+                                border: "none",
+                                cursor: "pointer",
+                                background: "none",
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: i === index ? 32 : 8,
                                     height: 8,
                                     borderRadius: 4,
-                                    background: i === index ? "#5a2d2d" : "#d4c4bc",
-                                    transition: "all 0.35s ease",
-                                }} />
-                            </button>
-                        ))}
-                    </div>
+                                    background: i === index ? "var(--gold)" : "var(--border)",
+                                    transition: "all 0.38s ease",
+                                }}
+                            />
+                        </button>
+                    ))}
                 </div>
-
             </div>
         </section>
     );

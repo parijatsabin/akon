@@ -2,33 +2,78 @@ import React from "react";
 import { STATS } from "../data/siteContent";
 
 const StatsBar: React.FC = () => (
-  <section style={{ background: "var(--charcoal)", padding: "36px 0" }}>
-    <div className="container" style={{
-      display: "grid",
-      gridTemplateColumns: `repeat(${STATS.length}, 1fr)`,
-      gap: 12,
-    }}>
+  <section
+    style={{
+      background: "var(--charcoal)",
+      padding: "40px 0",
+      borderTop: "1px solid rgba(162,127,63,0.18)",
+      borderBottom: "1px solid rgba(162,127,63,0.18)",
+    }}
+  >
+    <div
+      className="container"
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${STATS.length}, 1fr)`,
+        gap: 0,
+      }}
+    >
       {STATS.map((stat, i) => (
-        <div key={i} style={{
-          textAlign: "center",
-          padding: "16px 0",
-          borderRight: i < STATS.length - 1 ? "1px solid rgba(255,255,255,0.12)" : "none",
-        }}>
-          <div style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(1.8rem, 3vw, 2.4rem)",
-            fontWeight: 700,
-            color: "var(--gold-light)",
-          }}>{stat.value}</div>
-          <div style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.7)", marginTop: 6, letterSpacing: "0.03em" }}>
+        <div
+          key={i}
+          style={{
+            textAlign: "center",
+            padding: "20px 16px",
+            borderRight:
+              i < STATS.length - 1
+                ? "1px solid var(--border-dark)"
+                : "none",
+            position: "relative",
+          }}
+        >
+          {/* Value */}
+          <div
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(1.8rem, 3vw, 2.5rem)",
+              fontWeight: 700,
+              color: "var(--gold-light)",
+              letterSpacing: "0.02em",
+              lineHeight: 1.1,
+            }}
+          >
+            {stat.value}
+          </div>
+          {/* Thin gold rule */}
+          <div
+            style={{
+              width: 28,
+              height: 1.5,
+              background: "var(--gold)",
+              borderRadius: 2,
+              margin: "10px auto",
+              opacity: 0.55,
+            }}
+          />
+          {/* Label */}
+          <div
+            style={{
+              fontSize: "0.80rem",
+              fontWeight: 500,
+              letterSpacing: "0.10em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.60)",
+            }}
+          >
             {stat.label}
           </div>
         </div>
       ))}
     </div>
+
     <style>{`
       @media (max-width: 600px) {
-        #stats-grid { grid-template-columns: 1fr 1fr !important; }
+        .stats-bar-grid { grid-template-columns: 1fr 1fr !important; }
       }
     `}</style>
   </section>

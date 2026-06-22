@@ -1,23 +1,70 @@
-/* ─── CSS Variables ──────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   ANOK — Centralised Design Tokens
+   Logo gold: #a27f3f  — all palette derived from this anchor
+   ═══════════════════════════════════════════════════════════════ */
 :root {
-  --cream: #faf7f2;
-  --warm-white: #fff9f3;
-  --gold: #c9992c;
-  --gold-light: #e8b84b;
-  --gold-dark: #a07820;
-  --charcoal: #1c1c1c;
-  --text-main: #2d2d2d;
-  --text-muted: #7a7262;
-  --border: #e8e0d4;
-  --section-bg: #f5f0e8;
+  /* ── Gold palette (anchor: logo #a27f3f) ─────────────────── */
+  --gold: #a27f3f;
+  /* logo exact — primary CTA, key accents   */
+  --gold-light: #c9a96e;
+  /* lighter accent, headings on dark bg      */
+  --gold-subtle: #d4b483;
+  /* hover states, pills, soft highlights     */
+  --gold-dim: #7a5e2a;
+  /* darker gold for pressed/active states    */
+  --gold-glow: rgba(162, 127, 63, 0.18);
+  /* glow halos, card hovers  */
+  --gold-rule: rgba(162, 127, 63, 0.30);
+  /* hairline dividers on dark */
+
+  /* ── Dark palette ────────────────────────────────────────── */
+  --deep-black: #0d0c0b;
+  /* richest dark — hero overlay, footer      */
+  --charcoal: #1a1714;
+  /* stats bar, newsletter, dark sections     */
+  --charcoal-mid: #2e2a24;
+  /* secondary dark surfaces                  */
+
+  /* ── Light palette ───────────────────────────────────────── */
+  --cream: #faf6ef;
+  /* main page background                     */
+  --warm-white: #fdfaf5;
+  /* card surfaces, about section             */
+  --parchment: #f2ede4;
+  /* alternating section bg (about, commit)   */
+  --parchment-mid: #ede6d9;
+  /* slightly deeper parchment variant        */
+
+  /* ── Text ────────────────────────────────────────────────── */
+  --text-main: #1a1714;
+  /* primary body text                        */
+  --text-muted: #7a7065;
+  /* secondary / subtext                      */
+  --text-faint: #a09585;
+  /* meta, captions, small labels             */
+
+  /* ── UI ──────────────────────────────────────────────────── */
+  --border: #e4ddd2;
+  /* default dividers and outlines            */
+  --border-dark: rgba(255, 255, 255, 0.10);
+  /* dividers on dark bg      */
+
+  /* ── Typography ─────────────────────────────────────────── */
   --font-display: "Playfair Display", Georgia, serif;
   --font-body: "Jost", system-ui, sans-serif;
+
+  /* ── Spacing & radius ────────────────────────────────────── */
+  --radius-sm: 6px;
   --radius: 12px;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.13);
+  --radius-lg: 20px;
+
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 16px 56px rgba(0, 0, 0, 0.14);
+  --shadow-gold: 0 8px 32px rgba(162, 127, 63, 0.22);
 }
 
-/* ─── Reset ──────────────────────────────────────────────── */
+/* ─── Reset ──────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -34,7 +81,7 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--warm-white);
+  background: var(--cream);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   line-height: 1.6;
@@ -61,7 +108,7 @@ ul {
   list-style: none;
 }
 
-/* ─── Utilities ──────────────────────────────────────────── */
+/* ─── Utilities ───────────────────────────────────────────────── */
 .container {
   max-width: 1280px;
   margin: 0 auto;
@@ -69,39 +116,46 @@ ul {
 }
 
 .section {
-  padding: 88px 0;
+  padding: 96px 0;
   scroll-margin-top: 35px;
 }
 
 .section-sm {
-  padding: 56px 0;
+  padding: 60px 0;
   scroll-margin-top: 35px;
 }
 
+/* ─── Buttons ─────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 32px;
-  border-radius: 6px;
+  padding: 14px 34px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  transition: all 0.25s ease;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.28s ease;
   cursor: pointer;
+  border: none;
 }
 
+/* Primary — gold fill */
 .btn-gold {
   background: var(--gold);
   color: #fff;
+  box-shadow: 0 4px 18px rgba(162, 127, 63, 0.28);
 }
 
 .btn-gold:hover {
-  background: var(--gold-dark);
-  transform: translateY(-1px);
+  background: var(--gold-dim);
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-2px);
 }
 
+/* Secondary — ghost on light bg */
 .btn-outline {
   background: transparent;
   color: var(--text-main);
@@ -113,31 +167,57 @@ ul {
   color: #fff;
 }
 
+/* Dark fill */
 .btn-dark {
   background: var(--charcoal);
   color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 }
 
 .btn-dark:hover {
-  background: #333;
-  transform: translateY(-1px);
+  background: var(--charcoal-mid);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
 }
 
+/* Ghost on dark bg */
+.btn-ghost-light {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+}
+
+.btn-ghost-light:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--gold-light);
+  color: var(--gold-light);
+}
+
+/* ─── Label / tag ─────────────────────────────────────────────── */
 .tag {
   display: inline-block;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
-/* ─── Animations ─────────────────────────────────────────── */
+/* ─── Thin gold rule ──────────────────────────────────────────── */
+.gold-rule {
+  display: inline-block;
+  width: 40px;
+  height: 1.5px;
+  background: var(--gold);
+  border-radius: 2px;
+}
+
+/* ─── Animations ──────────────────────────────────────────────── */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(28px);
   }
 
   to {
@@ -154,41 +234,51 @@ ul {
   }
 
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-12px);
   }
 }
 
-@keyframes spin-slow {
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
   }
 
   to {
-    transform: rotate(360deg);
+    opacity: 1;
   }
 }
 
 .animate-fade-up {
-  animation: fadeUp 0.7s ease both;
+  animation: fadeUp 0.75s ease both;
 }
 
 .delay-1 {
-  animation-delay: 0.1s;
+  animation-delay: 0.10s;
 }
 
 .delay-2 {
-  animation-delay: 0.2s;
+  animation-delay: 0.20s;
 }
 
 .delay-3 {
-  animation-delay: 0.3s;
+  animation-delay: 0.30s;
 }
 
 .delay-4 {
-  animation-delay: 0.4s;
+  animation-delay: 0.40s;
 }
 
-/* ─── Testimonials responsive ────────────────────────────── */
+/* ─── Testimonials responsive ─────────────────────────────────── */
 @media (max-width: 860px) {
   .testimonials-grid {
     grid-template-columns: 1fr !important;

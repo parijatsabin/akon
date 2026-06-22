@@ -2,79 +2,131 @@ import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TESTIMONIALS, BRAND } from "../data/siteContent";
 
-// Brand wordmark shown on each card
+/* Brand wordmark on each card */
 const BrandMark: React.FC = () => (
-  <div style={{
-    fontFamily: "var(--font-display)",
-    fontWeight: 800,
-    fontSize: "1.25rem",
-    letterSpacing: "0.15em",
-    color: "var(--charcoal)",
-    textTransform: "uppercase",
-    userSelect: "none",
-  }}>
+  <div
+    style={{
+      fontFamily: "var(--font-display)",
+      fontWeight: 800,
+      fontSize: "1.1rem",
+      letterSpacing: "0.18em",
+      color: "var(--gold)",
+      textTransform: "uppercase",
+      userSelect: "none",
+      opacity: 0.75,
+    }}
+  >
     {BRAND.name}
   </div>
 );
 
-// Large teal opening quote glyph
+/* Opening quote glyph — brand gold */
 const QuoteMark: React.FC = () => (
-  <div style={{
-    fontSize: "2.8rem",
-    lineHeight: 1,
-    color: "#3a8fa3",
-    fontFamily: "Georgia, serif",
-    fontWeight: 700,
-    marginBottom: 12,
-    userSelect: "none",
-  }}>"</div>
+  <div
+    style={{
+      fontSize: "2.8rem",
+      lineHeight: 1,
+      color: "var(--gold)",
+      fontFamily: "Georgia, serif",
+      fontWeight: 700,
+      marginBottom: 14,
+      userSelect: "none",
+      opacity: 0.65,
+    }}
+  >
+    "
+  </div>
 );
 
-// Single testimonial card
+/* Star rating */
+const Stars: React.FC<{ count: number }> = ({ count }) => (
+  <div style={{ display: "flex", gap: 3, marginBottom: 14 }}>
+    {Array.from({ length: 5 }).map((_, i) => (
+      <svg
+        key={i}
+        width="13" height="13"
+        viewBox="0 0 24 24"
+        fill={i < count ? "var(--gold)" : "none"}
+        stroke={i < count ? "var(--gold)" : "var(--border)"}
+        strokeWidth="2"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    ))}
+  </div>
+);
+
+/* Single testimonial card */
 interface CardProps {
   quote: string;
   author: string;
   title: string;
+  rating: number;
   index?: number;
 }
 
-const TestimonialCard: React.FC<CardProps> = ({ quote, author, title, index = 0 }) => (
-  <div style={{
-    flex: "1 1 0",
-    minWidth: 0,
-    background: "transparent",
-    padding: "32px 28px 28px",
-    display: "flex",
-    flexDirection: "column",
-    gap: 0,
-    borderLeft: index > 0 ? "1px solid rgba(0,0,0,0.08)" : "none",
-    transition: "background 0.2s",
-  }}>
+const TestimonialCard: React.FC<CardProps> = ({
+  quote, author, title, rating, index = 0,
+}) => (
+  <div
+    style={{
+      flex: "1 1 0",
+      minWidth: 0,
+      background: "transparent",
+      padding: "36px 32px 32px",
+      display: "flex",
+      flexDirection: "column",
+      borderLeft:
+        index > 0 ? "1px solid var(--border)" : "none",
+      transition: "background 0.2s",
+    }}
+  >
     <QuoteMark />
-    <p style={{
-      fontFamily: "var(--font-body)",
-      fontSize: "0.9rem",
-      lineHeight: 1.7,
-      color: "#3d3d3d",
-      marginBottom: 24,
-      flexGrow: 1,
-    }}>
+    <Stars count={rating} />
+    <p
+      style={{
+        fontFamily: "var(--font-body)",
+        fontSize: "0.9rem",
+        lineHeight: 1.78,
+        color: "var(--text-main)",
+        marginBottom: 26,
+        flexGrow: 1,
+        fontStyle: "italic",
+      }}
+    >
       "{quote}"
     </p>
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 12,
+      }}
+    >
       <div>
-        <div style={{
-          fontFamily: "var(--font-body)",
-          fontWeight: 700,
-          fontSize: "0.88rem",
-          color: "#3a8fa3",
-          marginBottom: 2,
-        }}>{author}</div>
-        <div style={{
-          fontFamily: "var(--font-body)",
-          fontSize: "0.78rem",
-          color: "var(--text-muted)",
-        }}>{title}</div>
+        <div
+          style={{
+            fontFamily: "var(--font-body)",
+            fontWeight: 700,
+            fontSize: "0.88rem",
+            color: "var(--text-main)",
+            marginBottom: 3,
+          }}
+        >
+          {author}
+        </div>
+        <div
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "0.76rem",
+            color: "var(--text-muted)",
+            letterSpacing: "0.04em",
+          }}
+        >
+          {title}
+        </div>
       </div>
       <BrandMark />
     </div>
@@ -93,10 +145,8 @@ const Testimonials: React.FC = () => {
 
   const visible = items.slice(
     page * CARDS_PER_PAGE,
-    page * CARDS_PER_PAGE + CARDS_PER_PAGE,
+    page * CARDS_PER_PAGE + CARDS_PER_PAGE
   );
-
-  // Pad to always show 3 cards
   while (visible.length < CARDS_PER_PAGE) {
     visible.push(items[visible.length % items.length]);
   }
@@ -106,47 +156,62 @@ const Testimonials: React.FC = () => {
       id="reviews"
       className="section"
       style={{
-        background: "linear-gradient(135deg, #eef4f7 0%, #f5f8f0 100%)",
+        background: "var(--warm-white)",
       }}
     >
       <div className="container">
-        {/* Header row */}
-        <div style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          marginBottom: 40,
-          gap: 16,
-          flexWrap: "wrap",
-        }}>
-          <h2 style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(1.5rem, 2.8vw, 2.2rem)",
-            fontWeight: 600,
-            color: "var(--charcoal)",
-            lineHeight: 1.2,
-            maxWidth: 340,
-          }}>
-            {TESTIMONIALS.headline}
-          </h2>
 
-          {/* Navigation arrows — top right */}
+        {/* Header row */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            marginBottom: 44,
+            gap: 16,
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <span className="tag">Voices of Trust</span>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(1.6rem, 2.8vw, 2.4rem)",
+                fontWeight: 700,
+                color: "var(--text-main)",
+                lineHeight: 1.15,
+              }}
+            >
+              {TESTIMONIALS.headline}
+            </h2>
+          </div>
+
+          {/* Navigation arrows */}
           <div style={{ display: "flex", gap: 10, alignSelf: "center" }}>
             <button
               onClick={prev}
               aria-label="Previous testimonials"
               style={{
-                width: 40, height: 40,
-                border: "1.5px solid #c8d4d8",
-                borderRadius: 6,
+                width: 42, height: 42,
+                border: "1.5px solid var(--border)",
+                borderRadius: "var(--radius-sm)",
                 background: "#fff",
-                display: "flex", alignItems: "center", justifyContent: "center",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 cursor: "pointer",
-                color: "var(--charcoal)",
-                transition: "all 0.2s",
+                color: "var(--text-main)",
+                transition: "all 0.22s",
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = "#e8eff3")}
-              onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--gold)";
+                e.currentTarget.style.color = "var(--gold)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.color = "var(--text-main)";
+              }}
             >
               <ChevronLeft size={18} />
             </button>
@@ -154,35 +219,43 @@ const Testimonials: React.FC = () => {
               onClick={next}
               aria-label="Next testimonials"
               style={{
-                width: 40, height: 40,
-                border: "1.5px solid #c8d4d8",
-                borderRadius: 6,
+                width: 42, height: 42,
+                border: "1.5px solid var(--border)",
+                borderRadius: "var(--radius-sm)",
                 background: "#fff",
-                display: "flex", alignItems: "center", justifyContent: "center",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 cursor: "pointer",
-                color: "var(--charcoal)",
-                transition: "all 0.2s",
+                color: "var(--text-main)",
+                transition: "all 0.22s",
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = "#e8eff3")}
-              onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--gold)";
+                e.currentTarget.style.color = "var(--gold)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.color = "var(--text-main)";
+              }}
             >
               <ChevronRight size={18} />
             </button>
           </div>
         </div>
 
-        {/* Cards row */}
+        {/* Cards grid */}
         <div
           className="testimonials-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: 0,
-            background: "rgba(255,255,255,0.55)",
-            borderRadius: 12,
-            border: "1px solid rgba(0,0,0,0.07)",
+            background: "#fff",
+            borderRadius: "var(--radius)",
+            border: "1px solid var(--border)",
             overflow: "hidden",
-            backdropFilter: "blur(6px)",
+            boxShadow: "var(--shadow)",
           }}
         >
           {visible.map((t, i) => (
@@ -191,23 +264,36 @@ const Testimonials: React.FC = () => {
               quote={t.quote}
               author={t.author}
               title={t.title}
+              rating={t.rating}
               index={i}
             />
           ))}
         </div>
 
-        {/* Dot indicators */}
+        {/* Dots */}
         {totalPages > 1 && (
-          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 28 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 8,
+              marginTop: 30,
+            }}
+          >
             {Array.from({ length: totalPages }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => setPage(i)}
                 aria-label={`Page ${i + 1}`}
                 style={{
-                  width: i === page ? 22 : 8, height: 8, borderRadius: 4, padding: 0,
-                  background: i === page ? "#3a8fa3" : "#c8d4d8",
-                  border: "none", transition: "all 0.3s", cursor: "pointer",
+                  width: i === page ? 24 : 8,
+                  height: 8,
+                  borderRadius: 4,
+                  padding: 0,
+                  background: i === page ? "var(--gold)" : "var(--border)",
+                  border: "none",
+                  transition: "all 0.32s",
+                  cursor: "pointer",
                 }}
               />
             ))}

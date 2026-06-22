@@ -1,49 +1,123 @@
 import React from "react";
 import { COMMITMENT } from "../data/siteContent";
 
+/* Refined SVG bottle using the brand palette */
 const CommitmentBottle: React.FC = () => (
-  <svg viewBox="0 0 160 280" fill="none" xmlns="http://www.w3.org/2000/svg"
-    style={{ width: 140, filter: "drop-shadow(0 16px 32px rgba(0,0,0,0.2))", animation: "floatY 7s ease-in-out infinite" }}>
-    <rect x="60" y="0" width="40" height="20" rx="6" fill="#1c1c1c" />
-    <rect x="68" y="20" width="24" height="26" rx="3" fill="#c9992c" />
-    <rect x="48" y="44" width="64" height="12" rx="4" fill="#a07820" />
-    <rect x="24" y="56" width="112" height="196" rx="18" fill="url(#commitGrad)" />
-    <rect x="38" y="70" width="18" height="110" rx="9" fill="rgba(255,255,255,0.2)" />
-    <rect x="42" y="108" width="76" height="92" rx="8" fill="rgba(255,255,255,0.9)" />
-    <text x="80" y="150" textAnchor="middle" fontFamily="Playfair Display,serif" fontSize="16" fontWeight="700" fill="#1c1c1c">FRANCE</text>
-    <text x="80" y="172" textAnchor="middle" fontFamily="Jost,sans-serif" fontSize="9" fill="#7a7262" letterSpacing="2">PURE ESSENCE</text>
+  <svg
+    viewBox="0 0 160 280"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{
+      width: 145,
+      filter: "drop-shadow(0 20px 40px rgba(162,127,63,0.30))",
+      animation: "floatY 7s ease-in-out infinite",
+    }}
+  >
+    {/* Cap */}
+    <rect x="60" y="0" width="40" height="20" rx="6" fill="var(--charcoal)" />
+    {/* Neck */}
+    <rect x="68" y="20" width="24" height="26" rx="3" fill="var(--gold)" />
+    {/* Collar */}
+    <rect x="48" y="44" width="64" height="12" rx="4" fill="var(--gold-dim)" />
+    {/* Bottle body */}
+    <rect x="24" y="56" width="112" height="196" rx="18" fill="url(#bottleGrad)" />
+    {/* Glass reflection streak */}
+    <rect x="38" y="70" width="18" height="110" rx="9" fill="rgba(255,255,255,0.18)" />
+    {/* Label area */}
+    <rect x="42" y="108" width="76" height="92" rx="8" fill="rgba(255,255,255,0.92)" />
+    {/* Label text */}
+    <text
+      x="80" y="148"
+      textAnchor="middle"
+      fontFamily="Playfair Display,serif"
+      fontSize="15"
+      fontWeight="700"
+      fill="var(--charcoal)"
+    >
+      ANOK
+    </text>
+    <text
+      x="80" y="170"
+      textAnchor="middle"
+      fontFamily="Jost,sans-serif"
+      fontSize="8"
+      fill="var(--text-muted)"
+      letterSpacing="2.5"
+    >
+      PURE ESSENCE
+    </text>
+    {/* Gold rule on label */}
+    <line x1="56" y1="180" x2="104" y2="180" stroke="var(--gold)" strokeWidth="1" opacity="0.5" />
     <defs>
-      <linearGradient id="commitGrad" x1="24" y1="56" x2="136" y2="252" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#f0d080" />
-        <stop offset="0.5" stopColor="#c9992c" />
-        <stop offset="1" stopColor="#6a4810" />
+      <linearGradient id="bottleGrad" x1="24" y1="56" x2="136" y2="252" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#e8c97a" />
+        <stop offset="0.45" stopColor="#a27f3f" />
+        <stop offset="1" stopColor="#5a3e18" />
       </linearGradient>
     </defs>
   </svg>
 );
 
 const Commitment: React.FC = () => (
-  <section className="section" style={{ background: "var(--section-bg)" }}>
-    <div className="container" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+  <section
+    className="section"
+    style={{ background: "var(--parchment)" }}
+  >
+    <div
+      className="container commit-grid"
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 88,
+        alignItems: "center",
+      }}
+    >
+      {/* Bottle visual */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "32px 0",
+        }}
+      >
         <CommitmentBottle />
       </div>
+
+      {/* Text */}
       <div>
-        <h2 style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "clamp(2.2rem, 3.8vw, 3.2rem)",
-          fontWeight: 700, lineHeight: 1.1,
-          color: "var(--charcoal)", marginBottom: 24,
-        }}>{COMMITMENT.headline}</h2>
-        <p style={{ fontSize: "1.15rem", color: "var(--text-muted)", lineHeight: 1.8, marginBottom: 36 }}>
+        <span className="tag">Our Promise</span>
+        <h2
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(2rem, 3.6vw, 3rem)",
+            fontWeight: 700,
+            lineHeight: 1.1,
+            color: "var(--text-main)",
+            marginBottom: 24,
+          }}
+        >
+          {COMMITMENT.headline}
+        </h2>
+        <p
+          style={{
+            fontSize: "1.08rem",
+            color: "var(--text-muted)",
+            lineHeight: 1.85,
+            marginBottom: 38,
+          }}
+        >
           {COMMITMENT.body}
         </p>
-        <a href={COMMITMENT.cta.href} className="btn btn-dark">{COMMITMENT.cta.label}</a>
+        <a href={COMMITMENT.cta.href} className="btn btn-dark">
+          {COMMITMENT.cta.label}
+        </a>
       </div>
     </div>
+
     <style>{`
       @media (max-width: 768px) {
-        .commit-grid { grid-template-columns: 1fr !important; }
+        .commit-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
       }
     `}</style>
   </section>
