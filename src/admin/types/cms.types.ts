@@ -5,7 +5,9 @@
 
 export interface BusinessHour {
     day: string;
-    time: string;
+    isClosed: boolean;
+    openTime: string;
+    closeTime: string;
 }
 
 export interface SocialLinks {
@@ -22,6 +24,7 @@ export interface BrandData {
     phone: string;
     phoneDisplay: string;
     email: string;
+    useDefaultTime: boolean;
     hours: BusinessHour[];
     socialLinks: SocialLinks;
     mapEmbed: string;

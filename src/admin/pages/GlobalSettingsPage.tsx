@@ -42,20 +42,49 @@ const tabStyle = (active: boolean): React.CSSProperties => ({
 
 /* ── Brand ────────────────────────────────────────────────────── */
 const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
-    const { toast } = useToast();
-    const [form, setForm] = useState<BrandData>(() => readStore().brand);
-    const [saving, setSaving] = useState(false);
-    const set = (k: keyof BrandData, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
-    const setHour = (i: number, f2: "day" | "time", v: string) => {
-        const h = [...form.hours]; h[i] = { ...h[i], [f2]: v }; set("hours", h);
+  const { toast } = useToast();
+  const [form, setForm] = useState<BrandData>(() => readStore().brand);
+  const [saving, setSaving] = useState(false);
+  
+  const set = (k: keyof BrandData, v: unknown) => {
+    setForm((f) => {
+      let updated = { ...f, [k]: v };
+      // If we're toggling useDefaultTime, update all open days' times
+      if (k === "useDefaultTime" && v === true) {
+        updated.hours = updated.hours.map(h => 
+          h.isClosed ? h : { ...h, openTime: "09:00", closeTime: "17:00" }
+        );
+      }
+      return updated;
+    });
+  };
+  
+  const setHour = (i: number, f2: keyof BrandData["hours"][0], v: unknown) => {
+    const h = [...form.hours]; 
+    h[i] = { ...h[i], [f2]: v }; 
+    set("hours", h);
+  };
+  
+  const setSocial = (k: keyof typeof form.socialLinks, v: string) =>
+    set("socialLinks", { ...form.socialLinks, [k]: v });
+    
+  const save = async () => {
+    setSaving(true); 
+    await new Promise((r) => setTimeout(r, 300));
+    
+    // Ensure that if useDefaultTime is true, all open days have the correct times before saving
+    const dataToSave = { 
+      ...form, 
+      hours: form.useDefaultTime 
+        ? form.hours.map(h => h.isClosed ? h : { ...h, openTime: "09:00", closeTime: "17:00" }) 
+        : form.hours 
     };
-    const setSocial = (k: keyof typeof form.socialLinks, v: string) =>
-        set("socialLinks", { ...form.socialLinks, [k]: v });
-    const save = async () => {
-        setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        updateSection("brand", form); setSaving(false);
-        toast("Brand settings saved!"); onSave();
-    };
+    
+    updateSection("brand", dataToSave); 
+    setSaving(false);
+    toast("Brand settings saved!"); 
+    onSave();
+  };
     return (
         <>
             <Card title="Brand Identity">
@@ -67,28 +96,86 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     <Textarea value={form.shortDescription} onChange={(e) => set("shortDescription", e.target.value)} style={{ minHeight: 90 }} />
                 </Field>
             </Card>
-            <Card title="Contact">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
-                    <Field label="Email"><Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
-                    <Field label="Phone"><Input value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
-                    <Field label="Phone Display"><Input value={form.phoneDisplay} onChange={(e) => set("phoneDisplay", e.target.value)} /></Field>
-                    <Field label="Location"><Input value={form.location} onChange={(e) => set("location", e.target.value)} /></Field>
-                </div>
-                <Field label="Maps Embed URL"><Input value={form.mapEmbed} onChange={(e) => set("mapEmbed", e.target.value)} /></Field>
-            </Card>
-            <Card title="Business Hours">
-                {form.hours.map((h, i) => (
-                    <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
-                        <Field label={`Day ${i + 1}`}><Input value={h.day} onChange={(e) => setHour(i, "day", e.target.value)} /></Field>
-                        <Field label="Hours"><Input value={h.time} onChange={(e) => setHour(i, "time", e.target.value)} /></Field>
+
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1fr", gap: 24, width: "100%" }}>
+                <Card title="Contact">
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                        <Field label="Email"><Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
+                        <Field label="Phone"><Input value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
+                        <Field label="Phone Display"><Input value={form.phoneDisplay} onChange={(e) => set("phoneDisplay", e.target.value)} /></Field>
+                        <Field label="Location"><Input value={form.location} onChange={(e) => set("location", e.target.value)} /></Field>
                     </div>
-                ))}
+                    <Field label="Maps Embed URL"><Input value={form.mapEmbed} onChange={(e) => set("mapEmbed", e.target.value)} /></Field>
+                </Card>
+                {/* Business Hours*/}
+            <Card title="Business Hours">
+                <div style={{ marginBottom: 20, paddingBottom: 16, borderBottom: "1px solid var(--border)" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: "0.9rem", fontWeight: 600, color: "var(--text-main)" }}>
+                        <input 
+                            type="checkbox" 
+                            checked={form.useDefaultTime} 
+                            onChange={(e) => set("useDefaultTime", e.target.checked)} 
+                        />
+                        Default Time (09:00 AM – 05:00 PM)
+                    </label>
+                </div>
+                
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                        <tr>
+                            <th style={{ textAlign: "left", padding: "8px 12px", borderBottom: "1px solid var(--border)", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)" }}>Day</th>
+                            <th style={{ textAlign: "left", padding: "8px 12px", borderBottom: "1px solid var(--border)", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)" }}>From</th>
+                            <th style={{ textAlign: "left", padding: "8px 12px", borderBottom: "1px solid var(--border)", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)" }}>To</th>
+                            <th style={{ textAlign: "center", padding: "8px 12px", borderBottom: "1px solid var(--border)", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)" }}>Is Closed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {form.hours.map((h, i) => (
+                            <tr key={i}>
+                                <td style={{ padding: "12px", borderBottom: "1px solid var(--border)" }}>
+                                    <span style={{ fontWeight: 600, color: "var(--text-main)" }}>{h.day}</span>
+                                </td>
+                                <td style={{ padding: "12px", borderBottom: "1px solid var(--border)" }}>
+                                    <Field label="">
+                                        <Input 
+                                            type="time" 
+                                            value={form.useDefaultTime && !h.isClosed ? "09:00" : h.openTime} 
+                                            onChange={(e) => setHour(i, "openTime", e.target.value)} 
+                                            disabled={form.useDefaultTime || h.isClosed}
+                                        />
+                                    </Field>
+                                </td>
+                                <td style={{ padding: "12px", borderBottom: "1px solid var(--border)" }}>
+                                    <Field label="">
+                                        <Input 
+                                            type="time" 
+                                            value={form.useDefaultTime && !h.isClosed ? "17:00" : h.closeTime} 
+                                            onChange={(e) => setHour(i, "closeTime", e.target.value)} 
+                                            disabled={form.useDefaultTime || h.isClosed}
+                                        />
+                                    </Field>
+                                </td>
+                                <td style={{ padding: "12px", borderBottom: "1px solid var(--border)", textAlign: "center" }}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={h.isClosed} 
+                                        onChange={(e) => setHour(i, "isClosed", e.target.checked)} 
+                                    />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </Card>
-            <Card title="Social Links">
-                <Field label="Instagram"><Input value={form.socialLinks.instagram} onChange={(e) => setSocial("instagram", e.target.value)} /></Field>
-                <Field label="Facebook"><Input value={form.socialLinks.facebook} onChange={(e) => setSocial("facebook", e.target.value)} /></Field>
-                <Field label="Pinterest"><Input value={form.socialLinks.pinterest} onChange={(e) => setSocial("pinterest", e.target.value)} /></Field>
-            </Card>
+                {/* Social Links */}
+                <Card title="Social Links">
+                    <div>
+                        <Field label="Instagram"><Input value={form.socialLinks.instagram} onChange={(e) => setSocial("instagram", e.target.value)} /></Field>
+                        <Field label="Facebook"><Input value={form.socialLinks.facebook} onChange={(e) => setSocial("facebook", e.target.value)} /></Field>
+                        <Field label="Pinterest"><Input value={form.socialLinks.pinterest} onChange={(e) => setSocial("pinterest", e.target.value)} /></Field>
+                    </div>
+                </Card>
+            </div >
             <SaveBtn loading={saving} onClick={save} />
         </>
     );
@@ -277,14 +364,15 @@ const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     };
     return (
         <>
-            <Card title="Content">
+            <Card title="Content & CTA">
                 <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
                 <Field label="Body"><Textarea value={form.body} onChange={(e) => set("body", e.target.value)} style={{ minHeight: 110 }} /></Field>
-            </Card>
-            <Card title="CTA Button">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
-                    <Field label="Label"><Input value={form.cta.label} onChange={(e) => setCta("label", e.target.value)} /></Field>
-                    <Field label="Link"><Input value={form.cta.href} onChange={(e) => setCta("href", e.target.value)} /></Field>
+                <div style={{ paddingTop: 16, borderTop: "1px solid var(--border)", marginTop: 4 }}>
+                    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>CTA Button</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                        <Field label="Label"><Input value={form.cta.label} onChange={(e) => setCta("label", e.target.value)} /></Field>
+                        <Field label="Link"><Input value={form.cta.href} onChange={(e) => setCta("href", e.target.value)} /></Field>
+                    </div>
                 </div>
             </Card>
             <SaveBtn loading={saving} onClick={save} />
@@ -305,17 +393,18 @@ const NewsletterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     };
     return (
         <>
-            <Card title="Copy">
+            <Card title="Copy & Form">
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                     <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
                     <Field label="Brand Highlight"><Input value={form.brandHighlight} onChange={(e) => set("brandHighlight", e.target.value)} /></Field>
                 </div>
                 <Field label="Subtext"><Input value={form.subtext} onChange={(e) => set("subtext", e.target.value)} /></Field>
-            </Card>
-            <Card title="Form">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
-                    <Field label="Placeholder"><Input value={form.placeholder} onChange={(e) => set("placeholder", e.target.value)} /></Field>
-                    <Field label="Button Label"><Input value={form.cta} onChange={(e) => set("cta", e.target.value)} /></Field>
+                <div style={{ paddingTop: 16, borderTop: "1px solid var(--border)", marginTop: 4 }}>
+                    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>Form</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                        <Field label="Placeholder"><Input value={form.placeholder} onChange={(e) => set("placeholder", e.target.value)} /></Field>
+                        <Field label="Button Label"><Input value={form.cta} onChange={(e) => set("cta", e.target.value)} /></Field>
+                    </div>
                 </div>
             </Card>
             <Card title="Preview">
@@ -421,35 +510,37 @@ const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     <Field label="Credit URL"><Input value={form.credit.href} onChange={(e) => set("credit", { ...form.credit, href: e.target.value })} /></Field>
                 </div>
             </Card>
-            {form.navColumns.map((col, ci) => (
-                <Card key={ci} title={`Column ${ci + 1}: ${col.heading || "Untitled"}`} action={
-                    form.navColumns.length > 1 ? (
-                        <button onClick={() => set("navColumns", form.navColumns.filter((_, i) => i !== ci))}
-                            style={{ fontSize: "0.75rem", color: "#e05555", background: "#fff0f0", border: "1px solid #f5c0c0", borderRadius: "var(--radius-sm)", padding: "4px 10px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600 }}>
-                            Remove
-                        </button>
-                    ) : undefined
-                }>
-                    <Field label="Heading"><Input value={col.heading} onChange={(e) => setColumn(ci, "heading", e.target.value)} /></Field>
-                    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--text-muted)", margin: "4px 0 10px" }}>Links</div>
-                    {col.links.map((lnk, li) => (
-                        <div key={li} style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8 }}>
-                            <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 10px" }}>
-                                <Field label={li === 0 ? "Label" : ""}><Input value={lnk.label} onChange={(e) => setColLink(ci, li, "label", e.target.value)} /></Field>
-                                <Field label={li === 0 ? "URL" : ""}><Input value={lnk.href} onChange={(e) => setColLink(ci, li, "href", e.target.value)} /></Field>
-                            </div>
-                            <button onClick={() => removeColLink(ci, li)} disabled={col.links.length <= 1}
-                                style={{ marginBottom: 20, padding: 7, background: "none", border: "none", cursor: col.links.length <= 1 ? "not-allowed" : "pointer", color: col.links.length <= 1 ? "var(--text-faint)" : "#e05555" }}>
-                                <Trash2 size={13} />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(420px, 1fr))", gap: 24, marginBottom: 0 }}>
+                {form.navColumns.map((col, ci) => (
+                    <Card key={ci} title={`Column ${ci + 1}: ${col.heading || "Untitled"}`} action={
+                        form.navColumns.length > 1 ? (
+                            <button onClick={() => set("navColumns", form.navColumns.filter((_, i) => i !== ci))}
+                                style={{ fontSize: "0.75rem", color: "#e05555", background: "#fff0f0", border: "1px solid #f5c0c0", borderRadius: "var(--radius-sm)", padding: "4px 10px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600 }}>
+                                Remove
                             </button>
-                        </div>
-                    ))}
-                    <button onClick={() => addColLink(ci)}
-                        style={{ fontSize: "0.76rem", color: "var(--gold)", background: "transparent", border: "1px solid var(--gold)", borderRadius: "var(--radius-sm)", padding: "4px 12px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        <Plus size={11} /> Add Link
-                    </button>
-                </Card>
-            ))}
+                        ) : undefined
+                    }>
+                        <Field label="Heading"><Input value={col.heading} onChange={(e) => setColumn(ci, "heading", e.target.value)} /></Field>
+                        <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--text-muted)", margin: "4px 0 10px" }}>Links</div>
+                        {col.links.map((lnk, li) => (
+                            <div key={li} style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8 }}>
+                                <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 10px" }}>
+                                    <Field label={li === 0 ? "Label" : ""}><Input value={lnk.label} onChange={(e) => setColLink(ci, li, "label", e.target.value)} /></Field>
+                                    <Field label={li === 0 ? "URL" : ""}><Input value={lnk.href} onChange={(e) => setColLink(ci, li, "href", e.target.value)} /></Field>
+                                </div>
+                                <button onClick={() => removeColLink(ci, li)} disabled={col.links.length <= 1}
+                                    style={{ marginBottom: 20, padding: 7, background: "none", border: "none", cursor: col.links.length <= 1 ? "not-allowed" : "pointer", color: col.links.length <= 1 ? "var(--text-faint)" : "#e05555" }}>
+                                    <Trash2 size={13} />
+                                </button>
+                            </div>
+                        ))}
+                        <button onClick={() => addColLink(ci)}
+                            style={{ fontSize: "0.76rem", color: "var(--gold)", background: "transparent", border: "1px solid var(--gold)", borderRadius: "var(--radius-sm)", padding: "4px 12px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                            <Plus size={11} /> Add Link
+                        </button>
+                    </Card>
+                ))}
+            </div>
             <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
                 <button onClick={() => set("navColumns", [...form.navColumns, { heading: "", links: [{ label: "", href: "#" }] }])}
                     style={{ padding: "9px 20px", background: "transparent", border: "1.5px solid var(--gold)", color: "var(--gold)", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.80rem", cursor: "pointer" }}>

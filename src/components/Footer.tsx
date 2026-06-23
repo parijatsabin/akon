@@ -30,6 +30,18 @@ const SocialBtn: React.FC<{ href: string; label: string; children: React.ReactNo
   </a>
 );
 
+
+// Helper function to convert 24-hour time to 12-hour format
+const format12HourTime = (time: string) => {
+  const [hoursStr, minutesStr] = time.split(':');
+  let hours = parseInt(hoursStr, 10);
+  const minutes = minutesStr;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+};
+
 const Footer: React.FC = () => {
   const { footer: FOOTER, brand: BRAND } = useSiteData();
   const year = new Date().getFullYear();
@@ -54,6 +66,37 @@ const Footer: React.FC = () => {
               <SocialBtn href={BRAND.socialLinks.facebook} label="Facebook"><FBIcon /></SocialBtn>
               <SocialBtn href={BRAND.socialLinks.pinterest} label="Pinterest"><PinterestIcon /></SocialBtn>
             </div>
+          </div>
+          
+          {/* Opening Hours column */}
+          <div style={{ minWidth: 180 }}>
+            <h4 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.70rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--text-main)", marginBottom: 24 }}>
+              Opening Hours
+            </h4>
+            <ul style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {BRAND.hours.map((hour) => {
+                if (hour.isClosed) {
+                  return (
+                    <li key={hour.day} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, fontSize: "0.84rem" }}>
+                      <span style={{ color: "var(--text-main)", fontWeight: 600 }}>{hour.day}</span>
+                      <span style={{ color: "#e05555" }}>Closed</span>
+                    </li>
+                  );
+                }
+                
+                const openTime = BRAND.useDefaultTime ? "09:00" : hour.openTime;
+                const closeTime = BRAND.useDefaultTime ? "17:00" : hour.closeTime;
+                
+                return (
+                  <li key={hour.day} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, fontSize: "0.84rem" }}>
+                    <span style={{ color: "var(--text-main)", fontWeight: 600 }}>{hour.day}</span>
+                    <span style={{ color: "var(--text-muted)" }}>
+                      {format12HourTime(openTime)} – {format12HourTime(closeTime)}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
           {/* Nav columns */}
