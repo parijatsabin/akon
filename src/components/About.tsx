@@ -33,12 +33,9 @@ const About: React.FC = () => {
       <div className="container">
 
         {/* ── Two-column about block ── */}
-        <div
-          className="about-top"
-          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center", marginBottom: 88 }}
-        >
+        <div className="about-top" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center", marginBottom: 88 }}>
           {/* Left — text */}
-          <div>
+          <div className="about-text">
             <span className="tag">{about.sectionLabel}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.2rem, 4vw, 3.2rem)", fontWeight: 700, lineHeight: 1.1, color: "var(--text-main)", marginBottom: 22 }}>
               {about.headline}
@@ -50,9 +47,7 @@ const About: React.FC = () => {
           </div>
 
           {/* Right — brand statement card */}
-          <div
-            style={{ background: "var(--parchment)", borderRadius: "var(--radius-lg)", padding: "52px 44px", position: "relative", overflow: "hidden", border: "1px solid var(--border)" }}
-          >
+          <div className="about-quote-card" style={{ background: "var(--parchment)", borderRadius: "var(--radius-lg)", padding: "52px 44px", position: "relative", overflow: "hidden", border: "1px solid var(--border)" }}>
             <div style={{ position: "absolute", top: 8, right: 24, fontFamily: "var(--font-display)", fontSize: "9rem", lineHeight: 1, color: "var(--gold)", opacity: 0.07, userSelect: "none", pointerEvents: "none" }}>"</div>
             <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: "clamp(1.05rem, 1.7vw, 1.3rem)", lineHeight: 1.8, color: "var(--text-main)", marginBottom: 28 }}>
               "Crafted for those who understand that a fragrance is not just a scent — it is a memory, an identity, a quiet statement of who you are."
@@ -80,10 +75,7 @@ const About: React.FC = () => {
         </div>
 
         {/* Reason cards */}
-        <div
-          className="reasons-grid"
-          style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}
-        >
+        <div className="reasons-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
           {about.reasons.map((r) => (
             <div
               key={r.id}
@@ -113,12 +105,44 @@ const About: React.FC = () => {
       </div>
 
       <style>{`
+        /* Tablet */
         @media (max-width: 900px) {
-          .about-top { grid-template-columns: 1fr !important; gap: 44px !important; }
-          .reasons-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .about-top {
+            grid-template-columns: 1fr !important;
+            gap: 36px !important;
+            margin-bottom: 56px !important;
+          }
+          .about-text {
+            text-align: center;
+          }
+          .about-text p {
+            margin-left: auto !important;
+            margin-right: auto !important;
+          }
+          .about-text .btn {
+            display: inline-flex;
+          }
+          .about-quote-card {
+            padding: 36px 28px !important;
+          }
+          .reasons-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
         }
-        @media (max-width: 480px) {
-          .reasons-grid { grid-template-columns: 1fr !important; }
+        /* Mobile */
+        @media (max-width: 540px) {
+          .about-quote-card {
+            padding: 28px 20px !important;
+          }
+          .reasons-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          .reasons-grid > div {
+            padding: 24px 20px !important;
+            align-items: center;
+            text-align: center;
+          }
         }
       `}</style>
     </section>

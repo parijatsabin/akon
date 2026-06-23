@@ -49,7 +49,23 @@ const Commitment: React.FC = () => {
       </div>
       <style>{`
         @media (max-width: 768px) {
-          .commit-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+          .commit-grid {
+            grid-template-columns: 1fr !important;
+            gap: 32px !important;
+            text-align: center;
+          }
+          .commit-grid > div:first-child {
+            order: -1;
+            padding: 16px 0 0 !important;
+          }
+          .commit-grid > div:last-child {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          .commit-grid > div:last-child p {
+            max-width: 480px;
+          }
         }
       `}</style>
     </section>

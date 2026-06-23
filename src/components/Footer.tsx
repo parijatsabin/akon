@@ -42,14 +42,14 @@ const Footer: React.FC = () => {
         <div className="footer-main" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 52, padding: "68px 0 56px" }}>
 
           {/* Brand column */}
-          <div style={{ flexShrink: 0, maxWidth: 290 }}>
+          <div className="footer-brand" style={{ flexShrink: 0, maxWidth: 290 }}>
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.55rem", letterSpacing: "0.20em", color: "var(--gold)", textTransform: "uppercase", marginBottom: 18 }}>
               {BRAND.name}
             </div>
             <p style={{ fontSize: "0.84rem", color: "var(--text-muted)", lineHeight: 1.85, marginBottom: 28 }}>
               {FOOTER.tagline}
             </p>
-            <div style={{ display: "flex", gap: 10 }}>
+            <div className="footer-brand-social" style={{ display: "flex", gap: 10 }}>
               <SocialBtn href={BRAND.socialLinks.instagram} label="Instagram"><IGIcon /></SocialBtn>
               <SocialBtn href={BRAND.socialLinks.facebook} label="Facebook"><FBIcon /></SocialBtn>
               <SocialBtn href={BRAND.socialLinks.pinterest} label="Pinterest"><PinterestIcon /></SocialBtn>
@@ -82,7 +82,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom bar */}
-        <div style={{ borderTop: "1px solid var(--border)", padding: "20px 0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
+        <div className="footer-bottom" style={{ borderTop: "1px solid var(--border)", padding: "20px 0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
           <p style={{ fontSize: "0.80rem", color: "var(--text-faint)" }}>
             © {year} {BRAND.name}. All Rights Reserved.
           </p>
@@ -105,9 +105,15 @@ const Footer: React.FC = () => {
           .footer-main > div:first-child { max-width: 100% !important; width: 100%; padding-bottom: 36px; border-bottom: 1px solid var(--border); }
           .footer-nav { justify-content: flex-start !important; flex-wrap: wrap; gap: 32px !important; }
         }
-        @media (max-width: 480px) {
-          .footer-nav { gap: 24px !important; }
-          .footer-nav > div { min-width: calc(50% - 12px) !important; }
+        @media (max-width: 600px) {
+          .footer-main { padding: 48px 0 40px !important; gap: 0 !important; }
+          .footer-brand { text-align: center !important; display: flex; flex-direction: column; align-items: center; padding-bottom: 32px !important; }
+          .footer-brand p { text-align: center; }
+          .footer-brand-social { justify-content: center !important; }
+          .footer-nav { justify-content: center !important; gap: 0 !important; padding-top: 32px; width: 100%; }
+          .footer-nav > div { min-width: 50% !important; padding: 12px 8px; text-align: center !important; }
+          .footer-nav > div ul { align-items: center !important; }
+          .footer-bottom { flex-direction: column !important; align-items: center !important; text-align: center; gap: 6px !important; }
         }
       `}</style>
     </footer>

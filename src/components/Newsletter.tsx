@@ -38,18 +38,52 @@ const Newsletter: React.FC = () => {
             ✓ Thank you! You've been subscribed to {BRAND.name}.
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: "flex", gap: 0, maxWidth: 540, margin: "0 auto", borderRadius: "var(--radius-sm)", overflow: "hidden", boxShadow: "0 6px 30px rgba(0,0,0,0.35)" }}>
+          <form
+            onSubmit={handleSubmit}
+            className="newsletter-form"
+            style={{ display: "flex", gap: 0, maxWidth: 540, margin: "0 auto", borderRadius: "var(--radius-sm)", overflow: "hidden", boxShadow: "0 6px 30px rgba(0,0,0,0.35)" }}
+          >
             <input
-              type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder={NEWSLETTER.placeholder} required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={NEWSLETTER.placeholder}
+              required
               style={{ flex: 1, padding: "18px 24px", border: "none", outline: "none", fontFamily: "var(--font-body)", fontSize: "0.95rem", background: "rgba(255,255,255,0.07)", color: "#fff", borderRight: "1px solid rgba(255,255,255,0.08)" }}
             />
-            <button type="submit" className="btn btn-gold" style={{ borderRadius: 0, whiteSpace: "nowrap", padding: "18px 34px", fontSize: "0.82rem" }}>
+            <button
+              type="submit"
+              className="btn btn-gold newsletter-btn"
+              style={{ borderRadius: 0, whiteSpace: "nowrap", padding: "18px 34px", fontSize: "0.82rem" }}
+            >
               {NEWSLETTER.cta}
             </button>
           </form>
         )}
       </div>
+
+      <style>{`
+        @media (max-width: 540px) {
+          .newsletter-form {
+            flex-direction: column !important;
+            border-radius: var(--radius-sm) !important;
+            overflow: visible !important;
+            box-shadow: none !important;
+            gap: 10px !important;
+          }
+          .newsletter-form input {
+            border-radius: var(--radius-sm) !important;
+            border-right: none !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.30) !important;
+          }
+          .newsletter-btn {
+            border-radius: var(--radius-sm) !important;
+            width: 100% !important;
+            justify-content: center !important;
+            box-shadow: 0 4px 20px rgba(162,127,63,0.30) !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };

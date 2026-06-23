@@ -8,6 +8,24 @@ const VISIBLE = 4;
 const AUTO_DELAY = 3500;
 const RESUME_AFTER = 6000;
 
+/* ── Responsive visible count ───────────────────────────────── */
+function useVisibleCount() {
+    const [count, setCount] = useState(VISIBLE);
+    useEffect(() => {
+        const update = () => {
+            const w = window.innerWidth;
+            if (w < 480) setCount(1);
+            else if (w < 768) setCount(2);
+            else if (w < 1024) setCount(3);
+            else setCount(VISIBLE);
+        };
+        update();
+        window.addEventListener("resize", update);
+        return () => window.removeEventListener("resize", update);
+    }, []);
+    return count;
+}
+
 /* ── Product card ───────────────────────────────────────────── */
 const ProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
     const [selectedSize, setSelectedSize] = useState(SIZES[0]);
@@ -74,7 +92,8 @@ const Collection: React.FC = () => {
     const { collection: COLLECTION } = useSiteData();
     const items = COLLECTION.items;
     const total = items.length;
-    const maxStart = Math.max(0, total - VISIBLE);
+    const visibleCount = useVisibleCount();
+    const maxStart = Math.max(0, total - visibleCount);
 
     const [index, setIndex] = useState(0);
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -98,7 +117,12 @@ const Collection: React.FC = () => {
         setIndex(0);
         startAuto();
         return clearTimers;
-    }, [startAuto, items.length]);
+    }, [startAuto, items.length, visibleCount]);
+
+    // Keep index in bounds if visibleCount changes
+    useEffect(() => {
+        setIndex((i) => Math.min(i, maxStart));
+    }, [maxStart]);
 
     const go = (newIndex: number) => {
         stopAuto();
@@ -106,7 +130,15 @@ const Collection: React.FC = () => {
         resumeRef.current = setTimeout(resumeAuto, RESUME_AFTER);
     };
 
-    const translatePct = -(index * (100 / VISIBLE));
+    const gap = 20;
+    // Each slide step = one card width + one gap
+    // Card width = (100% - gap*(visibleCount-1)) / visibleCount
+    // So step in % = 100/visibleCount, plus gap correction in px
+    const translatePct = -(index * (100 / visibleCount));
+    const translateOffset = index * gap;
+
+    // On small screens arrows sit above the track (not absolute outside)
+    const isMobile = visibleCount <= 2;
 
     return (
         <section id="collection" className="section" style={{ background: "var(--parchment)" }}>
@@ -119,37 +151,59 @@ const Collection: React.FC = () => {
                     </h2>
                 </div>
 
+                {/* Arrow row on mobile sits above/below; on desktop it's overlaid */}
+                {isMobile && (
+                    <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 20 }}>
+                        <button
+                            onClick={() => go(index - 1)} aria-label="Previous" disabled={index === 0}
+                            style={{ width: 42, height: 42, border: "1.5px solid var(--border)", borderRadius: "var(--radius-sm)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: index === 0 ? "not-allowed" : "pointer", color: "var(--text-main)", boxShadow: "var(--shadow)", transition: "all 0.22s", flexShrink: 0, opacity: index === 0 ? 0.35 : 1 }}
+                        >
+                            <ChevronLeft size={18} />
+                        </button>
+                        <button
+                            onClick={() => go(index + 1)} aria-label="Next" disabled={index === maxStart}
+                            style={{ width: 42, height: 42, border: "1.5px solid var(--border)", borderRadius: "var(--radius-sm)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: index === maxStart ? "not-allowed" : "pointer", color: "var(--text-main)", boxShadow: "var(--shadow)", transition: "all 0.22s", flexShrink: 0, opacity: index === maxStart ? 0.35 : 1 }}
+                        >
+                            <ChevronRight size={18} />
+                        </button>
+                    </div>
+                )}
+
                 <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-                    {/* Left arrow */}
-                    <button
-                        onClick={() => go(index - 1)} aria-label="Previous" disabled={index === 0}
-                        style={{ position: "absolute", left: -36, zIndex: 10, width: 42, height: 42, border: "1.5px solid var(--border)", borderRadius: "var(--radius-sm)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: index === 0 ? "not-allowed" : "pointer", color: "var(--text-main)", boxShadow: "var(--shadow)", transition: "all 0.22s", flexShrink: 0, opacity: index === 0 ? 0.35 : 1 }}
-                        onMouseEnter={(e) => { if (index !== 0) e.currentTarget.style.borderColor = "var(--gold)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
-                    >
-                        <ChevronLeft size={18} />
-                    </button>
+                    {/* Left arrow — desktop only */}
+                    {!isMobile && (
+                        <button
+                            onClick={() => go(index - 1)} aria-label="Previous" disabled={index === 0}
+                            style={{ position: "absolute", left: -36, zIndex: 10, width: 42, height: 42, border: "1.5px solid var(--border)", borderRadius: "var(--radius-sm)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: index === 0 ? "not-allowed" : "pointer", color: "var(--text-main)", boxShadow: "var(--shadow)", transition: "all 0.22s", flexShrink: 0, opacity: index === 0 ? 0.35 : 1 }}
+                            onMouseEnter={(e) => { if (index !== 0) e.currentTarget.style.borderColor = "var(--gold)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
+                        >
+                            <ChevronLeft size={18} />
+                        </button>
+                    )}
 
                     {/* Viewport */}
                     <div style={{ overflow: "hidden", width: "100%" }}>
-                        <div style={{ display: "flex", gap: 20, transform: `translateX(calc(${translatePct}% - ${(index * 20) / VISIBLE}px))`, transition: "transform 0.58s cubic-bezier(0.25, 0.46, 0.45, 0.94)", willChange: "transform" }}>
+                        <div style={{ display: "flex", gap: `${gap}px`, transform: `translateX(calc(${translatePct}% - ${translateOffset}px))`, transition: "transform 0.58s cubic-bezier(0.25, 0.46, 0.45, 0.94)", willChange: "transform" }}>
                             {items.map((item) => (
-                                <div key={item.id} style={{ flex: `0 0 calc(${100 / VISIBLE}% - ${(20 * (VISIBLE - 1)) / VISIBLE}px)`, minWidth: 0 }}>
+                                <div key={item.id} style={{ flex: `0 0 calc(${100 / visibleCount}% - ${gap * (visibleCount - 1) / visibleCount}px)`, minWidth: 0 }}>
                                     <ProductCard item={item} />
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Right arrow */}
-                    <button
-                        onClick={() => go(index + 1)} aria-label="Next" disabled={index === maxStart}
-                        style={{ position: "absolute", right: -36, zIndex: 10, width: 42, height: 42, border: "1.5px solid var(--border)", borderRadius: "var(--radius-sm)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: index === maxStart ? "not-allowed" : "pointer", color: "var(--text-main)", boxShadow: "var(--shadow)", transition: "all 0.22s", flexShrink: 0, opacity: index === maxStart ? 0.35 : 1 }}
-                        onMouseEnter={(e) => { if (index !== maxStart) e.currentTarget.style.borderColor = "var(--gold)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
-                    >
-                        <ChevronRight size={18} />
-                    </button>
+                    {/* Right arrow — desktop only */}
+                    {!isMobile && (
+                        <button
+                            onClick={() => go(index + 1)} aria-label="Next" disabled={index === maxStart}
+                            style={{ position: "absolute", right: -36, zIndex: 10, width: 42, height: 42, border: "1.5px solid var(--border)", borderRadius: "var(--radius-sm)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: index === maxStart ? "not-allowed" : "pointer", color: "var(--text-main)", boxShadow: "var(--shadow)", transition: "all 0.22s", flexShrink: 0, opacity: index === maxStart ? 0.35 : 1 }}
+                            onMouseEnter={(e) => { if (index !== maxStart) e.currentTarget.style.borderColor = "var(--gold)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
+                        >
+                            <ChevronRight size={18} />
+                        </button>
+                    )}
                 </div>
 
                 {/* Dots */}

@@ -290,3 +290,14 @@ ul {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
+
+/* ─── Small screen globals ────────────────────────────────────── */
+@media (max-width: 540px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .section {
+    padding: 64px 0;
+  }
+}
