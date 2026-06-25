@@ -7,7 +7,16 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "migrate:up": "node --experimental-strip-types database/migration_runner/index.ts up",
+    "migrate:down": "node --experimental-strip-types database/migration_runner/index.ts down",
+    "migrate:status": "node --experimental-strip-types database/migration_runner/index.ts status",
+    "migrate:supabase": "node --experimental-strip-types database/migration_runner/index.ts up --provider=supabase",
+    "migrate:postgres": "node --experimental-strip-types database/migration_runner/index.ts up --provider=postgres",
+    "migrate:mysql": "node --experimental-strip-types database/migration_runner/index.ts up --provider=mysql",
+    "migrate:dry-run": "node --experimental-strip-types database/migration_runner/index.ts up --dry-run",
+    "seed": "node --experimental-strip-types database/migration_runner/index.ts seed",
+    "db:reset": "node --experimental-strip-types database/migration_runner/index.ts down && npm run migrate:up && npm run seed"
   },
   "dependencies": {
     "lucide-react": "^0.383.0",

@@ -1,0 +1,154 @@
+// ============================================================
+// ANOK Database Schema — DBML format
+// Paste into https://dbdiagram.io for visual ERD
+// ============================================================
+
+Table profiles {
+  id            uuid      [pk, note: "= auth.users.id (Supabase)"]
+  user_type     user_type [not null, default: "customer", note: "customer | admin"]
+  first_name    text
+  last_name     text
+  phone         text
+  avatar_url    text
+  is_active     boolean   [not null, default: true]
+  created_at    timestamptz [not null, default: `now()`]
+  updated_at    timestamptz [not null, default: `now()`]
+  last_login_at timestamptz
+}
+
+Table site_content {
+  id         serial      [pk]
+  section    text        [unique, not null, note: "brand|hero|stats|about|commitment|newsletter|navigation|footer"]
+  content    jsonb       [not null]
+  updated_at timestamptz [not null, default: `now()`]
+  updated_by uuid        [ref: > profiles.id]
+}
+
+Table products {
+  id           uuid               [pk, default: `gen_random_uuid()`]
+  slug         text               [unique, not null]
+  name         text               [not null]
+  collection   product_collection [not null]
+  description  text
+  price_npr    integer            [not null, note: "Integer NPR e.g. 24500"]
+  badge        text
+  accent_color text               [not null, default: "#a27f3f"]
+  image_url    text               [not null]
+  product_url  text               [not null, default: "#"]
+  notes_top    text[]
+  notes_heart  text[]
+  notes_base   text[]
+  sort_order   integer            [not null, default: 0]
+  is_active    boolean            [not null, default: true]
+  created_at   timestamptz        [not null, default: `now()`]
+  updated_at   timestamptz        [not null, default: `now()`]
+}
+
+Table testimonials {
+  id           serial      [pk]
+  quote        text        [not null]
+  author_name  text        [not null]
+  author_title text
+  rating       smallint    [not null, default: 5, note: "1-5"]
+  sort_order   integer     [not null, default: 0]
+  is_visible   boolean     [not null, default: true]
+  created_at   timestamptz [not null, default: `now()`]
+  updated_at   timestamptz [not null, default: `now()`]
+}
+
+Table newsletter_subscribers {
+  id              uuid        [pk, default: `gen_random_uuid()`]
+  email           citext      [unique, not null]
+  subscribed_at   timestamptz [not null, default: `now()`]
+  is_active       boolean     [not null, default: true]
+  unsubscribed_at timestamptz
+  ip_address      text
+  user_agent      text
+}
+
+Table orders {
+  id               uuid         [pk, default: `gen_random_uuid()`]
+  order_number     text         [unique, not null, note: "ANOK-YYYY-NNNNN"]
+  customer_id      uuid         [ref: > profiles.id, note: "NULL for WhatsApp guest inquiries"]
+  status           order_status [not null, default: "pending"]
+  subtotal_npr     integer      [not null]
+  shipping_npr     integer      [not null, default: 0]
+  discount_npr     integer      [not null, default: 0]
+  total_npr        integer      [not null, note: "= subtotal + shipping - discount"]
+  shipping_address jsonb        [not null]
+  notes            text
+  admin_notes      text
+  created_at       timestamptz  [not null, default: `now()`]
+  updated_at       timestamptz  [not null, default: `now()`]
+  confirmed_at     timestamptz
+  shipped_at       timestamptz
+  delivered_at     timestamptz
+}
+
+Table order_items {
+  id             uuid        [pk, default: `gen_random_uuid()`]
+  order_id       uuid        [not null, ref: > orders.id]
+  product_id     uuid        [ref: > products.id, note: "SET NULL if product deleted"]
+  product_name   text        [not null, note: "Snapshot at order time"]
+  product_slug   text        [not null]
+  collection     text        [not null]
+  image_url      text        [not null]
+  unit_price_npr integer     [not null, note: "Snapshot — never changes"]
+  quantity       integer     [not null, default: 1]
+  line_total_npr integer     [not null, note: "= unit_price * quantity"]
+  created_at     timestamptz [not null, default: `now()`]
+}
+
+Table customer_addresses {
+  id            uuid        [pk, default: `gen_random_uuid()`]
+  user_id       uuid        [not null, ref: > profiles.id]
+  label         text        [not null, default: "Home"]
+  full_name     text        [not null]
+  phone         text        [not null]
+  address_line1 text        [not null]
+  address_line2 text
+  city          text        [not null]
+  district      text
+  province      text
+  country       text        [not null, default: "Nepal"]
+  postal_code   text
+  is_default    boolean     [not null, default: false]
+  created_at    timestamptz [not null, default: `now()`]
+  updated_at    timestamptz [not null, default: `now()`]
+}
+
+Table migration_history {
+  id                 serial      [pk]
+  migration_name     text        [not null]
+  version            text        [not null]
+  executed_at        timestamptz [not null, default: `now()`]
+  execution_time_ms  integer
+  database_provider  text        [not null, note: "supabase|postgres|mysql"]
+  status             text        [not null, note: "success|failed|rolled_back"]
+  checksum           text        [not null]
+  error_message      text
+  rolled_back_at     timestamptz
+}
+
+// ── Enum definitions ─────────────────────────────────────────
+Enum user_type {
+  customer
+  admin
+}
+
+Enum product_collection {
+  "Signature Collection"
+  "Luxury Collection"
+  "Limited Edition"
+  "Seasonal Fragrances"
+}
+
+Enum order_status {
+  pending
+  confirmed
+  processing
+  shipped
+  delivered
+  cancelled
+  refunded
+}

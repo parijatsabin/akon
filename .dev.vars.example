@@ -1,0 +1,8 @@
+# ============================================================
+# Cloudflare Worker local dev secrets
+# Copy to .dev.vars (gitignored) — used by `wrangler dev`
+# ============================================================
+SUPABASE_URL=https://xxxxxxxxxxxxxxxxxxxx.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+WHATSAPP_PHONE=+9779868765432

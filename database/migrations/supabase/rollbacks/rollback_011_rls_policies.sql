@@ -1,0 +1,40 @@
+-- Rollback: 011_create_rls_policies
+DROP POLICY IF EXISTS "profiles: own read"                  ON public.profiles;
+DROP POLICY IF EXISTS "profiles: own update"                ON public.profiles;
+DROP POLICY IF EXISTS "profiles: admin read all"            ON public.profiles;
+DROP POLICY IF EXISTS "profiles: admin update all"          ON public.profiles;
+DROP POLICY IF EXISTS "site_content: public read"           ON public.site_content;
+DROP POLICY IF EXISTS "site_content: admin write"           ON public.site_content;
+DROP POLICY IF EXISTS "products: public read active"        ON public.products;
+DROP POLICY IF EXISTS "products: admin read all"            ON public.products;
+DROP POLICY IF EXISTS "products: admin write"               ON public.products;
+DROP POLICY IF EXISTS "products: admin update"              ON public.products;
+DROP POLICY IF EXISTS "products: admin delete"              ON public.products;
+DROP POLICY IF EXISTS "testimonials: public read visible"   ON public.testimonials;
+DROP POLICY IF EXISTS "testimonials: admin all"             ON public.testimonials;
+DROP POLICY IF EXISTS "newsletter: public subscribe"        ON public.newsletter_subscribers;
+DROP POLICY IF EXISTS "newsletter: admin read"              ON public.newsletter_subscribers;
+DROP POLICY IF EXISTS "newsletter: admin manage"            ON public.newsletter_subscribers;
+DROP POLICY IF EXISTS "orders: customer read own"           ON public.orders;
+DROP POLICY IF EXISTS "orders: customer insert"             ON public.orders;
+DROP POLICY IF EXISTS "orders: admin all"                   ON public.orders;
+DROP POLICY IF EXISTS "order_items: customer read own"      ON public.order_items;
+DROP POLICY IF EXISTS "order_items: admin all"              ON public.order_items;
+DROP POLICY IF EXISTS "addresses: customer read own"        ON public.customer_addresses;
+DROP POLICY IF EXISTS "addresses: customer insert"          ON public.customer_addresses;
+DROP POLICY IF EXISTS "addresses: customer update own"      ON public.customer_addresses;
+DROP POLICY IF EXISTS "addresses: customer delete own"      ON public.customer_addresses;
+DROP POLICY IF EXISTS "addresses: admin read"               ON public.customer_addresses;
+DROP POLICY IF EXISTS "migration_history: no direct access" ON public.migration_history;
+
+DROP FUNCTION IF EXISTS public.is_admin();
+
+ALTER TABLE public.profiles                DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_content            DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products                DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.testimonials            DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.newsletter_subscribers  DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders                  DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.order_items             DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.customer_addresses      DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.migration_history       DISABLE ROW LEVEL SECURITY;
