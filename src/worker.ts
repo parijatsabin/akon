@@ -75,4 +75,4 @@ export default {
             return jsonError(message, 500);
         }
     },
-} satisfies ExportedHandler<WorkerEnv>;
+} satisfies { fetch: (request: Request, env: WorkerEnv) => Promise<Response> };

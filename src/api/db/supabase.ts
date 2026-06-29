@@ -46,7 +46,7 @@ export class SupabaseClient implements DbClient {
         }
 
         const text = await res.text();
-        return text ? JSON.parse(text) : null;
+        return (text ? JSON.parse(text) : undefined) as T;
     }
 
     // ── CMS ─────────────────────────────────────────────────────
@@ -179,6 +179,7 @@ export class SupabaseClient implements DbClient {
             const product = productMap[item.product_id];
             if (!product) throw new Error(`Product not found: ${item.product_id}`);
             return {
+                id: crypto.randomUUID(),
                 product_id: item.product_id,
                 product_name: product.name,
                 product_slug: product.slug,

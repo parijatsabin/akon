@@ -1,9 +1,15 @@
 /**
  * PublicSite — wraps all public-facing components.
- * Uses useCmsData() so any admin save is reflected live.
+ *
+ * Data priority:
+ *   1. Worker API (/api/cms)  — live, persistent, multi-device
+ *   2. localStorage (cmsStore) — instant render + offline fallback
+ *
+ * The SiteDataContext shape is unchanged so all child components
+ * continue to work without modification.
  */
 import React from "react";
-import { useCmsData } from "./admin/cms/useCmsData";
+import { useSiteContent } from "./api/hooks/useSiteContent.ts";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import StatsBar from "./components/StatsBar";
@@ -15,8 +21,6 @@ import Newsletter from "./components/Newsletter";
 import Footer from "./components/Footer";
 import type { SiteData } from "./admin/types/cms.types";
 
-// Provide data as a React context so every component can read it
-// without prop drilling
 export const SiteDataContext = React.createContext<SiteData | null>(null);
 
 export function useSiteData(): SiteData {
@@ -26,7 +30,7 @@ export function useSiteData(): SiteData {
 }
 
 const PublicSite: React.FC = () => {
-    const data = useCmsData();
+    const { data } = useSiteContent();
 
     return (
         <SiteDataContext.Provider value={data}>

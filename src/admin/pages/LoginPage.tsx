@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
+// LoginPage accepts email now (Supabase Auth uses email, not username)
+
 const LoginPage: React.FC = () => {
     const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
@@ -24,14 +26,19 @@ const LoginPage: React.FC = () => {
         e.preventDefault();
         setError("");
         if (!username.trim() || !password) {
-            setError("Please enter both username and password.");
+            setError("Please enter email and password.");
             return;
         }
         setLoading(true);
         const result = await login(username, password);
         setLoading(false);
         if (result.ok) {
-            navigate(from, { replace: true });
+            // Route by user_type: admin → /admin, customer → /
+            if (result.userType === "admin") {
+                navigate(from.startsWith("/admin") ? from : "/admin", { replace: true });
+            } else {
+                navigate("/", { replace: true });
+            }
         } else {
             setError(result.error ?? "Login failed.");
             setPassword("");
@@ -175,23 +182,23 @@ const LoginPage: React.FC = () => {
                         {/* Username */}
                         <div style={{ marginBottom: 20 }}>
                             <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 8 }}>
-                                Username
+                                Email
                             </label>
                             <div style={{ position: "relative" }}>
                                 <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: userFocus ? "var(--gold)" : "#c5bdb3", transition: "color 0.2s", pointerEvents: "none" }}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
                                     </svg>
                                 </div>
                                 <input
-                                    type="text"
+                                    type="email"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     onFocus={() => setUserFocus(true)}
                                     onBlur={() => setUserFocus(false)}
-                                    autoComplete="username"
+                                    autoComplete="email"
                                     autoFocus
-                                    placeholder="admin"
+                                    placeholder="admin@anok.fragrance"
                                     style={{ ...inputStyle(userFocus), paddingLeft: 42 }}
                                 />
                             </div>

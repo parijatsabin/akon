@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSiteData } from "../PublicSite";
+import { useProducts } from "../api/hooks/useProducts.ts";
+import { openWhatsAppOrder } from "../utils/whatsapp.ts";
 import type { ProductItem } from "../admin/types/cms.types";
+import type { Product } from "../api/types/api.types";
 
 const SIZES = ["100 ml", "50 ml", "30 ml", "10 ml"];
 const VISIBLE = 4;
@@ -27,9 +30,17 @@ function useVisibleCount() {
 }
 
 /* ── Product card ───────────────────────────────────────────── */
-const ProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
+const ProductCard: React.FC<{ item: ProductItem; rawProduct?: Product; brandPhone: string }> = ({ item, rawProduct, brandPhone }) => {
     const [selectedSize, setSelectedSize] = useState(SIZES[0]);
     const [hovered, setHovered] = useState(false);
+
+    const handleOrder = () => {
+        if (rawProduct) {
+            // Logged-in user flow: go to product URL (future checkout page)
+            // Guest flow: open WhatsApp
+            openWhatsAppOrder(brandPhone, rawProduct);
+        }
+    };
 
     return (
         <div
@@ -76,11 +87,12 @@ const ProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
 
                 {/* CTA */}
                 <button
+                    onClick={handleOrder}
                     style={{ width: "100%", padding: "12px 0", background: "var(--gold)", color: "#fff", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", letterSpacing: "0.09em", textTransform: "uppercase", border: "none", borderRadius: "var(--radius-sm)", cursor: "pointer", transition: "background 0.22s, box-shadow 0.22s", marginTop: "auto", boxShadow: "0 4px 14px rgba(162,127,63,0.22)" }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = "var(--gold-dim)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(162,127,63,0.35)"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "var(--gold)"; e.currentTarget.style.boxShadow = "0 4px 14px rgba(162,127,63,0.22)"; }}
                 >
-                    Add To Cart
+                    Order Now
                 </button>
             </div>
         </div>
@@ -89,8 +101,10 @@ const ProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
 
 /* ── Carousel ──────────────────────────────────────────────── */
 const Collection: React.FC = () => {
-    const { collection: COLLECTION } = useSiteData();
-    const items = COLLECTION.items;
+    const { collection: COLLECTION, brand } = useSiteData();
+    const { items: apiItems, rawItems } = useProducts();
+    // Use API items when available, fall back to CMS store items
+    const items = apiItems.length > 0 ? apiItems : COLLECTION.items;
     const total = items.length;
     const visibleCount = useVisibleCount();
     const maxStart = Math.max(0, total - visibleCount);
@@ -187,7 +201,11 @@ const Collection: React.FC = () => {
                         <div style={{ display: "flex", gap: `${gap}px`, transform: `translateX(calc(${translatePct}% - ${translateOffset}px))`, transition: "transform 0.58s cubic-bezier(0.25, 0.46, 0.45, 0.94)", willChange: "transform" }}>
                             {items.map((item) => (
                                 <div key={item.id} style={{ flex: `0 0 calc(${100 / visibleCount}% - ${gap * (visibleCount - 1) / visibleCount}px)`, minWidth: 0 }}>
-                                    <ProductCard item={item} />
+                                    <ProductCard
+                                        item={item}
+                                        rawProduct={rawItems.find((r) => r.slug === item.id)}
+                                        brandPhone={brand.phone}
+                                    />
                                 </div>
                             ))}
                         </div>

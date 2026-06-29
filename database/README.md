@@ -131,3 +131,44 @@ All npm scripts
 migrate:supabase, migrate:up/down/status, seed, db:reset, migrate:dry-run
 
 Next step when you're ready: connect your Supabase project — copy .dev.vars.example to .dev.vars, fill in your Supabase URL and keys, then run npm run migrate:supabase followed by npm run seed. That's the entire first deployment.
+
+
+-----------------------
+
+Zero errors, clean build. Here's exactly what was completed in this session:
+
+What's done
+Core wiring:
+
+PublicSite.tsx — now fetches from /api/cms via useSiteContent hook, localStorage as instant fallback
+Collection.tsx — products hydrate from /api/products, "Add to Cart" → "Order Now" opens WhatsApp
+Newsletter.tsx — posts to /api/newsletter/subscribe with validation + error handling
+cmsStore.ts — dual-writes: localStorage (instant) + /api/cms/:section (persistent)
+useCmsData.ts — admin hook hydrates from API on mount
+Auth:
+
+AuthContext.tsx — fully replaced with Supabase Auth (email/password, JWT sessions)
+LoginPage.tsx — username field → email field, routes by user_type after login
+AdminRoute.tsx — blocks customers from /admin, guards by user_type === 'admin'
+AdminLayout.tsx — logout is now async (revokes Supabase session)
+Type safety:
+
+vite-env.d.ts — VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_API_URL all typed
+Setup files:
+
+SETUP.md — complete step-by-step guide
+create_admin_user.sql
+ — one SQL file to run in Supabase dashboard
+get_service_role_key.md
+ — where to find the service role key
+The two things you need to do right now
+1. Get your service role key from https://supabase.com/dashboard/project/cgwptrjlybjrzcnxmwfm/settings/api and paste it into .dev.vars
+
+2. Run 
+create_admin_user.sql
+ in the Supabase SQL editor (change the email/password first) — this creates your first admin login
+
+After that: npm run dev in one terminal, npx wrangler dev in another, and the full stack is live locally.
+
+Est. Credits Used: 4.67
+Elapsed time: 2m 44s

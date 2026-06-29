@@ -1,14 +1,38 @@
 import React, { useState } from "react";
 import { useSiteData } from "../PublicSite";
+import { api } from "../api/client.ts";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Newsletter: React.FC = () => {
   const { newsletter: NEWSLETTER, brand: BRAND } = useSiteData();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) { setSubmitted(true); setEmail(""); }
+    setError("");
+    const trimmed = email.trim();
+    if (!trimmed || !EMAIL_RE.test(trimmed)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setLoading(true);
+    const result = await api.subscribe(trimmed);
+    setLoading(false);
+    if (result.ok) {
+      setSubmitted(true);
+      setEmail("");
+    } else {
+      // Show friendly error; "duplicate" means already subscribed
+      setError(
+        result.error?.toLowerCase().includes("duplicate")
+          ? "You're already subscribed!"
+          : "Something went wrong. Please try again."
+      );
+    }
   };
 
   return (
@@ -38,27 +62,36 @@ const Newsletter: React.FC = () => {
             ✓ Thank you! You've been subscribed to {BRAND.name}.
           </div>
         ) : (
-          <form
-            onSubmit={handleSubmit}
-            className="newsletter-form"
-            style={{ display: "flex", gap: 0, maxWidth: 540, margin: "0 auto", borderRadius: "var(--radius-sm)", overflow: "hidden", boxShadow: "0 6px 30px rgba(0,0,0,0.35)" }}
-          >
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={NEWSLETTER.placeholder}
-              required
-              style={{ flex: 1, padding: "18px 24px", border: "none", outline: "none", fontFamily: "var(--font-body)", fontSize: "0.95rem", background: "rgba(255,255,255,0.07)", color: "#fff", borderRight: "1px solid rgba(255,255,255,0.08)" }}
-            />
-            <button
-              type="submit"
-              className="btn btn-gold newsletter-btn"
-              style={{ borderRadius: 0, whiteSpace: "nowrap", padding: "18px 34px", fontSize: "0.82rem" }}
+          <>
+            {error && (
+              <p style={{ color: "#ffb3b3", fontSize: "0.85rem", marginBottom: 12, fontWeight: 500 }}>
+                {error}
+              </p>
+            )}
+            <form
+              onSubmit={handleSubmit}
+              className="newsletter-form"
+              style={{ display: "flex", gap: 0, maxWidth: 540, margin: "0 auto", borderRadius: "var(--radius-sm)", overflow: "hidden", boxShadow: "0 6px 30px rgba(0,0,0,0.35)" }}
             >
-              {NEWSLETTER.cta}
-            </button>
-          </form>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={NEWSLETTER.placeholder}
+                required
+                disabled={loading}
+                style={{ flex: 1, padding: "18px 24px", border: "none", outline: "none", fontFamily: "var(--font-body)", fontSize: "0.95rem", background: "rgba(255,255,255,0.07)", color: "#fff", borderRight: "1px solid rgba(255,255,255,0.08)" }}
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn btn-gold newsletter-btn"
+                style={{ borderRadius: 0, whiteSpace: "nowrap", padding: "18px 34px", fontSize: "0.82rem", opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+              >
+                {loading ? "Subscribing…" : NEWSLETTER.cta}
+              </button>
+            </form>
+          </>
         )}
       </div>
 

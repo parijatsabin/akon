@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "akon",
   "compatibility_date": "2026-06-19",
+  "main": "src/worker.ts",
   "observability": {
     "enabled": true
   },
@@ -12,19 +13,4 @@
   "compatibility_flags": [
     "nodejs_compat"
   ]
-  // ── Secrets (set via `wrangler secret put <NAME>`) ──────────
-  // Never put actual values here. Use wrangler secret put or
-  // the Cloudflare dashboard for production secrets.
-  //
-  // Required secrets:
-  //   wrangler secret put SUPABASE_URL
-  //   wrangler secret put SUPABASE_SERVICE_ROLE_KEY
-  //   wrangler secret put SUPABASE_ANON_KEY
-  //   wrangler secret put WHATSAPP_PHONE
-  //
-  // For local dev, create a .dev.vars file (gitignored):
-  //   SUPABASE_URL=https://xxxx.supabase.co
-  //   SUPABASE_SERVICE_ROLE_KEY=eyJ...
-  //   SUPABASE_ANON_KEY=eyJ...
-  //   WHATSAPP_PHONE=+9779868765432
 }

@@ -1,9 +1,7 @@
 /**
  * AdminRoute — protects all /admin/* pages.
- *
- * On every render it validates the sessionStorage token.
- * If invalid or expired → immediate redirect to /admin/login.
- * No way to bypass by typing the URL directly.
+ * Validates session and enforces user_type === 'admin'.
+ * Customers who somehow land on /admin are redirected to /.
  */
 
 import React from "react";
@@ -15,11 +13,10 @@ interface Props {
 }
 
 const AdminRoute: React.FC<Props> = ({ children }) => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, userType } = useAuth();
     const location = useLocation();
 
     if (!isAuthenticated) {
-        // Replace so the login page doesn't show up in history on back-press
         return (
             <Navigate
                 to="/admin/login"
@@ -27,6 +24,11 @@ const AdminRoute: React.FC<Props> = ({ children }) => {
                 state={{ from: location.pathname }}
             />
         );
+    }
+
+    // Logged-in customer trying to access admin — send them home
+    if (userType === "customer") {
+        return <Navigate to="/" replace />;
     }
 
     return <>{children}</>;

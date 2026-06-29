@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { readStore } from "../cms/cmsStore";
+import { useCmsData } from "../cms/useCmsData";
 import { StatCard } from "../components/ui/Card";
 import {
     ShoppingBag, MessageSquare, Settings, ArrowRight,
@@ -32,7 +32,7 @@ const SECTIONS = [
 ];
 
 const DashboardPage: React.FC = () => {
-    const data = readStore();
+    const data = useCmsData();
     const productCount = data.collection.items.length;
     const reviewCount = data.testimonials.items.length;
     const navCount = data.navLinks.length;
