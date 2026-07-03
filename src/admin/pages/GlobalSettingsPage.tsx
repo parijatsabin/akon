@@ -42,62 +42,99 @@ const tabStyle = (active: boolean): React.CSSProperties => ({
 
 /* ── Brand ────────────────────────────────────────────────────── */
 const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
-  const { toast } = useToast();
-  const [form, setForm] = useState<BrandData>(() => readStore().brand);
-  const [saving, setSaving] = useState(false);
-  
-  const set = (k: keyof BrandData, v: unknown) => {
-    setForm((f) => {
-      let updated = { ...f, [k]: v };
-      // If we're toggling useDefaultTime, update all open days' times
-      if (k === "useDefaultTime" && v === true) {
-        updated.hours = updated.hours.map(h => 
-          h.isClosed ? h : { ...h, openTime: "09:00", closeTime: "17:00" }
-        );
-      }
-      return updated;
-    });
-  };
-  
-  const setHour = (i: number, f2: keyof BrandData["hours"][0], v: unknown) => {
-    const h = [...form.hours]; 
-    h[i] = { ...h[i], [f2]: v }; 
-    set("hours", h);
-  };
-  
-  const setSocial = (k: keyof typeof form.socialLinks, v: string) =>
-    set("socialLinks", { ...form.socialLinks, [k]: v });
-    
-  const save = async () => {
-    setSaving(true); 
-    await new Promise((r) => setTimeout(r, 300));
-    
-    // Ensure that if useDefaultTime is true, all open days have the correct times before saving
-    const dataToSave = { 
-      ...form, 
-      hours: form.useDefaultTime 
-        ? form.hours.map(h => h.isClosed ? h : { ...h, openTime: "09:00", closeTime: "17:00" }) 
-        : form.hours 
+    const { toast } = useToast();
+    const [form, setForm] = useState<BrandData>(() => readStore().brand);
+    const [saving, setSaving] = useState(false);
+
+    const set = (k: keyof BrandData, v: unknown) => {
+        setForm((f) => {
+            const updated = { ...f, [k]: v };
+            // When enabling default time, stamp 09:00–17:00 on all open days immediately
+            if (k === "useDefaultTime" && v === true) {
+                updated.hours = updated.hours.map((h) =>
+                    h.isClosed ? h : { ...h, openTime: "09:00", closeTime: "17:00" }
+                );
+            }
+            return updated;
+        });
     };
-    
-    updateSection("brand", dataToSave); 
-    setSaving(false);
-    toast("Brand settings saved!"); 
-    onSave();
-  };
+
+    const setHour = (i: number, field: keyof BrandData["hours"][0], value: unknown) => {
+        const next = [...form.hours];
+        next[i] = { ...next[i], [field]: value };
+        // When marking a day as closed, also apply defaults if useDefaultTime is on
+        // so the stored value stays consistent
+        setForm((f) => ({ ...f, hours: next }));
+    };
+
+    const setSocial = (k: keyof typeof form.socialLinks, v: string) =>
+        set("socialLinks", { ...form.socialLinks, [k]: v });
+
+    const save = async () => {
+        setSaving(true);
+        await new Promise((r) => setTimeout(r, 300));
+        // Always stamp default times on open days when useDefaultTime is on before persisting
+        const dataToSave: BrandData = {
+            ...form,
+            hours: form.useDefaultTime
+                ? form.hours.map((h) => (h.isClosed ? h : { ...h, openTime: "09:00", closeTime: "17:00" }))
+                : form.hours,
+        };
+        await updateSection("brand", dataToSave);
+        setSaving(false);
+        toast("Brand settings saved!");
+        onSave();
+    };
+
+    // Shared th style
+    const TH_STYLE: React.CSSProperties = {
+        textAlign: "left",
+        padding: "10px 14px",
+        borderBottom: "2px solid var(--border)",
+        fontSize: "0.70rem",
+        fontWeight: 700,
+        letterSpacing: "0.12em",
+        textTransform: "uppercase",
+        color: "var(--text-muted)",
+        background: "var(--parchment)",
+        whiteSpace: "nowrap",
+    };
+
+    // Time input style — shared, disabled state applied via opacity on the row
+    const timeInputStyle = (disabled: boolean): React.CSSProperties => ({
+        padding: "7px 10px",
+        border: "1.5px solid",
+        borderColor: disabled ? "var(--border)" : "var(--border)",
+        borderRadius: "var(--radius-sm)",
+        fontFamily: "var(--font-body)",
+        fontSize: "0.84rem",
+        color: disabled ? "var(--text-faint)" : "var(--text-main)",
+        background: disabled ? "var(--parchment)" : "#fff",
+        outline: "none",
+        width: "100%",
+        cursor: disabled ? "not-allowed" : "text",
+        transition: "border-color 0.18s, background 0.18s",
+    });
+
     return (
         <>
+            {/* ── Brand Identity ── */}
             <Card title="Brand Identity">
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
-                    <Field label="Brand Name" required><Input value={form.name} onChange={(e) => set("name", e.target.value)} /></Field>
-                    <Field label="Tagline"><Input value={form.tagline} onChange={(e) => set("tagline", e.target.value)} /></Field>
+                    <Field label="Brand Name" required>
+                        <Input value={form.name} onChange={(e) => set("name", e.target.value)} />
+                    </Field>
+                    <Field label="Tagline">
+                        <Input value={form.tagline} onChange={(e) => set("tagline", e.target.value)} />
+                    </Field>
                 </div>
                 <Field label="Short Description">
                     <Textarea value={form.shortDescription} onChange={(e) => set("shortDescription", e.target.value)} style={{ minHeight: 90 }} />
                 </Field>
             </Card>
 
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1fr", gap: 24, width: "100%" }}>
+            {/* ── Contact + Social (side by side) ── */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 24 }}>
                 <Card title="Contact">
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                         <Field label="Email"><Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
@@ -107,75 +144,206 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     </div>
                     <Field label="Maps Embed URL"><Input value={form.mapEmbed} onChange={(e) => set("mapEmbed", e.target.value)} /></Field>
                 </Card>
-                {/* Business Hours*/}
-            <Card title="Business Hours">
-                <div style={{ marginBottom: 20, paddingBottom: 16, borderBottom: "1px solid var(--border)" }}>
-                    <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: "0.9rem", fontWeight: 600, color: "var(--text-main)" }}>
-                        <input 
-                            type="checkbox" 
-                            checked={form.useDefaultTime} 
-                            onChange={(e) => set("useDefaultTime", e.target.checked)} 
-                        />
-                        Default Time (09:00 AM – 05:00 PM)
-                    </label>
-                </div>
-                
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                        <tr>
-                            <th style={{ textAlign: "left", padding: "8px 12px", borderBottom: "1px solid var(--border)", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)" }}>Day</th>
-                            <th style={{ textAlign: "left", padding: "8px 12px", borderBottom: "1px solid var(--border)", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)" }}>From</th>
-                            <th style={{ textAlign: "left", padding: "8px 12px", borderBottom: "1px solid var(--border)", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)" }}>To</th>
-                            <th style={{ textAlign: "center", padding: "8px 12px", borderBottom: "1px solid var(--border)", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)" }}>Is Closed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {form.hours.map((h, i) => (
-                            <tr key={i}>
-                                <td style={{ padding: "12px", borderBottom: "1px solid var(--border)" }}>
-                                    <span style={{ fontWeight: 600, color: "var(--text-main)" }}>{h.day}</span>
-                                </td>
-                                <td style={{ padding: "12px", borderBottom: "1px solid var(--border)" }}>
-                                    <Field label="">
-                                        <Input 
-                                            type="time" 
-                                            value={form.useDefaultTime && !h.isClosed ? "09:00" : h.openTime} 
-                                            onChange={(e) => setHour(i, "openTime", e.target.value)} 
-                                            disabled={form.useDefaultTime || h.isClosed}
-                                        />
-                                    </Field>
-                                </td>
-                                <td style={{ padding: "12px", borderBottom: "1px solid var(--border)" }}>
-                                    <Field label="">
-                                        <Input 
-                                            type="time" 
-                                            value={form.useDefaultTime && !h.isClosed ? "17:00" : h.closeTime} 
-                                            onChange={(e) => setHour(i, "closeTime", e.target.value)} 
-                                            disabled={form.useDefaultTime || h.isClosed}
-                                        />
-                                    </Field>
-                                </td>
-                                <td style={{ padding: "12px", borderBottom: "1px solid var(--border)", textAlign: "center" }}>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={h.isClosed} 
-                                        onChange={(e) => setHour(i, "isClosed", e.target.checked)} 
-                                    />
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </Card>
-                {/* Social Links */}
+
                 <Card title="Social Links">
-                    <div>
+                    <div style={{ minWidth: 220 }}>
                         <Field label="Instagram"><Input value={form.socialLinks.instagram} onChange={(e) => setSocial("instagram", e.target.value)} /></Field>
                         <Field label="Facebook"><Input value={form.socialLinks.facebook} onChange={(e) => setSocial("facebook", e.target.value)} /></Field>
                         <Field label="Pinterest"><Input value={form.socialLinks.pinterest} onChange={(e) => setSocial("pinterest", e.target.value)} /></Field>
                     </div>
                 </Card>
-            </div >
+            </div>
+
+            {/* ── Business Hours — full width ── */}
+            <Card
+                title="Business Hours"
+                action={
+                    /* Default Time toggle */
+                    <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", userSelect: "none" }}>
+                        <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
+                            Default Time&nbsp;
+                            <span style={{ color: "var(--text-faint)", fontWeight: 500 }}>09:00 AM – 05:00 PM</span>
+                        </span>
+                        {/* Toggle pill */}
+                        <span
+                            role="checkbox"
+                            aria-checked={form.useDefaultTime}
+                            onClick={() => set("useDefaultTime", !form.useDefaultTime)}
+                            style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                width: 44,
+                                height: 24,
+                                borderRadius: 12,
+                                background: form.useDefaultTime ? "var(--gold)" : "var(--border)",
+                                padding: "2px",
+                                transition: "background 0.22s",
+                                flexShrink: 0,
+                                cursor: "pointer",
+                            }}
+                        >
+                            <span style={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: "50%",
+                                background: "#fff",
+                                boxShadow: "0 1px 4px rgba(0,0,0,0.18)",
+                                transform: form.useDefaultTime ? "translateX(20px)" : "translateX(0)",
+                                transition: "transform 0.22s",
+                                display: "block",
+                            }} />
+                        </span>
+                    </label>
+                }
+            >
+                <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 480 }}>
+                        <thead>
+                            <tr>
+                                <th style={{ ...TH_STYLE, width: "28%" }}>Day</th>
+                                <th style={{ ...TH_STYLE, width: "28%" }}>From</th>
+                                <th style={{ ...TH_STYLE, width: "28%" }}>To</th>
+                                <th style={{ ...TH_STYLE, width: "16%", textAlign: "center" }}>Is Closed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {form.hours.map((h, i) => {
+                                const isDisabled = form.useDefaultTime || h.isClosed;
+                                const displayOpen = form.useDefaultTime && !h.isClosed ? "09:00" : h.openTime;
+                                const displayClose = form.useDefaultTime && !h.isClosed ? "17:00" : h.closeTime;
+                                const isLast = i === form.hours.length - 1;
+
+                                return (
+                                    <tr
+                                        key={h.day}
+                                        style={{
+                                            background: h.isClosed ? "rgba(224,85,85,0.04)" : "transparent",
+                                            transition: "background 0.18s",
+                                        }}
+                                    >
+                                        {/* Day */}
+                                        <td style={{ padding: "11px 14px", borderBottom: isLast ? "none" : "1px solid var(--border)" }}>
+                                            <span style={{
+                                                fontWeight: 600,
+                                                fontSize: "0.88rem",
+                                                color: h.isClosed ? "var(--text-faint)" : "var(--text-main)",
+                                                transition: "color 0.18s",
+                                            }}>
+                                                {h.day}
+                                            </span>
+                                        </td>
+
+                                        {/* From */}
+                                        <td style={{ padding: "11px 14px", borderBottom: isLast ? "none" : "1px solid var(--border)" }}>
+                                            {h.isClosed ? (
+                                                <span style={{
+                                                    display: "inline-block",
+                                                    padding: "7px 12px",
+                                                    fontSize: "0.80rem",
+                                                    fontWeight: 600,
+                                                    color: "#e05555",
+                                                    background: "rgba(224,85,85,0.08)",
+                                                    borderRadius: "var(--radius-sm)",
+                                                    border: "1.5px solid rgba(224,85,85,0.18)",
+                                                    letterSpacing: "0.04em",
+                                                }}>
+                                                    Closed
+                                                </span>
+                                            ) : (
+                                                <input
+                                                    type="time"
+                                                    value={displayOpen}
+                                                    onChange={(e) => setHour(i, "openTime", e.target.value)}
+                                                    disabled={isDisabled}
+                                                    style={timeInputStyle(isDisabled)}
+                                                    onFocus={(e) => { if (!isDisabled) e.currentTarget.style.borderColor = "var(--gold)"; }}
+                                                    onBlur={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
+                                                />
+                                            )}
+                                        </td>
+
+                                        {/* To */}
+                                        <td style={{ padding: "11px 14px", borderBottom: isLast ? "none" : "1px solid var(--border)" }}>
+                                            {h.isClosed ? (
+                                                <span style={{
+                                                    display: "inline-block",
+                                                    padding: "7px 12px",
+                                                    fontSize: "0.80rem",
+                                                    fontWeight: 600,
+                                                    color: "#e05555",
+                                                    background: "rgba(224,85,85,0.08)",
+                                                    borderRadius: "var(--radius-sm)",
+                                                    border: "1.5px solid rgba(224,85,85,0.18)",
+                                                    letterSpacing: "0.04em",
+                                                }}>
+                                                    Closed
+                                                </span>
+                                            ) : (
+                                                <input
+                                                    type="time"
+                                                    value={displayClose}
+                                                    onChange={(e) => setHour(i, "closeTime", e.target.value)}
+                                                    disabled={isDisabled}
+                                                    style={timeInputStyle(isDisabled)}
+                                                    onFocus={(e) => { if (!isDisabled) e.currentTarget.style.borderColor = "var(--gold)"; }}
+                                                    onBlur={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
+                                                />
+                                            )}
+                                        </td>
+
+                                        {/* Is Closed toggle */}
+                                        <td style={{ padding: "11px 14px", borderBottom: isLast ? "none" : "1px solid var(--border)", textAlign: "center" }}>
+                                            <label style={{ display: "inline-flex", alignItems: "center", cursor: "pointer" }}>
+                                                <span
+                                                    role="checkbox"
+                                                    aria-checked={h.isClosed}
+                                                    onClick={() => setHour(i, "isClosed", !h.isClosed)}
+                                                    style={{
+                                                        display: "inline-flex",
+                                                        alignItems: "center",
+                                                        width: 38,
+                                                        height: 20,
+                                                        borderRadius: 10,
+                                                        background: h.isClosed ? "#e05555" : "var(--border)",
+                                                        padding: "2px",
+                                                        transition: "background 0.22s",
+                                                        cursor: "pointer",
+                                                        flexShrink: 0,
+                                                    }}
+                                                >
+                                                    <span style={{
+                                                        width: 16,
+                                                        height: 16,
+                                                        borderRadius: "50%",
+                                                        background: "#fff",
+                                                        boxShadow: "0 1px 3px rgba(0,0,0,0.20)",
+                                                        transform: h.isClosed ? "translateX(18px)" : "translateX(0)",
+                                                        transition: "transform 0.22s",
+                                                        display: "block",
+                                                    }} />
+                                                </span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Helper note */}
+                <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                        <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--gold)", display: "inline-block", flexShrink: 0 }} />
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-faint)" }}>Default Time on — times locked to 09:00 AM – 05:00 PM</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                        <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#e05555", display: "inline-block", flexShrink: 0 }} />
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-faint)" }}>Is Closed on — day shown as "Closed" on the website</span>
+                    </div>
+                </div>
+            </Card>
+
             <SaveBtn loading={saving} onClick={save} />
         </>
     );
@@ -191,7 +359,7 @@ const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
         setForm((f) => ({ ...f, [cta]: { ...f[cta], [field]: v } }));
     const save = async () => {
         setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        updateSection("hero", form); setSaving(false);
+        await updateSection("hero", form); setSaving(false);
         toast("Hero saved!"); onSave();
     };
     return (
@@ -252,7 +420,7 @@ const StatsTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const save = async () => {
         if (stats.some((s) => !s.value.trim() || !s.label.trim())) { toast("All fields required.", "error"); return; }
         setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        updateSection("stats", stats); setSaving(false);
+        await updateSection("stats", stats); setSaving(false);
         toast("Stats saved!"); onSave();
     };
     return (
@@ -304,7 +472,7 @@ const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     };
     const save = async () => {
         setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        updateSection("about", form); setSaving(false);
+        await updateSection("about", form); setSaving(false);
         toast("About saved!"); onSave();
     };
     return (
@@ -359,7 +527,7 @@ const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const setCta = (f2: "label" | "href", v: string) => setForm((f) => ({ ...f, cta: { ...f.cta, [f2]: v } }));
     const save = async () => {
         setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        updateSection("commitment", form); setSaving(false);
+        await updateSection("commitment", form); setSaving(false);
         toast("Commitment saved!"); onSave();
     };
     return (
@@ -388,7 +556,7 @@ const NewsletterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const set = (k: keyof NewsletterData, v: string) => setForm((f) => ({ ...f, [k]: v }));
     const save = async () => {
         setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        updateSection("newsletter", form); setSaving(false);
+        await updateSection("newsletter", form); setSaving(false);
         toast("Newsletter saved!"); onSave();
     };
     return (
@@ -437,7 +605,7 @@ const NavigationTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const save = async () => {
         if (links.some((l) => !l.label.trim())) { toast("All labels required.", "error"); return; }
         setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        updateSection("navLinks", links); setSaving(false);
+        await updateSection("navLinks", links); setSaving(false);
         toast("Navigation saved!"); onSave();
     };
     return (
@@ -498,7 +666,7 @@ const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     };
     const save = async () => {
         setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        updateSection("footer", form); setSaving(false);
+        await updateSection("footer", form); setSaving(false);
         toast("Footer saved!"); onSave();
     };
     return (

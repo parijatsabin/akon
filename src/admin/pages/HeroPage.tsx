@@ -19,7 +19,7 @@ const HeroPage: React.FC = () => {
     const handleSave = async () => {
         setSaving(true);
         await new Promise((r) => setTimeout(r, 350));
-        updateSection("hero", form);
+        await updateSection("hero", form);
         setSaving(false);
         toast("Hero section saved!");
     };

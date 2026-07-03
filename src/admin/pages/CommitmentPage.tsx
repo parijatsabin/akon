@@ -18,7 +18,7 @@ const CommitmentPage: React.FC = () => {
     const handleSave = async () => {
         setSaving(true);
         await new Promise((r) => setTimeout(r, 350));
-        updateSection("commitment", form);
+        await updateSection("commitment", form);
         setSaving(false);
         toast("Commitment section saved!");
     };

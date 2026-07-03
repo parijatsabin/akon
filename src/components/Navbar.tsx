@@ -1,6 +1,32 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useSiteData } from "../PublicSite";
+
+/** Render a nav link as <Link> for real routes (/products)
+ *  or a plain <a> for hash anchors (#home, #reviews). */
+const NavItem: React.FC<{
+    href: string;
+    label: string;
+    style: React.CSSProperties;
+    onMouseEnter: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+    onMouseLeave: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+    onClick?: () => void;
+}> = ({ href, label, style, onMouseEnter, onMouseLeave, onClick }) => {
+    const isRoute = href.startsWith("/");
+    if (isRoute) {
+        return (
+            <Link to={href} style={style} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onClick}>
+                {label}
+            </Link>
+        );
+    }
+    return (
+        <a href={href} style={style} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onClick}>
+            {label}
+        </a>
+    );
+};
 
 const Navbar: React.FC = () => {
     const { brand: BRAND, navLinks: NAV_LINKS } = useSiteData();
@@ -37,7 +63,7 @@ const Navbar: React.FC = () => {
                 }}
             >
                 {/* ── Logo ── */}
-                <a href="#home" style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+                <Link to="/" style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
                     <img
                         src={`${import.meta.env.BASE_URL}logo.png`}
                         alt={BRAND.name}
@@ -50,7 +76,7 @@ const Navbar: React.FC = () => {
                             transition: "filter 0.38s ease",
                         }}
                     />
-                </a>
+                </Link>
 
                 {/* ── Desktop nav ── */}
                 <nav
@@ -64,9 +90,10 @@ const Navbar: React.FC = () => {
                     }}
                 >
                     {NAV_LINKS.map((link) => (
-                        <a
+                        <NavItem
                             key={link.label}
                             href={link.href}
+                            label={link.label}
                             style={{
                                 fontSize: "0.88rem",
                                 fontWeight: 600,
@@ -88,16 +115,14 @@ const Navbar: React.FC = () => {
                                 e.currentTarget.style.color = linkColor;
                                 e.currentTarget.style.background = "transparent";
                             }}
-                        >
-                            {link.label}
-                        </a>
+                        />
                     ))}
                 </nav>
 
                 {/* ── Right: CTA + mobile toggle ── */}
                 <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-                    <a
-                        href="#collection"
+                    <Link
+                        to="/products"
                         className="desktop-nav"
                         style={{
                             display: "inline-flex",
@@ -111,7 +136,6 @@ const Navbar: React.FC = () => {
                             textTransform: "uppercase",
                             background: scrolled ? "var(--gold)" : "rgba(162,127,63,0.85)",
                             color: "#fff",
-                            border: "none",
                             transition: "all 0.26s",
                             whiteSpace: "nowrap",
                             backdropFilter: "blur(4px)",
@@ -119,18 +143,18 @@ const Navbar: React.FC = () => {
                             boxShadow: scrolled ? "0 4px 16px rgba(162,127,63,0.28)" : "none",
                         }}
                         onMouseEnter={(e) => {
-                            e.currentTarget.style.background = "var(--gold-dim)";
-                            e.currentTarget.style.transform = "translateY(-1px)";
+                            (e.currentTarget as HTMLAnchorElement).style.background = "var(--gold-dim)";
+                            (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-1px)";
                         }}
                         onMouseLeave={(e) => {
-                            e.currentTarget.style.background = scrolled
+                            (e.currentTarget as HTMLAnchorElement).style.background = scrolled
                                 ? "var(--gold)"
                                 : "rgba(162,127,63,0.85)";
-                            e.currentTarget.style.transform = "translateY(0)";
+                            (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
                         }}
                     >
                         Shop Now
-                    </a>
+                    </Link>
 
                     <button
                         className="mobile-menu-btn"
@@ -167,35 +191,55 @@ const Navbar: React.FC = () => {
                 }}
             >
                 <div style={{ padding: "12px 24px 32px" }}>
-                    {NAV_LINKS.map((link) => (
-                        <a
-                            key={link.label}
-                            href={link.href}
-                            onClick={() => setMobileOpen(false)}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                padding: "15px 4px",
-                                fontWeight: 600,
-                                fontSize: "0.95rem",
-                                letterSpacing: "0.05em",
-                                textTransform: "uppercase",
-                                color: "var(--text-main)",
-                                borderBottom: "1px solid var(--border)",
-                                transition: "color 0.2s",
-                            }}
-                            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
-                            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-main)")}
-                        >
-                            {link.label}
+                    {NAV_LINKS.map((link) => {
+                        const isRoute = link.href.startsWith("/");
+                        const sharedStyle: React.CSSProperties = {
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: "15px 4px",
+                            fontWeight: 600,
+                            fontSize: "0.95rem",
+                            letterSpacing: "0.05em",
+                            textTransform: "uppercase",
+                            color: "var(--text-main)",
+                            borderBottom: "1px solid var(--border)",
+                            transition: "color 0.2s",
+                        };
+                        const arrow = (
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M5 12h14M12 5l7 7-7 7" />
                             </svg>
-                        </a>
-                    ))}
-                    <a
-                        href="#collection"
+                        );
+                        if (isRoute) {
+                            return (
+                                <Link
+                                    key={link.label}
+                                    to={link.href}
+                                    onClick={() => setMobileOpen(false)}
+                                    style={sharedStyle}
+                                    onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
+                                    onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-main)")}
+                                >
+                                    {link.label}{arrow}
+                                </Link>
+                            );
+                        }
+                        return (
+                            <a
+                                key={link.label}
+                                href={link.href}
+                                onClick={() => setMobileOpen(false)}
+                                style={sharedStyle}
+                                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
+                                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-main)")}
+                            >
+                                {link.label}{arrow}
+                            </a>
+                        );
+                    })}
+                    <Link
+                        to="/products"
                         onClick={() => setMobileOpen(false)}
                         style={{
                             display: "block",
@@ -212,7 +256,7 @@ const Navbar: React.FC = () => {
                         }}
                     >
                         Shop Now
-                    </a>
+                    </Link>
                 </div>
             </div>
 

@@ -31,7 +31,7 @@ const AboutPage: React.FC = () => {
     const handleSave = async () => {
         setSaving(true);
         await new Promise((r) => setTimeout(r, 350));
-        updateSection("about", form);
+        await updateSection("about", form);
         setSaving(false);
         toast("About section saved!");
     };

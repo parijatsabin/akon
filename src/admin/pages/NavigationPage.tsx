@@ -40,7 +40,7 @@ const NavigationPage: React.FC = () => {
         }
         setSaving(true);
         await new Promise((r) => setTimeout(r, 350));
-        updateSection("navLinks", links);
+        await updateSection("navLinks", links);
         setSaving(false);
         toast("Navigation saved!");
     };

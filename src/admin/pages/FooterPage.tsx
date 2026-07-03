@@ -51,7 +51,7 @@ const FooterPage: React.FC = () => {
     const handleSave = async () => {
         setSaving(true);
         await new Promise((r) => setTimeout(r, 350));
-        updateSection("footer", form);
+        await updateSection("footer", form);
         setSaving(false);
         toast("Footer saved!");
     };

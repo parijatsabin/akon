@@ -8,6 +8,7 @@ import AdminLayout from "./components/AdminLayout";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import GlobalSettingsPage from "./pages/GlobalSettingsPage";
+import FeaturedProductPage from "./pages/FeaturedProductPage";
 import CollectionPage from "./pages/CollectionPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 
@@ -27,9 +28,10 @@ const AdminApp: React.FC = () => (
                                 <Routes>
                                     <Route index element={<DashboardPage />} />
                                     <Route path="settings" element={<GlobalSettingsPage />} />
+                                    <Route path="featured" element={<FeaturedProductPage />} />
                                     <Route path="collection" element={<CollectionPage />} />
                                     <Route path="testimonials" element={<TestimonialsPage />} />
-                                    {/* Legacy route redirects — in case any bookmark exists */}
+                                    {/* Legacy route redirects */}
                                     <Route path="hero" element={<Navigate to="/admin/settings" replace />} />
                                     <Route path="stats" element={<Navigate to="/admin/settings" replace />} />
                                     <Route path="about" element={<Navigate to="/admin/settings" replace />} />

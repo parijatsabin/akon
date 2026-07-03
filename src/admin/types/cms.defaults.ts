@@ -34,10 +34,10 @@ export const DEFAULT_SITE_DATA: SiteData = {
     },
 
     navLinks: [
-        { label: "Home", href: "#home" },
-        { label: "Collection", href: "#collection" },
-        { label: "Reviews", href: "#reviews" },
-        { label: "Contact", href: "#contact" },
+        { label: "Home", href: "/" },
+        { label: "About", href: "/about" },
+        { label: "Collection", href: "/products" },
+        { label: "Contact", href: "/contact" },
     ],
 
     hero: {
@@ -46,7 +46,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
         mainHeading: "Revel The Beauty\nInside You",
         description:
             "Timeless Fragrances, Crafted With Passion, Embody Individuality, Elegance, And Sophistication, Leaving A Lasting Impression Always.",
-        ctaPrimary: { label: "Explore Collection", href: "#collection" },
+        ctaPrimary: { label: "Our Signature", href: "#signature" },
         ctaSecondary: { label: "Our Story", href: "#about" },
     },
 
@@ -88,8 +88,27 @@ export const DEFAULT_SITE_DATA: SiteData = {
         ],
     },
 
+    featuredProduct: {
+        id: "noir-veil",
+        name: "Noir Veil",
+        collection: "Signature Collection",
+        notes: {
+            top: ["Bergamot", "Pink Pepper"],
+            heart: ["Bulgarian Rose", "Iris"],
+            base: ["Oud", "Amber"],
+        },
+        description:
+            "A nocturnal composition built on aged oud and Bulgarian rose — quiet, deliberate, unmistakably ANOK. Designed for those who move through the world with intention, Noir Veil is not a fragrance you wear. It is a presence you carry.",
+        price: "NPR 24,500",
+        badge: "Signature",
+        accentColor: "#1a1a1a",
+        imageUrl:
+            "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&h=1000&fit=crop",
+        productUrl: "/products/noir-veil",
+    },
+
     collection: {
-        headline: "Featured Collection",
+        headline: "Our Collection",
         items: [
             {
                 id: "noir-veil",
@@ -103,11 +122,11 @@ export const DEFAULT_SITE_DATA: SiteData = {
                 description:
                     "A nocturnal composition built on aged oud and Bulgarian rose — quiet, deliberate, unmistakably ANOK.",
                 price: "NPR 24,500",
-                badge: null,
+                badge: "Signature",
                 accentColor: "#1a1a1a",
                 imageUrl:
                     "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=500&fit=crop",
-                productUrl: "#",
+                productUrl: "/products/noir-veil",
             },
             {
                 id: "espresso-rouge",
@@ -125,7 +144,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
                 accentColor: "#3d2817",
                 imageUrl:
                     "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=500&fit=crop",
-                productUrl: "#",
+                productUrl: "/products/espresso-rouge",
             },
             {
                 id: "champagne-hour",
@@ -143,7 +162,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
                 accentColor: "#f9e4e4",
                 imageUrl:
                     "https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=400&h=500&fit=crop",
-                productUrl: "#",
+                productUrl: "/products/champagne-hour",
             },
             {
                 id: "obsidian-no-7",
@@ -161,7 +180,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
                 accentColor: "#222222",
                 imageUrl:
                     "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400&h=500&fit=crop",
-                productUrl: "#",
+                productUrl: "/products/obsidian-no-7",
             },
             {
                 id: "kathmandu-bloom",
@@ -179,7 +198,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
                 accentColor: "#e4f0f5",
                 imageUrl:
                     "https://images.unsplash.com/photo-1588405748880-42d3054a1d71?w=400&h=500&fit=crop",
-                productUrl: "#",
+                productUrl: "/products/kathmandu-bloom",
             },
             {
                 id: "solar-amber",
@@ -197,7 +216,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
                 accentColor: "#f5e6c8",
                 imageUrl:
                     "https://images.unsplash.com/photo-1590736969955-71cc94901144?w=400&h=500&fit=crop",
-                productUrl: "#",
+                productUrl: "/products/solar-amber",
             },
             {
                 id: "wild-iris",
@@ -214,7 +233,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
                 accentColor: "#e0d5f0",
                 imageUrl:
                     "https://images.unsplash.com/photo-1589733958979-162305875470?w=400&h=500&fit=crop",
-                productUrl: "#",
+                productUrl: "/products/wild-iris",
             },
             {
                 id: "coastal-breeze",
@@ -232,7 +251,133 @@ export const DEFAULT_SITE_DATA: SiteData = {
                 accentColor: "#d4e8f5",
                 imageUrl:
                     "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=500&fit=crop",
-                productUrl: "#",
+                productUrl: "/products/coastal-breeze",
+            },
+            {
+                id: "velvet-oud",
+                name: "Velvet Oud",
+                collection: "Luxury Collection",
+                notes: {
+                    top: ["Saffron", "Elemi"],
+                    heart: ["Oud", "Rose Absolute"],
+                    base: ["Sandalwood", "Musk"],
+                },
+                description:
+                    "Rich Arabian oud meets velvety rose — an opulent statement of timeless luxury.",
+                price: "NPR 38,000",
+                badge: "New Arrival",
+                accentColor: "#2e1a0e",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1563170351-be82bc888aa4?w=400&h=500&fit=crop",
+                productUrl: "/products/velvet-oud",
+            },
+            {
+                id: "white-cedar",
+                name: "White Cedar",
+                collection: "Signature Collection",
+                notes: {
+                    top: ["Bergamot", "Green Apple"],
+                    heart: ["Cedar", "Vetiver"],
+                    base: ["White Musk", "Ambergris"],
+                },
+                description:
+                    "Clean cedarwood grounded in ambergris — understated elegance for the modern minimalist.",
+                price: "NPR 20,500",
+                badge: null,
+                accentColor: "#e8ede8",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=500&fit=crop",
+                productUrl: "/products/white-cedar",
+            },
+            {
+                id: "rose-noir",
+                name: "Rose Noir",
+                collection: "Luxury Collection",
+                notes: {
+                    top: ["Black Currant", "Pear"],
+                    heart: ["Dark Rose", "Geranium"],
+                    base: ["Patchouli", "Oakmoss"],
+                },
+                description:
+                    "A dark, sensual rose — layers of black currant and patchouli make this an unforgettable feminine signature.",
+                price: "NPR 32,000",
+                badge: null,
+                accentColor: "#3d0a1a",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1547887538-047f814f0aee?w=400&h=500&fit=crop",
+                productUrl: "/products/rose-noir",
+            },
+            {
+                id: "himalayan-mist",
+                name: "Himalayan Mist",
+                collection: "Seasonal Fragrances",
+                notes: {
+                    top: ["Snow Accord", "Eucalyptus"],
+                    heart: ["Juniper", "Pine Needle"],
+                    base: ["Moss", "Cedarwood"],
+                },
+                description:
+                    "The crisp, cold air of the high Himalayas — pine, juniper, and mountain mist in a bottle.",
+                price: "NPR 17,500",
+                badge: null,
+                accentColor: "#d6e8f0",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop",
+                productUrl: "/products/himalayan-mist",
+            },
+            {
+                id: "golden-saffron",
+                name: "Golden Saffron",
+                collection: "Limited Edition",
+                notes: {
+                    top: ["Saffron", "Cardamom"],
+                    heart: ["Jasmine", "Rose"],
+                    base: ["Oud", "Amber", "Sandalwood"],
+                },
+                description:
+                    "Precious saffron from Kashmir woven with oud and amber — the most luxurious ANOK creation to date.",
+                price: "NPR 52,000",
+                badge: "Limited Edition",
+                accentColor: "#c8960c",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1600612253971-57b9b7e6e9a7?w=400&h=500&fit=crop",
+                productUrl: "/products/golden-saffron",
+            },
+            {
+                id: "jasmine-dusk",
+                name: "Jasmine Dusk",
+                collection: "Signature Collection",
+                notes: {
+                    top: ["Mandarin", "Green Tea"],
+                    heart: ["Jasmine Sambac", "Tuberose"],
+                    base: ["Vanilla", "White Musk"],
+                },
+                description:
+                    "Jasmine sambac in full bloom at dusk — warm, heady, and intoxicatingly feminine.",
+                price: "NPR 23,000",
+                badge: null,
+                accentColor: "#fef3e2",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400&h=500&fit=crop",
+                productUrl: "/products/jasmine-dusk",
+            },
+            {
+                id: "midnight-vetiver",
+                name: "Midnight Vetiver",
+                collection: "Luxury Collection",
+                notes: {
+                    top: ["Grapefruit", "Pepper"],
+                    heart: ["Vetiver", "Tobacco Leaf"],
+                    base: ["Leather", "Benzoin"],
+                },
+                description:
+                    "Deep vetiver and tobacco leaf cut with grapefruit — a brooding, masculine statement.",
+                price: "NPR 29,500",
+                badge: null,
+                accentColor: "#1c2a1c",
+                imageUrl:
+                    "https://images.unsplash.com/photo-1590739293931-a4b688c9f08d?w=400&h=500&fit=crop",
+                productUrl: "/products/midnight-vetiver",
             },
         ],
     },
@@ -289,10 +434,18 @@ export const DEFAULT_SITE_DATA: SiteData = {
             {
                 heading: "Shop",
                 links: [
-                    { label: "Signature Collection", href: "#collection" },
-                    { label: "Luxury Collection", href: "#collection" },
-                    { label: "Limited Editions", href: "#collection" },
-                    { label: "Seasonal Fragrances", href: "#collection" },
+                    { label: "Signature Collection", href: "/products?category=Signature+Collection" },
+                    { label: "Luxury Collection", href: "/products?category=Luxury+Collection" },
+                    { label: "Limited Editions", href: "/products?category=Limited+Edition" },
+                    { label: "Seasonal Fragrances", href: "/products?category=Seasonal+Fragrances" },
+                ],
+            },
+            {
+                heading: "Company",
+                links: [
+                    { label: "About Us", href: "/about" },
+                    { label: "Our Story", href: "/about" },
+                    { label: "Contact", href: "/contact" },
                 ],
             },
             {
@@ -303,14 +456,6 @@ export const DEFAULT_SITE_DATA: SiteData = {
                     { label: "Returns", href: "#" },
                     { label: "Privacy Policy", href: "#" },
                     { label: "Terms of Use", href: "#" },
-                ],
-            },
-            {
-                heading: "Extras",
-                links: [
-                    { label: "Fragrance Guide", href: "#" },
-                    { label: "Look Book", href: "#" },
-                    { label: "Gift Sets", href: "#" },
                 ],
             },
         ],

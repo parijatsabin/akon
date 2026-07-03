@@ -55,7 +55,7 @@ const TestimonialsPage: React.FC = () => {
         }
         setSaving(true);
         await new Promise((r) => setTimeout(r, 350));
-        updateSection("testimonials", { headline, items });
+        await updateSection("testimonials", { headline, items });
         setSaving(false);
         toast("Testimonials saved!");
     };

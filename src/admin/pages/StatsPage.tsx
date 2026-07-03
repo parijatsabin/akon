@@ -26,7 +26,7 @@ const StatsPage: React.FC = () => {
         }
         setSaving(true);
         await new Promise((r) => setTimeout(r, 350));
-        updateSection("stats", stats);
+        await updateSection("stats", stats);
         setSaving(false);
         toast("Stats bar saved!");
     };

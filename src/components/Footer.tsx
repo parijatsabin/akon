@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useSiteData } from "../PublicSite";
 
 const PinterestIcon = () => (
@@ -67,7 +68,7 @@ const Footer: React.FC = () => {
               <SocialBtn href={BRAND.socialLinks.pinterest} label="Pinterest"><PinterestIcon /></SocialBtn>
             </div>
           </div>
-          
+
           {/* Opening Hours column */}
           <div style={{ minWidth: 180 }}>
             <h4 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.70rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--text-main)", marginBottom: 24 }}>
@@ -83,10 +84,10 @@ const Footer: React.FC = () => {
                     </li>
                   );
                 }
-                
+
                 const openTime = BRAND.useDefaultTime ? "09:00" : hour.openTime;
                 const closeTime = BRAND.useDefaultTime ? "17:00" : hour.closeTime;
-                
+
                 return (
                   <li key={hour.day} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, fontSize: "0.84rem" }}>
                     <span style={{ color: "var(--text-main)", fontWeight: 600 }}>{hour.day}</span>
@@ -109,13 +110,23 @@ const Footer: React.FC = () => {
                 <ul style={{ display: "flex", flexDirection: "column", gap: 13, alignItems: "center" }}>
                   {col.links.map((link) => (
                     <li key={link.label}>
-                      <a href={link.href}
-                        style={{ fontSize: "0.84rem", color: "var(--text-muted)", transition: "color 0.18s", lineHeight: 1, whiteSpace: "nowrap" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
-                      >
-                        {link.label}
-                      </a>
+                      {link.href.startsWith("/") ? (
+                        <Link to={link.href}
+                          style={{ fontSize: "0.84rem", color: "var(--text-muted)", transition: "color 0.18s", lineHeight: 1, whiteSpace: "nowrap" }}
+                          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
+                          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+                        >
+                          {link.label}
+                        </Link>
+                      ) : (
+                        <a href={link.href}
+                          style={{ fontSize: "0.84rem", color: "var(--text-muted)", transition: "color 0.18s", lineHeight: 1, whiteSpace: "nowrap" }}
+                          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
+                          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+                        >
+                          {link.label}
+                        </a>
+                      )}
                     </li>
                   ))}
                 </ul>

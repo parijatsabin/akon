@@ -3,12 +3,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import {
     LayoutDashboard, Settings, ShoppingBag, MessageSquare,
-    Menu, ExternalLink, LogOut,
+    Menu, ExternalLink, LogOut, Star,
 } from "lucide-react";
 
 const NAV_ITEMS = [
     { label: "Dashboard", href: "/admin", icon: <LayoutDashboard size={18} /> },
     { label: "Settings", href: "/admin/settings", icon: <Settings size={18} /> },
+    { label: "Signature Product", href: "/admin/featured", icon: <Star size={18} /> },
     { label: "Collection", href: "/admin/collection", icon: <ShoppingBag size={18} /> },
     { label: "Testimonials", href: "/admin/testimonials", icon: <MessageSquare size={18} /> },
 ];

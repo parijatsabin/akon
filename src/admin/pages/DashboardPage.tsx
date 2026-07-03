@@ -16,6 +16,13 @@ const SECTIONS = [
         tags: ["Brand", "Hero", "Stats", "About", "Navigation", "Newsletter", "Footer", "Commitment"],
     },
     {
+        label: "Signature Product",
+        href: "/admin/featured",
+        icon: <Star size={22} />,
+        desc: "Manage the flagship product shown on the homepage. Pick from the catalog or set fields manually.",
+        tags: ["Featured", "Flagship", "Homepage"],
+    },
+    {
         label: "Collection",
         href: "/admin/collection",
         icon: <ShoppingBag size={22} />,
@@ -59,7 +66,63 @@ const DashboardPage: React.FC = () => {
                 <StatCard label="Products" value={productCount} icon={<ShoppingBag size={20} />} />
                 <StatCard label="Testimonials" value={reviewCount} icon={<Star size={20} />} />
                 <StatCard label="Nav Links" value={navCount} icon={<Globe size={20} />} />
-                <StatCard label="Sections" value={8} icon={<Settings size={20} />} />
+                <StatCard label="Sections" value={9} icon={<Settings size={20} />} />
+            </div>
+
+            {/* Flagship product banner */}
+            <div
+                style={{
+                    marginBottom: 36,
+                    background: "var(--charcoal)",
+                    borderRadius: "var(--radius)",
+                    padding: "20px 24px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 20,
+                    flexWrap: "wrap",
+                }}
+            >
+                <img
+                    src={data.featuredProduct.imageUrl}
+                    alt={data.featuredProduct.name}
+                    style={{ width: 52, height: 64, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid rgba(162,127,63,0.30)", flexShrink: 0 }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 3 }}>
+                        ✦ Currently Featured on Homepage
+                    </div>
+                    <div style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 700, color: "#fff", marginBottom: 1 }}>
+                        {data.featuredProduct.name}
+                    </div>
+                    <div style={{ fontSize: "0.80rem", color: "rgba(255,255,255,0.45)" }}>
+                        {data.featuredProduct.collection} · {data.featuredProduct.price}
+                    </div>
+                </div>
+                <Link
+                    to="/admin/featured"
+                    style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 7,
+                        padding: "9px 18px",
+                        borderRadius: "var(--radius-sm)",
+                        background: "rgba(162,127,63,0.20)",
+                        border: "1px solid rgba(162,127,63,0.35)",
+                        color: "var(--gold-light)",
+                        fontSize: "0.78rem",
+                        fontWeight: 700,
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                        textDecoration: "none",
+                        transition: "background 0.18s",
+                        flexShrink: 0,
+                    }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(162,127,63,0.32)"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(162,127,63,0.20)"; }}
+                >
+                    Change
+                    <ArrowRight size={13} />
+                </Link>
             </div>
 
             {/* Section cards */}

@@ -144,6 +144,9 @@ export interface SiteData {
     hero: HeroData;
     stats: StatItem[];
     about: AboutData;
+    /** The single flagship product shown in the Signature Collection homepage section */
+    featuredProduct: ProductItem;
+    /** Full product catalog — managed separately, shown on /products page */
     collection: CollectionData;
     testimonials: TestimonialsData;
     commitment: CommitmentData;
