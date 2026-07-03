@@ -34,28 +34,60 @@ const SignatureProduct: React.FC = () => {
     const [imgHovered, setImgHovered] = useState(false);
 
     return (
-        <section id="signature" className="section" style={{ background: "var(--cream)" }}>
+        <section id="signature" className="section" style={{ background: "var(--cream)", paddingBottom: 96 }}>
             <div className="container">
 
-                {/* ── Section label ── */}
-                <div style={{ textAlign: "center", marginBottom: 60 }}>
-                    <span className="tag">Signature Collection</span>
-                    <h2
-                        style={{
-                            fontFamily: "var(--font-display)",
-                            fontSize: "clamp(1.8rem, 3vw, 2.8rem)",
+                {/* ── Section header — premium treatment ── */}
+                <div style={{ textAlign: "center", marginBottom: 72 }}>
+                    {/* eyebrow */}
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+                        <div style={{ width: 32, height: 1, background: "var(--gold)", opacity: 0.7 }} />
+                        <span style={{
+                            fontSize: "0.70rem",
                             fontWeight: 700,
-                            fontStyle: "italic",
-                            color: "var(--text-main)",
-                            lineHeight: 1.15,
-                            marginBottom: 12,
-                        }}
-                    >
-                        Our Flagship Fragrance
+                            letterSpacing: "0.26em",
+                            textTransform: "uppercase",
+                            color: "var(--gold)",
+                        }}>
+                            The Signature Collection
+                        </span>
+                        <div style={{ width: 32, height: 1, background: "var(--gold)", opacity: 0.7 }} />
+                    </div>
+
+                    {/* main headline */}
+                    <h2 style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "clamp(2.2rem, 4vw, 3.6rem)",
+                        fontWeight: 700,
+                        fontStyle: "italic",
+                        color: "var(--text-main)",
+                        lineHeight: 1.1,
+                        marginBottom: 18,
+                        letterSpacing: "-0.01em",
+                    }}>
+                        {product.name}
                     </h2>
-                    <p style={{ fontSize: "0.90rem", color: "var(--text-muted)", maxWidth: 480, margin: "0 auto" }}>
-                        One scent. One vision. Crafted to define the essence of ANOK.
-                    </p>
+
+                    {/* Stars + price inline */}
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 16 }}>
+                        <div style={{ display: "flex", gap: 4 }}>
+                            {[1, 2, 3, 4, 5].map((s) => (
+                                <svg key={s} width="20" height="20" viewBox="0 0 24 24" fill="var(--gold)" stroke="none">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            ))}
+                        </div>
+                        <span style={{ width: 1, height: 20, background: "var(--border)", display: "inline-block" }} />
+                        <span style={{
+                            fontFamily: "var(--font-body)",
+                            fontWeight: 700,
+                            fontSize: "1.25rem",
+                            color: "var(--gold-dim)",
+                            letterSpacing: "0.03em",
+                        }}>
+                            {product.price}
+                        </span>
+                    </div>
                 </div>
 
                 {/* ── Two-column layout ── */}
@@ -71,68 +103,17 @@ const SignatureProduct: React.FC = () => {
                     {/* LEFT — Content */}
                     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
 
-                        {/* Badge + Collection label */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                            {product.badge && (
-                                <span
-                                    style={{
-                                        fontSize: "0.65rem",
-                                        fontWeight: 700,
-                                        letterSpacing: "0.12em",
-                                        textTransform: "uppercase",
-                                        padding: "5px 14px",
-                                        borderRadius: 3,
-                                        background: "var(--charcoal)",
-                                        color: "var(--gold-light)",
-                                    }}
-                                >
-                                    {product.badge}
-                                </span>
-                            )}
-                            <span
-                                style={{
-                                    fontSize: "0.72rem",
-                                    fontWeight: 600,
-                                    letterSpacing: "0.10em",
-                                    textTransform: "uppercase",
-                                    color: "var(--gold)",
-                                }}
-                            >
+                        {/* Collection label */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                            <span style={{
+                                fontSize: "0.72rem",
+                                fontWeight: 600,
+                                letterSpacing: "0.10em",
+                                textTransform: "uppercase",
+                                color: "var(--gold)",
+                            }}>
                                 {product.collection}
                             </span>
-                        </div>
-
-                        {/* Product name */}
-                        <div>
-                            <h3
-                                style={{
-                                    fontFamily: "var(--font-display)",
-                                    fontSize: "clamp(2rem, 4vw, 3.2rem)",
-                                    fontWeight: 700,
-                                    color: "var(--text-main)",
-                                    lineHeight: 1.1,
-                                    marginBottom: 8,
-                                }}
-                            >
-                                {product.name}
-                            </h3>
-                            {/* Stars + Price row */}
-                            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                                <div style={{ display: "flex", gap: 3 }}>
-                                    {[1, 2, 3, 4, 5].map((s) => <StarIcon key={s} />)}
-                                </div>
-                                <span
-                                    style={{
-                                        fontFamily: "var(--font-body)",
-                                        fontWeight: 700,
-                                        fontSize: "1.1rem",
-                                        color: "var(--gold-dim)",
-                                        letterSpacing: "0.03em",
-                                    }}
-                                >
-                                    {product.price}
-                                </span>
-                            </div>
                         </div>
 
                         {/* Gold divider */}
@@ -357,55 +338,7 @@ const SignatureProduct: React.FC = () => {
                     </div>
                 </div>
 
-                {/* ── Availability strip ── */}
-                <div
-                    style={{
-                        marginTop: 52,
-                        padding: "20px 28px",
-                        background: "var(--parchment)",
-                        border: "1px solid var(--border)",
-                        borderRadius: "var(--radius)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        flexWrap: "wrap",
-                        gap: 16,
-                    }}
-                >
-                    <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-                        {[
-                            { icon: "✓", text: "In Stock & Ready to Ship" },
-                            { icon: "✦", text: "Free shipping on orders over NPR 5,000" },
-                            { icon: "✦", text: "Authentic, slow-crafted in Nepal" },
-                        ].map((item) => (
-                            <div key={item.text} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                                <span style={{ color: "var(--gold)", fontWeight: 700, fontSize: "0.9rem" }}>{item.icon}</span>
-                                <span style={{ fontSize: "0.82rem", color: "var(--text-muted)", fontWeight: 500 }}>{item.text}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <Link
-                        to="/products"
-                        style={{
-                            fontSize: "0.80rem",
-                            fontWeight: 700,
-                            letterSpacing: "0.08em",
-                            textTransform: "uppercase",
-                            color: "var(--gold)",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 6,
-                            transition: "gap 0.2s",
-                        }}
-                        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.gap = "10px"; }}
-                        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.gap = "6px"; }}
-                    >
-                        View All Products
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                    </Link>
-                </div>
+
             </div>
 
             <style>{`

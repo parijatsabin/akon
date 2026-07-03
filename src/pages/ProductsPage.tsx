@@ -243,61 +243,8 @@ const ProductsPage: React.FC = () => {
         <div style={{ minHeight: "100vh", background: "var(--cream)" }}>
             <Navbar />
 
-            {/* ── Hero banner ── */}
-            <div
-                style={{
-                    paddingTop: 96,
-                    background: "var(--charcoal)",
-                    textAlign: "center",
-                    padding: "120px 24px 64px",
-                    position: "relative",
-                    overflow: "hidden",
-                }}
-            >
-                {/* Decorative gold circles */}
-                <div style={{ position: "absolute", top: -60, right: -60, width: 280, height: 280, borderRadius: "50%", background: "rgba(162,127,63,0.06)", pointerEvents: "none" }} />
-                <div style={{ position: "absolute", bottom: -40, left: -40, width: 200, height: 200, borderRadius: "50%", background: "rgba(162,127,63,0.05)", pointerEvents: "none" }} />
-
-                <span
-                    style={{
-                        display: "inline-block",
-                        fontSize: "0.72rem",
-                        fontWeight: 700,
-                        letterSpacing: "0.18em",
-                        textTransform: "uppercase",
-                        color: "var(--gold)",
-                        marginBottom: 14,
-                    }}
-                >
-                    ANOK Fragrances
-                </span>
-                <h1
-                    style={{
-                        fontFamily: "var(--font-display)",
-                        fontSize: "clamp(2rem, 4vw, 3.4rem)",
-                        fontWeight: 700,
-                        fontStyle: "italic",
-                        color: "#fff",
-                        lineHeight: 1.1,
-                        marginBottom: 14,
-                    }}
-                >
-                    Our Collection
-                </h1>
-                <p style={{ fontSize: "0.94rem", color: "rgba(255,255,255,0.60)", maxWidth: 440, margin: "0 auto" }}>
-                    {COLLECTION.items.length} rare fragrances, slow-crafted in Kathmandu.
-                </p>
-
-                {/* Breadcrumb */}
-                <div style={{ marginTop: 28, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontSize: "0.78rem", color: "rgba(255,255,255,0.40)" }}>
-                    <Link to="/" style={{ color: "rgba(255,255,255,0.40)", transition: "color 0.18s" }} onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--gold-light)"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.40)"; }}>Home</Link>
-                    <span>/</span>
-                    <span style={{ color: "var(--gold-light)" }}>Collection</span>
-                </div>
-            </div>
-
             {/* ── Featured product spotlight ── */}
-            <div style={{ background: "var(--parchment)", borderBottom: "1px solid var(--border)", padding: "24px 0" }}>
+            <div style={{ background: "var(--parchment)", borderBottom: "1px solid var(--border)", padding: "24px 0", marginTop: 96 }}>
                 <div className="container">
                     <div
                         style={{

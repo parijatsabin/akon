@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useSiteData } from "../PublicSite";
 
@@ -30,14 +30,21 @@ const NavItem: React.FC<{
 
 const Navbar: React.FC = () => {
     const { brand: BRAND, navLinks: NAV_LINKS } = useSiteData();
-    const [scrolled, setScrolled] = useState(false);
+    const location = useLocation();
+    const isHome = location.pathname === "/";
+    const [scrolled, setScrolled] = useState(!isHome);
     const [mobileOpen, setMobileOpen] = useState(false);
 
     useEffect(() => {
+        if (!isHome) {
+            setScrolled(true);
+            return;
+        }
         const onScroll = () => setScrolled(window.scrollY > 40);
+        setScrolled(window.scrollY > 40);
         window.addEventListener("scroll", onScroll);
         return () => window.removeEventListener("scroll", onScroll);
-    }, []);
+    }, [isHome]);
 
     const linkColor = scrolled ? "var(--text-main)" : "#fff";
 
@@ -84,9 +91,8 @@ const Navbar: React.FC = () => {
                     style={{
                         display: "flex",
                         gap: 4,
-                        position: "absolute",
-                        left: "50%",
-                        transform: "translateX(-50%)",
+                        marginLeft: "auto",
+                        marginRight: 0,
                     }}
                 >
                     {NAV_LINKS.map((link) => (
@@ -119,43 +125,8 @@ const Navbar: React.FC = () => {
                     ))}
                 </nav>
 
-                {/* ── Right: CTA + mobile toggle ── */}
-                <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-                    <Link
-                        to="/products"
-                        className="desktop-nav"
-                        style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 8,
-                            padding: "10px 26px",
-                            borderRadius: "var(--radius-sm)",
-                            fontSize: "0.82rem",
-                            fontWeight: 700,
-                            letterSpacing: "0.08em",
-                            textTransform: "uppercase",
-                            background: scrolled ? "var(--gold)" : "rgba(162,127,63,0.85)",
-                            color: "#fff",
-                            transition: "all 0.26s",
-                            whiteSpace: "nowrap",
-                            backdropFilter: "blur(4px)",
-                            textDecoration: "none",
-                            boxShadow: scrolled ? "0 4px 16px rgba(162,127,63,0.28)" : "none",
-                        }}
-                        onMouseEnter={(e) => {
-                            (e.currentTarget as HTMLAnchorElement).style.background = "var(--gold-dim)";
-                            (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-1px)";
-                        }}
-                        onMouseLeave={(e) => {
-                            (e.currentTarget as HTMLAnchorElement).style.background = scrolled
-                                ? "var(--gold)"
-                                : "rgba(162,127,63,0.85)";
-                            (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
-                        }}
-                    >
-                        Shop Now
-                    </Link>
-
+                {/* ── Mobile toggle only ── */}
+                <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
                     <button
                         className="mobile-menu-btn"
                         onClick={() => setMobileOpen(!mobileOpen)}
@@ -253,6 +224,7 @@ const Navbar: React.FC = () => {
                             fontSize: "0.88rem",
                             letterSpacing: "0.08em",
                             textTransform: "uppercase",
+                            textDecoration: "none",
                         }}
                     >
                         Shop Now

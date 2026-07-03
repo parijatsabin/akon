@@ -10,9 +10,7 @@ import type { SiteData } from "./admin/types/cms.types";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import StatsBar from "./components/StatsBar";
-import About from "./components/About";
 import SignatureProduct from "./components/SignatureProduct";
-import Testimonials from "./components/Testimonials";
 import Commitment from "./components/Commitment";
 import Newsletter from "./components/Newsletter";
 import Footer from "./components/Footer";
@@ -34,9 +32,7 @@ const PublicSite: React.FC = () => (
         <Navbar />
         <Hero />
         <StatsBar />
-        <About />
         <SignatureProduct />
-        <Testimonials />
         <Commitment />
         <Newsletter />
         <Footer />

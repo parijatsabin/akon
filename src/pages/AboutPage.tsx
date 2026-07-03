@@ -98,41 +98,8 @@ const AboutPage: React.FC = () => {
         <div style={{ minHeight: "100vh", background: "var(--cream)" }}>
             <Navbar />
 
-            {/* ── Hero banner ── */}
-            <div style={{
-                background: "var(--charcoal)",
-                padding: "120px 24px 72px",
-                textAlign: "center",
-                position: "relative",
-                overflow: "hidden",
-            }}>
-                <div style={{ position: "absolute", top: -80, right: -80, width: 320, height: 320, borderRadius: "50%", background: "rgba(162,127,63,0.07)", pointerEvents: "none" }} />
-                <div style={{ position: "absolute", bottom: -60, left: -60, width: 240, height: 240, borderRadius: "50%", background: "rgba(162,127,63,0.05)", pointerEvents: "none" }} />
-
-                <span style={{ display: "inline-block", fontSize: "0.70rem", fontWeight: 700, letterSpacing: "0.20em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>
-                    Our Story
-                </span>
-                <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.2rem, 4.5vw, 3.8rem)", fontWeight: 700, fontStyle: "italic", color: "#fff", lineHeight: 1.1, marginBottom: 16 }}>
-                    About ANOK
-                </h1>
-                <p style={{ fontSize: "0.96rem", color: "rgba(255,255,255,0.55)", maxWidth: 480, margin: "0 auto 28px" }}>
-                    A Kathmandu-born house of fragrance — composing rare, slow-crafted perfumes.
-                </p>
-
-                {/* Breadcrumb */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontSize: "0.78rem", color: "rgba(255,255,255,0.38)" }}>
-                    <Link to="/" style={{ color: "rgba(255,255,255,0.38)", transition: "color 0.18s" }}
-                        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--gold-light)"; }}
-                        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.38)"; }}>
-                        Home
-                    </Link>
-                    <span>/</span>
-                    <span style={{ color: "var(--gold-light)" }}>About Us</span>
-                </div>
-            </div>
-
             {/* ── Brand Story ── */}
-            <section className="section" style={{ background: "var(--warm-white)" }}>
+            <section className="section" style={{ background: "var(--warm-white)", paddingTop: 120 }}>
                 <div className="container">
                     <div className="ab-story-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
                         {/* Text */}
@@ -170,13 +137,13 @@ const AboutPage: React.FC = () => {
             </section>
 
             {/* ── Stats strip ── */}
-            <div style={{ background: "var(--charcoal)", padding: "40px 0" }}>
+            <div style={{ background: "var(--parchment)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", padding: "36px 0" }}>
                 <div className="container">
                     <div className="ab-stats" style={{ display: "grid", gridTemplateColumns: `repeat(${stats.length}, 1fr)`, gap: 0 }}>
                         {stats.map((s, i) => (
-                            <div key={i} style={{ textAlign: "center", padding: "16px 20px", borderRight: i < stats.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none" }}>
-                                <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 700, color: "var(--gold-light)", marginBottom: 6 }}>{s.value}</div>
-                                <div style={{ fontSize: "0.76rem", letterSpacing: "0.10em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>{s.label}</div>
+                            <div key={i} style={{ textAlign: "center", padding: "16px 20px", borderRight: i < stats.length - 1 ? "1px solid var(--border)" : "none" }}>
+                                <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 700, color: "var(--gold)", marginBottom: 6 }}>{s.value}</div>
+                                <div style={{ fontSize: "0.76rem", letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--text-muted)" }}>{s.label}</div>
                             </div>
                         ))}
                     </div>
@@ -322,20 +289,20 @@ const AboutPage: React.FC = () => {
             </section>
 
             {/* ── CTA strip — go to collection ── */}
-            <div style={{ background: "var(--charcoal)", padding: "64px 24px", textAlign: "center" }}>
+            <div style={{ background: "var(--parchment)", borderTop: "1px solid var(--border)", padding: "64px 24px", textAlign: "center" }}>
                 <div className="container">
                     <span style={{ display: "block", fontSize: "0.70rem", fontWeight: 700, letterSpacing: "0.20em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 12 }}>
                         Experience the Difference
                     </span>
-                    <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem, 3vw, 2.8rem)", fontWeight: 700, color: "#fff", marginBottom: 20, lineHeight: 1.1 }}>
+                    <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.8rem, 3vw, 2.8rem)", fontWeight: 700, color: "var(--text-main)", marginBottom: 20, lineHeight: 1.1 }}>
                         Discover Our Fragrances
                     </h2>
-                    <p style={{ fontSize: "0.96rem", color: "rgba(255,255,255,0.50)", maxWidth: 440, margin: "0 auto 32px" }}>
+                    <p style={{ fontSize: "0.96rem", color: "var(--text-muted)", maxWidth: 440, margin: "0 auto 32px" }}>
                         Fifteen rare compositions, each telling a different story. Find yours.
                     </p>
                     <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
                         <Link to="/products" className="btn btn-gold">Browse Collection</Link>
-                        <Link to="/contact" className="btn btn-ghost-light">Contact Us</Link>
+                        <Link to="/contact" className="btn btn-dark">Contact Us</Link>
                     </div>
                 </div>
             </div>

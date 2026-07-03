@@ -3,7 +3,7 @@ import { readStore, updateSection } from "../cms/cmsStore";
 import { Field, Input, Textarea, Select, SaveBtn } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
 import type { ProductItem } from "../types/cms.types";
-import { Plus, Pencil, Trash2, ChevronUp, ChevronDown, X } from "lucide-react";
+import { Plus, Pencil, Trash2, X } from "lucide-react";
 
 // ── Constants ─────────────────────────────────────────────────
 const COLLECTIONS = [

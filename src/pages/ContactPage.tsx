@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useSiteData } from "../PublicSite";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -113,31 +112,8 @@ const ContactPage: React.FC = () => {
         <div style={{ minHeight: "100vh", background: "var(--cream)" }}>
             <Navbar />
 
-            {/* ── Hero banner ── */}
-            <div style={{ background: "var(--charcoal)", padding: "120px 24px 72px", textAlign: "center", position: "relative", overflow: "hidden" }}>
-                <div style={{ position: "absolute", top: -80, right: -80, width: 320, height: 320, borderRadius: "50%", background: "rgba(162,127,63,0.07)", pointerEvents: "none" }} />
-                <div style={{ position: "absolute", bottom: -60, left: -60, width: 240, height: 240, borderRadius: "50%", background: "rgba(162,127,63,0.05)", pointerEvents: "none" }} />
-
-                <span style={{ display: "inline-block", fontSize: "0.70rem", fontWeight: 700, letterSpacing: "0.20em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>
-                    We'd love to hear from you
-                </span>
-                <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.2rem, 4.5vw, 3.8rem)", fontWeight: 700, fontStyle: "italic", color: "#fff", lineHeight: 1.1, marginBottom: 16 }}>
-                    Contact Us
-                </h1>
-                <p style={{ fontSize: "0.96rem", color: "rgba(255,255,255,0.55)", maxWidth: 460, margin: "0 auto 28px" }}>
-                    Questions, partnerships, press enquiries — we're here.
-                </p>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontSize: "0.78rem", color: "rgba(255,255,255,0.38)" }}>
-                    <Link to="/" style={{ color: "rgba(255,255,255,0.38)", transition: "color 0.18s" }}
-                        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--gold-light)"; }}
-                        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.38)"; }}>Home</Link>
-                    <span>/</span>
-                    <span style={{ color: "var(--gold-light)" }}>Contact</span>
-                </div>
-            </div>
-
             {/* ── Main content grid ── */}
-            <section className="section" style={{ background: "var(--cream)" }}>
+            <section className="section" style={{ background: "var(--cream)", paddingTop: 120 }}>
                 <div className="container">
                     <div className="ct-grid" style={{ display: "grid", gridTemplateColumns: "1fr 420px", gap: 56, alignItems: "flex-start" }}>
 
