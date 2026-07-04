@@ -9,8 +9,8 @@ import React from "react";
 import type { SiteData } from "./admin/types/cms.types";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import StatsBar from "./components/StatsBar";
 import SignatureProduct from "./components/SignatureProduct";
+import CollectionTiles from "./components/CollectionTiles";
 import Commitment from "./components/Commitment";
 import Newsletter from "./components/Newsletter";
 import Footer from "./components/Footer";
@@ -31,8 +31,8 @@ const PublicSite: React.FC = () => (
     <>
         <Navbar />
         <Hero />
-        <StatsBar />
         <SignatureProduct />
+        <CollectionTiles />
         <Commitment />
         <Newsletter />
         <Footer />

@@ -57,7 +57,7 @@ const ICONS: Record<string, React.ReactNode> = {
 
 // ── Main Page ─────────────────────────────────────────────────
 const AboutPage: React.FC = () => {
-    const { about, brand: BRAND, testimonials: TESTIMONIALS, commitment: COMMITMENT, stats } = useSiteData();
+    const { about, brand: BRAND, testimonials: TESTIMONIALS, commitment: COMMITMENT } = useSiteData();
 
     // Testimonials carousel state
     const visibleCount = useVisibleCount();
@@ -136,20 +136,6 @@ const AboutPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* ── Stats strip ── */}
-            <div style={{ background: "var(--parchment)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", padding: "36px 0" }}>
-                <div className="container">
-                    <div className="ab-stats" style={{ display: "grid", gridTemplateColumns: `repeat(${stats.length}, 1fr)`, gap: 0 }}>
-                        {stats.map((s, i) => (
-                            <div key={i} style={{ textAlign: "center", padding: "16px 20px", borderRight: i < stats.length - 1 ? "1px solid var(--border)" : "none" }}>
-                                <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 700, color: "var(--gold)", marginBottom: 6 }}>{s.value}</div>
-                                <div style={{ fontSize: "0.76rem", letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--text-muted)" }}>{s.label}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
             {/* ── Why Choose Us ── */}
             <section className="section" style={{ background: "var(--cream)" }}>
                 <div className="container">
@@ -187,17 +173,24 @@ const AboutPage: React.FC = () => {
             <section style={{ background: "var(--parchment)", padding: "72px 0" }}>
                 <div className="container">
                     <div className="ab-commit" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
-                        {/* Decorative gold circle */}
-                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            <div style={{ position: "relative", width: 280, height: 280 }}>
-                                <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: "2px solid var(--gold-rule)" }} />
-                                <div style={{ position: "absolute", inset: 20, borderRadius: "50%", border: "1px solid var(--gold-rule)", opacity: 0.6 }} />
-                                <div style={{ position: "absolute", inset: 40, borderRadius: "50%", background: "var(--gold-glow)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6 }}>
-                                    <div style={{ fontFamily: "var(--font-display)", fontSize: "2.4rem", fontWeight: 700, color: "var(--gold)", lineHeight: 1 }}>✦</div>
-                                    <div style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 700, color: "var(--gold-dim)", letterSpacing: "0.14em", textTransform: "uppercase" }}>{BRAND.name}</div>
-                                    <div style={{ fontSize: "0.68rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-faint)" }}>Pure Essence</div>
+                        {/* Commitment pillars */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                            {[
+                                { icon: "🌿", title: "Responsibly Sourced", body: "Every raw material is ethically harvested — aged oud, Bulgarian rose, Himalayan botanicals — with full traceability." },
+                                { icon: "✦", title: "Small Batch Crafted", body: "Each fragrance is blended in limited quantities, never mass-produced. Quality over volume, always." },
+                                { icon: "🧪", title: "No Synthetic Shortcuts", body: "We use only natural isolates and absolutes. No artificial fixatives, no cheap synthetics hidden in the base." },
+                                { icon: "🌍", title: "Low-Impact Packaging", body: "Bottles are reusable, packaging is recycled. Our footprint stays as light as our finest top notes." },
+                            ].map((p) => (
+                                <div key={p.title} style={{ display: "flex", alignItems: "flex-start", gap: 18, padding: "20px 22px", background: "var(--warm-white)", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
+                                    <div style={{ width: 44, height: 44, borderRadius: "var(--radius-sm)", background: "var(--parchment)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>
+                                        {p.icon}
+                                    </div>
+                                    <div>
+                                        <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.96rem", color: "var(--text-main)", marginBottom: 4 }}>{p.title}</div>
+                                        <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.7 }}>{p.body}</div>
+                                    </div>
                                 </div>
-                            </div>
+                            ))}
                         </div>
                         <div>
                             <span className="tag">Our Promise</span>
@@ -316,11 +309,9 @@ const AboutPage: React.FC = () => {
           .ab-commit > div:first-child { order: -1; }
           .ab-commit > div:last-child { display: flex; flex-direction: column; align-items: center; }
           .ab-reasons { grid-template-columns: repeat(2, 1fr) !important; }
-          .ab-stats { grid-template-columns: repeat(2, 1fr) !important; }
         }
         @media (max-width: 520px) {
           .ab-reasons { grid-template-columns: 1fr !important; }
-          .ab-stats { grid-template-columns: 1fr 1fr !important; }
         }
       `}</style>
         </div>

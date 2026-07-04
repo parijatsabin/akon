@@ -134,6 +134,7 @@ const ProductDetailPage: React.FC = () => {
                                     transition: "transform 0.6s ease",
                                     transform: mainImgHovered ? "scale(1.04)" : "scale(1)",
                                 }}
+                                onError={(e) => { const t = e.currentTarget; t.onerror = null; t.src = "/logo.png"; t.style.objectFit = "contain"; t.style.padding = "40px"; t.style.opacity = "0.18"; t.style.transform = "scale(1)"; }}
                             />
                             <div
                                 style={{
@@ -450,6 +451,7 @@ const ProductDetailPage: React.FC = () => {
                                             <img src={item.imageUrl} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.5s" }}
                                                 onMouseEnter={(e) => { (e.currentTarget as HTMLImageElement).style.transform = "scale(1.06)"; }}
                                                 onMouseLeave={(e) => { (e.currentTarget as HTMLImageElement).style.transform = "scale(1)"; }}
+                                                onError={(e) => { const t = e.currentTarget; t.onerror = null; t.src = "/logo.png"; t.style.objectFit = "contain"; t.style.padding = "28px"; t.style.opacity = "0.18"; }}
                                             />
                                         </div>
                                         <div style={{ padding: "14px 16px 18px" }}>
