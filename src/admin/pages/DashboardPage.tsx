@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { readStore } from "../cms/cmsStore";
+import { useSiteData } from "../../PublicSite";
 import { StatCard } from "../components/ui/Card";
 import {
     ShoppingBag, MessageSquare, Settings, ArrowRight,
-    LayoutDashboard, Globe, Star,
+    LayoutDashboard, Globe, Star, LayoutGrid, Search, Package,
 } from "lucide-react";
 
 const SECTIONS = [
@@ -26,21 +26,43 @@ const SECTIONS = [
         label: "Collection",
         href: "/admin/collection",
         icon: <ShoppingBag size={22} />,
-        desc: "Add, edit, reorder and remove products. Manage fragrance notes, pricing, badges and images.",
-        tags: ["Products", "Pricing", "Images", "Badges"],
+        desc: "Add, edit, reorder and remove products. Manage fragrance notes, pricing, badges and visibility.",
+        tags: ["Products", "Pricing", "Images", "Badges", "Visibility"],
+    },
+    {
+        label: "Collection Settings",
+        href: "/admin/collection-settings",
+        icon: <Package size={22} />,
+        desc: "Manage product sizes, trust signals, shipping info and craftsmanship text shown on product pages.",
+        tags: ["Sizes", "Shipping", "Trust Signals", "Craftsmanship"],
+    },
+    {
+        label: "Collection Tiles",
+        href: "/admin/collection-tiles",
+        icon: <LayoutGrid size={22} />,
+        desc: "Manage the homepage category showcase tiles — images, labels, links and visibility.",
+        tags: ["Homepage", "Categories", "Tiles"],
     },
     {
         label: "Testimonials",
         href: "/admin/testimonials",
         icon: <MessageSquare size={22} />,
-        desc: "Manage customer reviews. Add new quotes, update star ratings and author details.",
+        desc: "Manage customer reviews. Add new quotes, update star ratings, author details and visibility.",
         tags: ["Reviews", "Ratings", "Quotes"],
+    },
+    {
+        label: "SEO",
+        href: "/admin/seo",
+        icon: <Search size={22} />,
+        desc: "Configure meta title, description, keywords and Open Graph social sharing settings.",
+        tags: ["Meta", "Open Graph", "Social", "Keywords"],
     },
 ];
 
 const DashboardPage: React.FC = () => {
-    const data = readStore();
+    const data = useSiteData();
     const productCount = data.collection.items.length;
+    const visibleProductCount = data.collection.items.filter((p) => p.visible).length;
     const reviewCount = data.testimonials.items.length;
     const navCount = data.navLinks.length;
 
@@ -63,10 +85,10 @@ const DashboardPage: React.FC = () => {
 
             {/* Stat cards */}
             <div className="dash-stat-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20, marginBottom: 44 }}>
-                <StatCard label="Products" value={productCount} icon={<ShoppingBag size={20} />} />
+                <StatCard label="Products" value={`${visibleProductCount} / ${productCount}`} icon={<ShoppingBag size={20} />} />
                 <StatCard label="Testimonials" value={reviewCount} icon={<Star size={20} />} />
                 <StatCard label="Nav Links" value={navCount} icon={<Globe size={20} />} />
-                <StatCard label="Sections" value={9} icon={<Settings size={20} />} />
+                <StatCard label="Sections" value={11} icon={<Settings size={20} />} />
             </div>
 
             {/* Flagship product banner */}

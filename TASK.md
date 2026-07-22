@@ -1,195 +1,327 @@
-# Website Architecture Optimization & Multi-Page Branding Enhancement Prompt
+# Comprehensive Project Analysis and Admin CMS Architecture Planning Prompt
 
-Perform a comprehensive analysis of the current website structure, user experience, information architecture, branding strategy, and component flow. The current implementation has successfully achieved the **Collections** and **Signature Collection** sections using a multi-page approach. However, the website now requires a complete restructuring to establish a consistent, scalable, and brand-focused multi-page architecture.
+Perform a complete end-to-end analysis of the entire project, including the current website implementation, existing Admin Panel/CMS implementation, project structure, data management approach, UI/UX architecture, and future scalability considerations.
 
-## Primary Objective (Highest Priority)
+## Project Goal
 
-The highest priority is to convert the entire website into a proper **multi-page website architecture**, following the same design and routing patterns already established for the **Collections** section.
+The primary objective of this project is to build a simple, scalable, maintainable, and production-ready **Admin Panel (CMS)** that allows me to manage all website content dynamically without modifying the frontend code directly.
 
-### Required Main Navigation Structure
-
-Replace the current mixed navigation approach with the following primary menu structure:
-
-| Home | Collections | About Us | Contact |
-| ---- | ----------- | -------- | ------- |
-
-Each menu item should have its own dedicated page, route, SEO metadata, and content structure.
+The Admin Panel should become the single source of truth for managing all website data and content.
 
 ---
 
-# 1. Multi-Page Website Architecture
+## Current Situation
 
-Analyze the existing implementation and create a consistent multi-page architecture for all sections, not just Collections.
+* The website frontend has already been developed.
+* The Admin Panel/CMS basic implementation and some code structures have already been created.
+* We need to analyze:
 
-### Required Pages
-
-## Home Page
-
-* Primary brand landing page
-* Focus heavily on premium branding and storytelling
-* Showcase the Signature Collection prominently
-* Create a strong hero section that communicates:
-
-  * Brand identity
-  * Brand mission
-  * Premium positioning
-  * Emotional connection
-  * Product uniqueness
-* Include strategic sections such as:
-
-  * Hero Banner
-  * Signature Collection Highlight
-  * Brand Story Preview
-  * Customer Reviews Preview
-  * Brand Values
-  * Call-To-Action sections
+  * What has already been implemented.
+  * What architecture decisions are good.
+  * What needs to be improved.
+  * What should be removed or simplified.
+  * What should be centralized.
+  * What should be prepared for future scalability.
 
 ---
 
-## Collections Page
+## Data Management Strategy
 
-* Keep the existing multi-page structure
-* Maintain:
+For the current version, we are **NOT using a database**.
 
-  * Signature Collection
-  * Featured Collections
-  * Future Collection scalability
-* Ensure architecture supports expansion when more products are released
+Instead, we will manage all website content through separate JSON files.
+
+Examples:
+
+* `home_data.json`
+* `product_data.json`
+* `about_data.json`
+* `contact_data.json`
+* `review_data.json`
+* `collection_data.json`
+* `settings_data.json`
+* `seo_data.json`
+* etc.
+
+### Why separate JSON files?
+
+* Easier content management.
+* Cleaner project structure.
+* Easier maintenance.
+* Easier debugging.
+* Better modularity.
+* Future migration to PostgreSQL, MongoDB, or any other database becomes simpler.
+* Allows separation of concerns.
 
 ---
 
-## About Us Page
+## Main Analysis Tasks
 
-Create a completely dedicated About Us page by analyzing the current brand flow.
+Perform a comprehensive analysis of the project and provide:
 
-This page should include:
+### 1. Current Architecture Analysis
 
-* Brand Story
-* Founder Story (if applicable)
+Analyze:
+
+* Folder structure
+* Component structure
+* Data flow
+* State management
+* API structure
+* JSON management structure
+* Admin Panel architecture
+* Frontend rendering architecture
+* Reusability
+* Scalability
+* Maintainability
+
+Explain:
+
+* What is good.
+* What is problematic.
+* What should be improved.
+* What should be removed.
+
+---
+
+### 2. Admin CMS Architecture Review
+
+Analyze whether the Admin Panel currently supports:
+
+* CRUD operations
+* Dynamic rendering
+* Reusable forms
+* Reusable tables
+* File/image management
+* Section management
+* Global settings
+* Feature toggles
+* Show/hide sections
+* Ordering/sorting
+* SEO management
+* Future role management
+* Audit/history possibilities
+
+Suggest:
+
+* Better CMS architecture.
+* Better folder structure.
+* Better component organization.
+* Better data management strategy.
+
+---
+
+### 3. JSON Data Architecture
+
+Design a clean and scalable JSON architecture.
+
+Requirements:
+
+* Separate JSON files for each module.
+* Standardized schema.
+* Easy migration to databases.
+* Support for:
+
+  * Create
+  * Read
+  * Update
+  * Delete
+  * Sorting
+  * Visibility toggle
+  * Featured items
+  * Metadata
+  * SEO
+  * Timestamps
+  * Future versioning
+
+Provide examples of:
+
+* Product JSON
+* Home JSON
+* About JSON
+* Reviews JSON
+* Collections JSON
+* Global Settings JSON
+
+---
+
+### 4. Frontend Dynamic Rendering Analysis
+
+Ensure that:
+
+* Every website section is rendered dynamically.
+* No hardcoded content exists.
+* Components are reusable.
+* Components consume JSON data only.
+* New sections can be added without major code changes.
+
+Analyze:
+
+* Which areas are currently static.
+* Which areas should become dynamic.
+* How to centralize data consumption.
+
+---
+
+### 5. Admin Features Analysis
+
+Review and suggest improvements for:
+
+#### Product Management
+
+* CRUD
+* Featured product
+* Status
+* Visibility
+* Categories
+* Collections
+* Media gallery
+
+#### Collection Management
+
+* Featured collections
+* Normal collections
+* Ordering
+* Visibility
+
+#### Home Page Management
+
+* Hero section
+* Banner
+* Features
+* Testimonials
+* Promotions
+
+#### About Page Management
+
+* Company story
 * Mission
 * Vision
-* Brand Philosophy
-* Craftsmanship/Quality Promise
-* Why Choose Our Brand
-* Future Brand Journey
-* Premium Brand Positioning
+* Team
 
-The goal is to transform About Us from a simple informational page into a strong branding and trust-building experience.
+#### Review Management
 
----
+* CRUD
+* Rating
+* Display order
+* Featured review
 
-## Contact Page
+#### Contact Management
 
-Create a dedicated Contact page containing:
+* Contact information
+* Social links
+* Maps
+* Business details
 
-* Contact Information
-* Social Media Links
-* Contact Form
-* Business Details
-* FAQ Section (optional)
-* Customer Support Information
-* Brand Communication Message
+#### Global Settings
 
-The page should feel premium and customer-focused.
+* Brand information
+* Theme settings
+* Website configuration
+* Footer settings
+* Navigation settings
 
----
+#### SEO Management
 
-# 2. Reviews Integration Strategy
-
-Analyze the current Reviews implementation and determine the best user experience approach.
-
-Instead of creating a separate navigation menu for Reviews:
-
-* Integrate Reviews strategically within:
-
-  * Home Page
-  * About Us Page
-  * Product/Collection Pages
-* Create reusable review components
-* Optimize for trust building and conversion
+* Meta title
+* Meta description
+* Keywords
+* Open Graph
+* Structured data
 
 ---
 
-# 3. Home Page Branding Enhancement (Second Highest Priority)
+### 6. Code Quality Analysis
 
-After completing the multi-page architecture, focus on enhancing the Home page.
+Analyze:
 
-Perform a complete branding analysis and improve:
+* Duplicate code
+* Repeated logic
+* Component reusability
+* Service layers
+* Utility functions
+* Hooks
+* API abstraction
+* Naming conventions
+* Folder structure
+* Type definitions
+* Error handling
+* Validation
+* Performance
 
-### Hero Section
+Suggest:
 
-* Premium visual hierarchy
-* Strong brand messaging
-* Emotional storytelling
-* Luxury positioning
-* Clear call-to-actions
-
-### Brand Experience
-
-* Improve typography hierarchy
-* Improve spacing system
-* Improve visual storytelling
-* Strengthen product positioning
-* Create premium customer perception
-
-### Signature Collection Placement
-
-The Signature Collection should become the centerpiece of the homepage and act as the primary product experience.
-
-Possible positioning:
-
-* Hero Section
-* Featured Product Section
-* Signature Experience Section
-* Brand Highlight Section
+* Refactoring opportunities.
+* Centralization opportunities.
+* Standardization improvements.
 
 ---
 
-# 4. Technical Architecture Requirements
+### 7. Future Scalability Planning
 
-Analyze and propose:
+Design the architecture so that future migration becomes easy:
 
-* Route structure
-* SEO structure
-* Meta tags strategy
-* Page component architecture
-* Shared layout system
-* Reusable section components
-* Navigation architecture
-* Breadcrumb support
-* Future scalability strategy
+* JSON → PostgreSQL
+* JSON → MongoDB
+* Single Admin → Multi-user Admin
+* Static Roles → RBAC
+* Local files → Cloud storage
+* Single language → Multi-language
+* Single website → Multi-tenant CMS
 
 ---
 
-# 5. UX/UI Analysis Requirements
+### 8. Create a Final Implementation Roadmap
 
-Before implementing any changes:
+Provide:
 
-* Analyze the current website flow
-* Identify UX inconsistencies
-* Identify branding weaknesses
-* Identify navigation issues
-* Identify scalability problems
-* Propose improvements before implementation
+#### What to Keep
+
+* Existing implementations that are good.
+
+#### What to Improve
+
+* Existing implementations that need refactoring.
+
+#### What to Remove
+
+* Unnecessary complexity or redundant code.
+
+#### What to Build Next
+
+* Prioritized implementation roadmap.
+
+#### What NOT to Do
+
+* Anti-patterns to avoid.
+* Overengineering risks.
+* Architecture mistakes.
 
 ---
 
-# Critical Rules
+## Important Rules
 
-* Prioritize converting the website into a fully structured multi-page architecture first.
-* Do not make random design changes.
-* Do not introduce breaking changes.
-* Maintain consistency with the existing Collections page architecture.
-* Preserve current functionality while improving scalability.
-* If any ambiguity or architectural conflict is found, STOP and ASK before proceeding.
-* Always explain the reasoning behind major architectural and branding decisions.
+* Keep everything simple.
+* Avoid overengineering.
+* Maintain clean architecture.
+* Keep code centralized.
+* Avoid redundant code.
+* Use reusable components.
+* Make every section dynamic.
+* Design for future database migration.
+* Follow scalable project structure.
+* Follow industry standards.
 
-## Priority Order
+---
 
-1. Implement complete multi-page architecture.
-2. Refactor navigation and routing.
-3. Improve About Us and Contact pages.
-4. Integrate Reviews strategically.
-5. Enhance Home page branding.
-6. Optimize hero section and Signature Collection experience.
-7. Improve SEO, scalability, and maintainability.
+## Validation Requirements
+
+After completing the analysis:
+
+1. Recheck the entire architecture at least 2–3 times.
+2. Verify that every section is dynamic.
+3. Verify that all data can migrate to a database.
+4. Verify that there is no unnecessary duplication.
+5. Verify that the solution remains simple and maintainable.
+
+If any assumption or requirement is unclear, STOP and ASK questions before proceeding.

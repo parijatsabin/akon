@@ -1,5 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useSiteData } from "../PublicSite";
+
 
 const Hero: React.FC = () => {
   const { hero: HERO, stats: STATS } = useSiteData();
@@ -7,7 +9,7 @@ const Hero: React.FC = () => {
   return (
     <section id="home" className="hero-section">
       <video
-        src="https://videos.pexels.com/video-files/33233525/14160278_3840_2160_25fps.mp4"
+        src={HERO.videoUrl}
         autoPlay muted loop playsInline preload="auto"
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0, animation: "heroFadeIn 1.4s ease-in-out" }}
       />
@@ -29,13 +31,24 @@ const Hero: React.FC = () => {
             <a href={HERO.ctaPrimary.href} className="btn btn-gold" style={{ padding: "0.95rem 2.6rem", minWidth: 175, justifyContent: "center" }}>
               {HERO.ctaPrimary.label}
             </a>
-            <a href={HERO.ctaSecondary.href} className="btn-hero-ghost">
+            <Link to={HERO.ctaSecondary.href} className="btn-hero-ghost">
               {HERO.ctaSecondary.label}
               <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
-                <path d="M3.5 9H14.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                <path d="M10 4.5L14.5 9L10 13.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M3.5 9H14.5"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M10 4.5L14.5 9L10 13.5"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </div>

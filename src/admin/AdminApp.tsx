@@ -10,7 +10,10 @@ import DashboardPage from "./pages/DashboardPage";
 import GlobalSettingsPage from "./pages/GlobalSettingsPage";
 import FeaturedProductPage from "./pages/FeaturedProductPage";
 import CollectionPage from "./pages/CollectionPage";
+import CollectionSettingsPage from "./pages/CollectionSettingsPage";
+import CollectionTilesPage from "./pages/CollectionTilesPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
+import SeoPage from "./pages/SeoPage";
 
 const AdminApp: React.FC = () => (
     <AuthProvider>
@@ -30,7 +33,10 @@ const AdminApp: React.FC = () => (
                                     <Route path="settings" element={<GlobalSettingsPage />} />
                                     <Route path="featured" element={<FeaturedProductPage />} />
                                     <Route path="collection" element={<CollectionPage />} />
+                                    <Route path="collection-settings" element={<CollectionSettingsPage />} />
+                                    <Route path="collection-tiles" element={<CollectionTilesPage />} />
                                     <Route path="testimonials" element={<TestimonialsPage />} />
+                                    <Route path="seo" element={<SeoPage />} />
                                     {/* Legacy route redirects */}
                                     <Route path="hero" element={<Navigate to="/admin/settings" replace />} />
                                     <Route path="stats" element={<Navigate to="/admin/settings" replace />} />

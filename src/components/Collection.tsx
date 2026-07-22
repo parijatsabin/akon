@@ -4,12 +4,11 @@ import { useSiteData } from "../PublicSite";
 import type { ProductItem } from "../admin/types/cms.types";
 import { useVisibleCount } from "../hooks/useVisibleCount";
 
-const SIZES = ["100 ml", "50 ml", "30 ml", "10 ml"];
 const AUTO_DELAY = 3500;
 const RESUME_AFTER = 6000;
 
-const ProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
-    const [selectedSize, setSelectedSize] = useState(SIZES[0]);
+const ProductCard: React.FC<{ item: ProductItem; sizes: string[] }> = ({ item, sizes }) => {
+    const [selectedSize, setSelectedSize] = useState(sizes[0] ?? "");
 
     return (
         <div className="product-card" style={{ minWidth: 0 }}>
@@ -34,7 +33,7 @@ const ProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
                 <div className="product-card-name">{item.name}</div>
                 <div className="product-card-price">{item.price}</div>
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap", margin: "4px 0 10px" }}>
-                    {SIZES.map((s) => (
+                    {sizes.map((s) => (
                         <button key={s} onClick={() => setSelectedSize(s)} className={`size-chip${s === selectedSize ? " active" : ""}`}>{s}</button>
                     ))}
                 </div>
@@ -46,7 +45,13 @@ const ProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
 
 const Collection: React.FC = () => {
     const { collection: COLLECTION } = useSiteData();
-    const items = COLLECTION.items;
+
+    // Respect visibility and order from CMS
+    const items = [...COLLECTION.items]
+        .filter((p) => p.visible)
+        .sort((a, b) => a.order - b.order);
+
+    const sizes = COLLECTION.productSizes;
     const visibleCount = useVisibleCount({ sm: 480, md: 1024, def: 4 });
     const maxStart = Math.max(0, items.length - visibleCount);
     const gap = 20;
@@ -75,6 +80,8 @@ const Collection: React.FC = () => {
     const translatePct = -(index * (100 / visibleCount));
     const translateOffset = index * gap;
 
+    if (items.length === 0) return null;
+
     return (
         <section id="collection" className="section bg-parchment">
             <div className="container">
@@ -98,7 +105,7 @@ const Collection: React.FC = () => {
                         <div style={{ display: "flex", gap: `${gap}px`, transform: `translateX(calc(${translatePct}% - ${translateOffset}px))`, transition: "transform 0.58s cubic-bezier(0.25,0.46,0.45,0.94)", willChange: "transform" }}>
                             {items.map((item) => (
                                 <div key={item.id} style={{ flex: `0 0 calc(${100 / visibleCount}% - ${gap * (visibleCount - 1) / visibleCount}px)`, minWidth: 0 }}>
-                                    <ProductCard item={item} />
+                                    <ProductCard item={item} sizes={sizes} />
                                 </div>
                             ))}
                         </div>

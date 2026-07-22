@@ -47,6 +47,7 @@ export interface HeroData {
     description: string;
     ctaPrimary: CtaButton;
     ctaSecondary: CtaButton;
+    videoUrl: string;
 }
 
 export interface StatItem {
@@ -58,6 +59,8 @@ export interface AboutData {
     sectionLabel: string;
     headline: string;
     body: string;
+    bodyExtended: string;
+    brandQuote: string;
     cta: CtaButton;
     whyHeadline: string;
     whyTagline: string;
@@ -87,11 +90,31 @@ export interface ProductItem {
     accentColor: string;
     imageUrl: string;
     productUrl: string;
+    /** Whether the product is visible on the public site */
+    visible: boolean;
+    /** Display order (lower = shown first) */
+    order: number;
+    createdAt: string; // ISO date string
+    updatedAt: string; // ISO date string
+}
+
+export interface ShippingRow {
+    label: string;
+    value: string;
+}
+
+export interface TrustSignal {
+    icon: string;
+    text: string;
 }
 
 export interface CollectionData {
     headline: string;
     items: ProductItem[];
+    productSizes: string[];
+    shippingRows: ShippingRow[];
+    craftsmanshipText: string[];
+    trustSignals: TrustSignal[];
 }
 
 export interface TestimonialItem {
@@ -100,6 +123,10 @@ export interface TestimonialItem {
     author: string;
     title: string;
     rating: number;
+    /** Whether the testimonial is visible on the public site */
+    visible: boolean;
+    /** Display order (lower = shown first) */
+    order: number;
 }
 
 export interface TestimonialsData {
@@ -111,6 +138,14 @@ export interface CommitmentData {
     headline: string;
     body: string;
     cta: CtaButton;
+    pillars: CommitmentPillar[];
+}
+
+export interface CommitmentPillar {
+    id: string;
+    icon: string;
+    title: string;
+    body: string;
 }
 
 export interface NewsletterData {
@@ -137,6 +172,30 @@ export interface FooterData {
     credit: { label: string; href: string };
 }
 
+// ── Collection tile (homepage category showcase) ──────────────
+export interface CollectionTileItem {
+    id: string;
+    label: string;
+    heading: string;
+    subtext: string;
+    href: string;
+    imageUrl: string;
+    /** Whether the tile is shown on the homepage */
+    visible: boolean;
+    /** Display order (lower = shown first) */
+    order: number;
+}
+
+// ── SEO ───────────────────────────────────────────────────────
+export interface SeoData {
+    metaTitle: string;
+    metaDescription: string;
+    keywords: string;
+    ogImage: string;
+    ogTitle: string;
+    ogDescription: string;
+}
+
 // ── Root document ─────────────────────────────────────────────
 export interface SiteData {
     brand: BrandData;
@@ -148,8 +207,11 @@ export interface SiteData {
     featuredProduct: ProductItem;
     /** Full product catalog — managed separately, shown on /products page */
     collection: CollectionData;
+    /** Homepage collection category showcase tiles */
+    collectionTiles: CollectionTileItem[];
     testimonials: TestimonialsData;
     commitment: CommitmentData;
     newsletter: NewsletterData;
     footer: FooterData;
+    seo: SeoData;
 }

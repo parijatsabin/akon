@@ -18,7 +18,12 @@ const Stars: React.FC<{ count: number }> = ({ count }) => (
 
 const Testimonials: React.FC = () => {
   const { testimonials: TESTIMONIALS, brand: BRAND } = useSiteData();
-  const items = TESTIMONIALS.items;
+
+  // Respect visibility and order from CMS
+  const items = [...TESTIMONIALS.items]
+    .filter((t) => t.visible)
+    .sort((a, b) => a.order - b.order);
+
   const visibleCount = useVisibleCount({ sm: 600, md: 960, def: 3 });
   const maxStart = Math.max(0, items.length - visibleCount);
 

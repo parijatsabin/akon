@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSiteData } from "../PublicSite";
 
-const SIZES = ["100 ml", "50 ml", "30 ml", "10 ml"];
-
 const SignatureProduct: React.FC = () => {
-    const { featuredProduct: product } = useSiteData();
-    const [selectedSize, setSelectedSize] = useState(SIZES[0]);
+    const { featuredProduct: product, collection: COLLECTION } = useSiteData();
+    const sizes = COLLECTION.productSizes;
+    const [selectedSize, setSelectedSize] = useState(sizes[0] ?? "");
 
     return (
         <section id="signature" className="section bg-cream">
@@ -60,7 +59,7 @@ const SignatureProduct: React.FC = () => {
                         <div>
                             <div className="sig-size-label">Select Size</div>
                             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                {SIZES.map((s) => (
+                                {sizes.map((s) => (
                                     <button key={s} onClick={() => setSelectedSize(s)} className={`size-chip${s === selectedSize ? " active" : ""}`}>{s}</button>
                                 ))}
                             </div>

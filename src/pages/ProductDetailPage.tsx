@@ -4,8 +4,6 @@ import { useSiteData } from "../PublicSite";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const SIZES = ["100 ml", "50 ml", "30 ml", "10 ml"];
-
 const StarIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--gold)" stroke="none">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
@@ -23,7 +21,8 @@ const ProductDetailPage: React.FC = () => {
     const navigate = useNavigate();
     const { collection: COLLECTION } = useSiteData();
 
-    const [selectedSize, setSelectedSize] = useState(SIZES[0]);
+    const sizes = COLLECTION.productSizes;
+    const [selectedSize, setSelectedSize] = useState(sizes[0] ?? "");
     const [qty, setQty] = useState(1);
     const [mainImgHovered, setMainImgHovered] = useState(false);
     const [activeTab, setActiveTab] = useState<"notes" | "story" | "shipping">("notes");
@@ -32,7 +31,11 @@ const ProductDetailPage: React.FC = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [id]);
 
-    const product = COLLECTION.items.find((p) => p.id === id);
+    // Only look up from visible products
+    const visibleItems = COLLECTION.items.filter((p) => p.visible);
+    const product = visibleItems.find((p) => p.id === id)
+        // Fallback: admin preview — allow finding hidden products by id
+        ?? COLLECTION.items.find((p) => p.id === id);
 
     if (!product) {
         return (
@@ -55,9 +58,10 @@ const ProductDetailPage: React.FC = () => {
         );
     }
 
-    // Related products (same collection, exclude current)
-    const related = COLLECTION.items
-        .filter((p) => p.id !== product.id && p.collection === product.collection)
+    // Related products — same collection, visible only, exclude current, respect order
+    const related = [...COLLECTION.items]
+        .filter((p) => p.id !== product.id && p.collection === product.collection && p.visible)
+        .sort((a, b) => a.order - b.order)
         .slice(0, 3);
 
     return (
@@ -243,7 +247,7 @@ const ProductDetailPage: React.FC = () => {
                                 Select Size
                             </div>
                             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                {SIZES.map((s) => (
+                                {sizes.map((s) => (
                                     <button
                                         key={s}
                                         onClick={() => setSelectedSize(s)}
@@ -320,12 +324,7 @@ const ProductDetailPage: React.FC = () => {
                                 border: "1px solid var(--border)",
                             }}
                         >
-                            {[
-                                { icon: "✓", text: "In Stock — ships within 2–3 business days" },
-                                { icon: "✦", text: "Free shipping on orders over NPR 5,000" },
-                                { icon: "✦", text: "Authentic ANOK fragrance, crafted in Nepal" },
-                                { icon: "✦", text: "30-day satisfaction guarantee" },
-                            ].map((item) => (
+                            {COLLECTION.trustSignals.map((item) => (
                                 <div key={item.text} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                                     <span style={{ color: "var(--gold)", fontWeight: 700, fontSize: "0.85rem", flexShrink: 0 }}>{item.icon}</span>
                                     <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{item.text}</span>
@@ -387,20 +386,15 @@ const ProductDetailPage: React.FC = () => {
 
                             {activeTab === "story" && (
                                 <div style={{ fontSize: "0.88rem", lineHeight: 1.85, color: "var(--text-muted)", display: "flex", flexDirection: "column", gap: 12 }}>
-                                    <p>Each bottle of {product.name} is the result of months of meticulous blending by our in-house master perfumers in Kathmandu.</p>
-                                    <p>We source only the finest raw materials — from Bulgarian rose absolutes to aged Arabian oud — ensuring every spray carries the full weight of its ingredients.</p>
-                                    <p>ANOK fragrances are never rushed. They are matured, refined, and bottled only when they meet our exacting standards of excellence.</p>
+                                    {COLLECTION.craftsmanshipText.map((para, i) => (
+                                        <p key={i}>{i === 0 ? `Each bottle of ${product.name} is ` + para.replace(/^Each bottle is /, "") : para}</p>
+                                    ))}
                                 </div>
                             )}
 
                             {activeTab === "shipping" && (
                                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                                    {[
-                                        { label: "Standard Delivery", value: "2–3 business days within Kathmandu" },
-                                        { label: "Nationwide", value: "5–7 business days" },
-                                        { label: "Free Shipping", value: "On orders over NPR 5,000" },
-                                        { label: "Returns", value: "30 days, unopened & sealed" },
-                                    ].map((row) => (
+                                    {COLLECTION.shippingRows.map((row) => (
                                         <div key={row.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid var(--border)" }}>
                                             <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>{row.label}</span>
                                             <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{row.value}</span>

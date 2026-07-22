@@ -32,7 +32,7 @@ const About: React.FC = () => {
           <div className="about-quote-card">
             <div className="about-quote-bg">"</div>
             <p className="about-quote-text">
-              "Crafted for those who understand that a fragrance is not just a scent — it is a memory, an identity, a quiet statement of who you are."
+              "{about.brandQuote}"
             </p>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <div className="gold-rule" />

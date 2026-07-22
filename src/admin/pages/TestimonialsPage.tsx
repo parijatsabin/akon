@@ -12,6 +12,8 @@ const emptyReview = (id: number): TestimonialItem => ({
     author: "",
     title: "",
     rating: 5,
+    visible: true,
+    order: 0,
 });
 
 const StarPicker: React.FC<{ value: number; onChange: (v: number) => void }> = ({ value, onChange }) => (
@@ -110,6 +112,30 @@ const TestimonialsPage: React.FC = () => {
                     <Field label="Rating">
                         <StarPicker value={item.rating} onChange={(v) => setItem(item.id, "rating", v)} />
                     </Field>
+                    {/* Visible toggle */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", background: "var(--parchment)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }}>
+                        <span
+                            role="checkbox"
+                            aria-checked={item.visible}
+                            onClick={() => setItem(item.id, "visible", !item.visible)}
+                            style={{
+                                display: "inline-flex", alignItems: "center",
+                                width: 38, height: 20, borderRadius: 10,
+                                background: item.visible ? "var(--gold)" : "var(--border)",
+                                padding: "2px", transition: "background 0.22s", cursor: "pointer", flexShrink: 0,
+                            }}
+                        >
+                            <span style={{
+                                width: 16, height: 16, borderRadius: "50%", background: "#fff",
+                                boxShadow: "0 1px 3px rgba(0,0,0,0.20)",
+                                transform: item.visible ? "translateX(18px)" : "translateX(0)",
+                                transition: "transform 0.22s", display: "block",
+                            }} />
+                        </span>
+                        <span style={{ fontSize: "0.80rem", color: "var(--text-muted)", fontWeight: 600 }}>
+                            {item.visible ? "Visible on site" : "Hidden from site"}
+                        </span>
+                    </div>
                 </Card>
             ))}
 

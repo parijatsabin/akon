@@ -5,14 +5,6 @@ import type { ProductItem } from "../admin/types/cms.types";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const CATEGORIES = [
-    { value: "all", label: "All Fragrances" },
-    { value: "Signature Collection", label: "Signature Collection" },
-    { value: "Luxury Collection", label: "Luxury Collection" },
-    { value: "Limited Edition", label: "Limited Edition" },
-    { value: "Seasonal Fragrances", label: "Seasonal Fragrances" },
-];
-
 const SORT_OPTIONS = [
     { value: "default", label: "Featured" },
     { value: "price-asc", label: "Price: Low to High" },
@@ -61,14 +53,23 @@ const ProductCard: React.FC<{ item: ProductItem }> = ({ item }) => (
     </Link>
 );
 
+interface Category { value: string; label: string; }
+
 interface SidebarProps {
-    categoryParam: string; search: string; sortBy: string;
-    totalCount: number; filteredCount: number;
-    onCategory: (c: string) => void; onSearch: (s: string) => void;
-    onSort: (s: string) => void; onClear: () => void;
+    categories: Category[];
+    categoryParam: string;
+    search: string;
+    sortBy: string;
+    onCategory: (c: string) => void;
+    onSearch: (s: string) => void;
+    onSort: (s: string) => void;
+    onClear: () => void;
 }
 
-const SidebarContent: React.FC<SidebarProps> = ({ categoryParam, search, sortBy, onCategory, onSearch, onSort, onClear }) => {
+const SidebarContent: React.FC<SidebarProps> = ({
+    categories, categoryParam, search, sortBy,
+    onCategory, onSearch, onSort, onClear,
+}) => {
     const hasFilters = categoryParam !== "all" || search.trim() !== "" || sortBy !== "default";
     return (
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -84,11 +85,11 @@ const SidebarContent: React.FC<SidebarProps> = ({ categoryParam, search, sortBy,
                 </div>
             </div>
 
-            {/* Categories */}
+            {/* Categories — derived from CMS */}
             <div style={{ marginBottom: 24 }}>
                 <div className="eyebrow" style={{ marginBottom: 10 }}>Collection</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                    {CATEGORIES.map((cat) => {
+                    {categories.map((cat) => {
                         const active = categoryParam === cat.value;
                         return (
                             <button key={cat.value} onClick={() => onCategory(cat.value)}
@@ -109,15 +110,12 @@ const SidebarContent: React.FC<SidebarProps> = ({ categoryParam, search, sortBy,
                 </select>
             </div>
 
-            {/* Count + clear */}
-            {hasFilters && (<div style={{ padding: "13px 16px", background: "var(--parchment)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }}>
-
-
-                <button onClick={onClear} style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--gold)", background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: 5 }}>
-                    ✕ Clear all filters
-                </button>
-
-            </div>
+            {hasFilters && (
+                <div style={{ padding: "13px 16px", background: "var(--parchment)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }}>
+                    <button onClick={onClear} style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--gold)", background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: 5 }}>
+                        ✕ Clear all filters
+                    </button>
+                </div>
             )}
         </div>
     );
@@ -132,33 +130,56 @@ const ProductsPage: React.FC = () => {
     const drawerRef = useRef<HTMLDivElement>(null);
     const categoryParam = searchParams.get("category") || "all";
 
+    // Build category list dynamically from visible products in CMS
+    const visibleItems = COLLECTION.items
+        .filter((p) => p.visible)
+        .sort((a, b) => a.order - b.order);
+
+    const uniqueCollections = Array.from(new Set(visibleItems.map((p) => p.collection)));
+    const categories: Category[] = [
+        { value: "all", label: "All Fragrances" },
+        ...uniqueCollections.map((c) => ({ value: c, label: c })),
+    ];
+
     useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, []);
     useEffect(() => {
         if (!drawerOpen) return;
-        const h = (e: MouseEvent) => { if (drawerRef.current && !drawerRef.current.contains(e.target as Node)) setDrawerOpen(false); };
+        const h = (e: MouseEvent) => {
+            if (drawerRef.current && !drawerRef.current.contains(e.target as Node)) setDrawerOpen(false);
+        };
         document.addEventListener("mousedown", h);
         return () => document.removeEventListener("mousedown", h);
     }, [drawerOpen]);
-    useEffect(() => { document.body.style.overflow = drawerOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [drawerOpen]);
+    useEffect(() => {
+        document.body.style.overflow = drawerOpen ? "hidden" : "";
+        return () => { document.body.style.overflow = ""; };
+    }, [drawerOpen]);
 
-    let filtered = COLLECTION.items.filter((item) => {
+    // Filter & sort — only visible items, sorted by CMS order by default
+    let filtered = visibleItems.filter((item) => {
         const matchCat = categoryParam === "all" || item.collection === categoryParam;
         const q = search.toLowerCase();
         const matchSearch = !q || item.name.toLowerCase().includes(q) || item.collection.toLowerCase().includes(q) || item.description.toLowerCase().includes(q);
         return matchCat && matchSearch;
     });
+
     if (sortBy === "price-asc") filtered = [...filtered].sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
-    if (sortBy === "price-desc") filtered = [...filtered].sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
-    if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+    else if (sortBy === "price-desc") filtered = [...filtered].sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+    else if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
 
     const setCategory = (cat: string) => {
         if (cat === "all") searchParams.delete("category"); else searchParams.set("category", cat);
-        setSearchParams(searchParams); setDrawerOpen(false);
+        setSearchParams(searchParams);
+        setDrawerOpen(false);
     };
     const handleClear = () => { setSearch(""); setCategory("all"); setSortBy("default"); };
     const hasFilters = categoryParam !== "all" || search.trim() !== "" || sortBy !== "default";
 
-    const sidebarProps: SidebarProps = { categoryParam, search, sortBy, totalCount: COLLECTION.items.length, filteredCount: filtered.length, onCategory: setCategory, onSearch: setSearch, onSort: setSortBy, onClear: handleClear };
+    const sidebarProps: SidebarProps = {
+        categories,
+        categoryParam, search, sortBy,
+        onCategory: setCategory, onSearch: setSearch, onSort: setSortBy, onClear: handleClear,
+    };
 
     return (
         <div style={{ minHeight: "100vh", background: "var(--cream)" }}>
@@ -172,24 +193,24 @@ const ProductsPage: React.FC = () => {
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="6" x2="20" y2="6" /><line x1="8" y1="12" x2="16" y2="12" /><line x1="11" y1="18" x2="13" y2="18" /></svg>
                         Filters{hasFilters ? " · Active" : ""}
                     </button>
-                    <p style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}><strong style={{ color: "var(--text-main)" }}>{filtered.length}</strong> of {COLLECTION.items.length}</p>
+                    <p style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
+                        <strong style={{ color: "var(--text-main)" }}>{filtered.length}</strong> of {visibleItems.length}
+                    </p>
                 </div>
             </div>
 
-            {/* Layout */}
             <div className="container" style={{ paddingTop: 120, paddingBottom: 80 }}>
-                {/* Inline page heading + search */}
-
-                {/* Inline heading */}
                 <div style={{ marginTop: 20, marginBottom: 20, paddingBottom: 28, textAlign: "center" }}>
-                    <span className="tag" style={{ fontSize: "0.92rem" }} >Our Collection</span>
+                    <span className="tag" style={{ fontSize: "0.92rem" }}>Our Collection</span>
                     <p style={{ fontSize: "0.92rem", color: "var(--text-muted)" }}>
                         Rare, slow-crafted fragrances — each holding time, memory and the quiet weight of luxury.
                     </p>
                 </div>
 
                 <div className="collection-layout">
-                    <aside className="collection-sidebar"><SidebarContent {...sidebarProps} /></aside>
+                    <aside className="collection-sidebar">
+                        <SidebarContent {...sidebarProps} />
+                    </aside>
                     <div>
                         {/* Active filter chips */}
                         {hasFilters && (

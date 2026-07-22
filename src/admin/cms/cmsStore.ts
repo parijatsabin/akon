@@ -29,7 +29,50 @@ export async function loadStore(): Promise<SiteData> {
     try {
         const res = await fetch("/cms-data.json?t=" + Date.now());
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as SiteData;
+        const raw = (await res.json()) as Partial<SiteData>;
+
+        // Deep-merge with defaults so new fields added in future updates
+        // are available immediately without requiring a manual JSON edit.
+        const data: SiteData = {
+            ...DEFAULT_SITE_DATA,
+            ...raw,
+            // Merge nested objects so partial updates don't clobber new keys
+            brand: { ...DEFAULT_SITE_DATA.brand, ...(raw.brand ?? {}) },
+            hero: { ...DEFAULT_SITE_DATA.hero, ...(raw.hero ?? {}) },
+            about: { ...DEFAULT_SITE_DATA.about, ...(raw.about ?? {}) },
+            commitment: {
+                ...DEFAULT_SITE_DATA.commitment,
+                ...(raw.commitment ?? {}),
+                // ensure pillars array is always present
+                pillars: (raw.commitment as typeof DEFAULT_SITE_DATA.commitment | undefined)?.pillars
+                    ?? DEFAULT_SITE_DATA.commitment.pillars,
+            },
+            newsletter: { ...DEFAULT_SITE_DATA.newsletter, ...(raw.newsletter ?? {}) },
+            footer: { ...DEFAULT_SITE_DATA.footer, ...(raw.footer ?? {}) },
+            seo: { ...DEFAULT_SITE_DATA.seo, ...(raw.seo ?? {}) },
+            featuredProduct: { ...DEFAULT_SITE_DATA.featuredProduct, ...(raw.featuredProduct ?? {}) },
+            // Arrays: use the saved version if present, otherwise fall back to defaults
+            stats: raw.stats ?? DEFAULT_SITE_DATA.stats,
+            navLinks: raw.navLinks ?? DEFAULT_SITE_DATA.navLinks,
+            collection: raw.collection
+                ? {
+                    ...DEFAULT_SITE_DATA.collection,
+                    ...raw.collection,
+                    // ensure new fields exist even in old JSON
+                    productSizes: (raw.collection as typeof DEFAULT_SITE_DATA.collection).productSizes
+                        ?? DEFAULT_SITE_DATA.collection.productSizes,
+                    trustSignals: (raw.collection as typeof DEFAULT_SITE_DATA.collection).trustSignals
+                        ?? DEFAULT_SITE_DATA.collection.trustSignals,
+                    shippingRows: (raw.collection as typeof DEFAULT_SITE_DATA.collection).shippingRows
+                        ?? DEFAULT_SITE_DATA.collection.shippingRows,
+                    craftsmanshipText: (raw.collection as typeof DEFAULT_SITE_DATA.collection).craftsmanshipText
+                        ?? DEFAULT_SITE_DATA.collection.craftsmanshipText,
+                }
+                : DEFAULT_SITE_DATA.collection,
+            collectionTiles: raw.collectionTiles ?? DEFAULT_SITE_DATA.collectionTiles,
+            testimonials: raw.testimonials ?? DEFAULT_SITE_DATA.testimonials,
+        };
+
         _cache = data;
         _loaded = true;
         return data;

@@ -19,6 +19,10 @@ const emptyProduct = (): ProductItem => ({
     notes: { top: [], heart: [], base: [] },
     description: "", price: "", badge: null,
     accentColor: "#a27f3f", imageUrl: "", productUrl: "#",
+    visible: true,
+    order: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
 });
 
 const notesString = (arr: string[]) => arr.join(", ");
@@ -181,6 +185,35 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ initial, mode, onSave, on
                             </div>
                         </Field>
                     </div>
+                    {/* Row 5 — Visible toggle */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: "var(--parchment)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)", marginBottom: 4 }}>
+                        <span
+                            role="checkbox"
+                            aria-checked={form.visible}
+                            onClick={() => set("visible", !form.visible)}
+                            style={{
+                                display: "inline-flex", alignItems: "center",
+                                width: 40, height: 22, borderRadius: 11,
+                                background: form.visible ? "var(--gold)" : "var(--border)",
+                                padding: "2px", transition: "background 0.22s", cursor: "pointer", flexShrink: 0,
+                            }}
+                        >
+                            <span style={{
+                                width: 18, height: 18, borderRadius: "50%", background: "#fff",
+                                boxShadow: "0 1px 4px rgba(0,0,0,0.18)",
+                                transform: form.visible ? "translateX(18px)" : "translateX(0)",
+                                transition: "transform 0.22s", display: "block",
+                            }} />
+                        </span>
+                        <div>
+                            <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-main)" }}>
+                                {form.visible ? "Visible on site" : "Hidden from site"}
+                            </div>
+                            <div style={{ fontSize: "0.72rem", color: "var(--text-faint)" }}>
+                                Toggle to show or hide this product without deleting it
+                            </div>
+                        </div>
+                    </div>
                     {/* Fragrance Notes */}
                     <div style={{ paddingTop: 16, borderTop: "1px solid var(--border)", marginTop: 4 }}>
                         <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>Fragrance Notes</div>
@@ -272,6 +305,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, onEdit, onDel
                         {product.badge}
                     </div>
                 )}
+                {!product.visible && (
+                    <div style={{ position: "absolute", top: 4, left: 4, fontSize: "0.50rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", background: "rgba(224,85,85,0.90)", color: "#fff", padding: "2px 5px", borderRadius: 2, zIndex: 2 }}>
+                        Hidden
+                    </div>
+                )}
             </div>
 
             {/* Body */}
@@ -309,12 +347,13 @@ const CollectionPage: React.FC = () => {
 
     // Dialog actions
     const handleAdd = (p: ProductItem) => {
-        setItems((prev) => [p, ...prev]);
+        const withOrder = { ...p, order: items.length, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        setItems((prev) => [withOrder, ...prev]);
         setDialog({ type: "none" });
         toast("Product added — remember to save.");
     };
     const handleEdit = (p: ProductItem) => {
-        setItems((prev) => prev.map((x) => (x.id === p.id ? p : x)));
+        setItems((prev) => prev.map((x) => (x.id === p.id ? { ...p, updatedAt: new Date().toISOString() } : x)));
         setDialog({ type: "none" });
         toast("Product updated — remember to save.");
     };
@@ -327,7 +366,9 @@ const CollectionPage: React.FC = () => {
     const handleSave = async () => {
         setSaving(true);
         await new Promise((r) => setTimeout(r, 300));
-        await updateSection("collection", { headline, items });
+        // Preserve the non-items fields (productSizes, shippingRows, etc.) from the current store
+        const current = readStore().collection;
+        await updateSection("collection", { ...current, headline, items });
         setSaving(false);
         toast("Collection saved!");
     };

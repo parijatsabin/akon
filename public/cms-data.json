@@ -89,7 +89,8 @@
         "ctaSecondary": {
             "label": "Our Story",
             "href": "#about"
-        }
+        },
+        "videoUrl": "https://videos.pexels.com/video-files/33233525/14160278_3840_2160_25fps.mp4"
     },
     "stats": [
         {
@@ -113,6 +114,8 @@
         "sectionLabel": "\"Our Legacy Of Luxury\"",
         "headline": "About Us",
         "body": "ANOK is a Kathmandu-born house of fragrance — composing rare, slow-crafted perfumes that hold time, memory and the quiet weight of luxury.",
+        "bodyExtended": "Every fragrance we create begins with a question: what does this moment smell like? We source only the rarest raw materials — aged oud from the Arabian peninsula, Bulgarian rose absolutes, Himalayan botanicals — and blend them slowly, letting each accord mature before it meets the bottle.",
+        "brandQuote": "Crafted for those who understand that a fragrance is not just a scent — it is a memory, an identity, a quiet statement of who you are.",
         "cta": {
             "label": "Learn More",
             "href": "#contact"
@@ -165,10 +168,61 @@
         "badge": "Signature",
         "accentColor": "#1a1a1a",
         "imageUrl": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&h=1000&fit=crop",
-        "productUrl": "/products/noir-veil"
+        "productUrl": "/products/noir-veil",
+        "visible": true,
+        "order": 0,
+        "createdAt": "2025-01-01T00:00:00.000Z",
+        "updatedAt": "2025-01-01T00:00:00.000Z"
     },
     "collection": {
         "headline": "Our Collection",
+        "productSizes": [
+            "100 ml",
+            "50 ml",
+            "30 ml",
+            "10 ml"
+        ],
+        "trustSignals": [
+            {
+                "icon": "✓",
+                "text": "In Stock — ships within 2–3 business days"
+            },
+            {
+                "icon": "✦",
+                "text": "Free shipping on orders over NPR 5,000"
+            },
+            {
+                "icon": "✦",
+                "text": "Authentic ANOK fragrance, crafted in Nepal"
+            },
+            {
+                "icon": "✦",
+                "text": "30-day satisfaction guarantee"
+            }
+        ],
+        "shippingRows": [
+            {
+                "label": "Standard Delivery",
+                "value": "2–3 business days within Kathmandu"
+            },
+            {
+                "label": "Nationwide",
+                "value": "5–7 business days"
+            },
+            {
+                "label": "Free Shipping",
+                "value": "On orders over NPR 5,000"
+            },
+            {
+                "label": "Returns",
+                "value": "30 days, unopened & sealed"
+            }
+        ],
+        "craftsmanshipText": [
+            "Each bottle is the result of months of meticulous blending by our in-house master perfumers in Kathmandu.",
+            "We source only the finest raw materials — from Bulgarian rose absolutes to aged Arabian oud — ensuring every spray carries the full weight of its ingredients.",
+            "ANOK fragrances are never rushed. They are matured, refined, and bottled only when they meet our exacting standards of excellence."
+        ],
         "items": [
             {
                 "id": "noir-veil",
@@ -193,7 +247,11 @@
                 "badge": "Signature",
                 "accentColor": "#1a1a1a",
                 "imageUrl": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=500&fit=crop",
-                "productUrl": "/products/noir-veil"
+                "productUrl": "/products/noir-veil",
+                "visible": true,
+                "order": 0,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "espresso-rouge",
@@ -218,7 +276,11 @@
                 "badge": "Best Seller",
                 "accentColor": "#3d2817",
                 "imageUrl": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=500&fit=crop",
-                "productUrl": "/products/espresso-rouge"
+                "productUrl": "/products/espresso-rouge",
+                "visible": true,
+                "order": 1,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "champagne-hour",
@@ -243,7 +305,11 @@
                 "badge": null,
                 "accentColor": "#f9e4e4",
                 "imageUrl": "https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=400&h=500&fit=crop",
-                "productUrl": "/products/champagne-hour"
+                "productUrl": "/products/champagne-hour",
+                "visible": true,
+                "order": 2,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "obsidian-no-7",
@@ -268,7 +334,11 @@
                 "badge": "Limited Edition",
                 "accentColor": "#222222",
                 "imageUrl": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400&h=500&fit=crop",
-                "productUrl": "/products/obsidian-no-7"
+                "productUrl": "/products/obsidian-no-7",
+                "visible": true,
+                "order": 3,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "kathmandu-bloom",
@@ -293,7 +363,11 @@
                 "badge": null,
                 "accentColor": "#e4f0f5",
                 "imageUrl": "https://images.unsplash.com/photo-1588405748880-42d3054a1d71?w=400&h=500&fit=crop",
-                "productUrl": "/products/kathmandu-bloom"
+                "productUrl": "/products/kathmandu-bloom",
+                "visible": true,
+                "order": 4,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "solar-amber",
@@ -318,7 +392,11 @@
                 "badge": null,
                 "accentColor": "#f5e6c8",
                 "imageUrl": "https://images.unsplash.com/photo-1590736969955-71cc94901144?w=400&h=500&fit=crop",
-                "productUrl": "/products/solar-amber"
+                "productUrl": "/products/solar-amber",
+                "visible": true,
+                "order": 5,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "wild-iris",
@@ -343,7 +421,11 @@
                 "badge": null,
                 "accentColor": "#e0d5f0",
                 "imageUrl": "https://images.unsplash.com/photo-1589733958979-162305875470?w=400&h=500&fit=crop",
-                "productUrl": "/products/wild-iris"
+                "productUrl": "/products/wild-iris",
+                "visible": true,
+                "order": 6,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "coastal-breeze",
@@ -368,7 +450,11 @@
                 "badge": null,
                 "accentColor": "#d4e8f5",
                 "imageUrl": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=500&fit=crop",
-                "productUrl": "/products/coastal-breeze"
+                "productUrl": "/products/coastal-breeze",
+                "visible": true,
+                "order": 7,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "velvet-oud",
@@ -393,7 +479,11 @@
                 "badge": "New Arrival",
                 "accentColor": "#2e1a0e",
                 "imageUrl": "https://images.unsplash.com/photo-1563170351-be82bc888aa4?w=400&h=500&fit=crop",
-                "productUrl": "/products/velvet-oud"
+                "productUrl": "/products/velvet-oud",
+                "visible": true,
+                "order": 8,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "white-cedar",
@@ -418,7 +508,11 @@
                 "badge": null,
                 "accentColor": "#e8ede8",
                 "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=500&fit=crop",
-                "productUrl": "/products/white-cedar"
+                "productUrl": "/products/white-cedar",
+                "visible": true,
+                "order": 9,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "rose-noir",
@@ -443,7 +537,11 @@
                 "badge": null,
                 "accentColor": "#3d0a1a",
                 "imageUrl": "https://images.unsplash.com/photo-1547887538-047f814f0aee?w=400&h=500&fit=crop",
-                "productUrl": "/products/rose-noir"
+                "productUrl": "/products/rose-noir",
+                "visible": true,
+                "order": 10,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "himalayan-mist",
@@ -468,7 +566,11 @@
                 "badge": null,
                 "accentColor": "#d6e8f0",
                 "imageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop",
-                "productUrl": "/products/himalayan-mist"
+                "productUrl": "/products/himalayan-mist",
+                "visible": true,
+                "order": 11,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "golden-saffron",
@@ -494,7 +596,11 @@
                 "badge": "Limited Edition",
                 "accentColor": "#c8960c",
                 "imageUrl": "https://images.unsplash.com/photo-1600612253971-57b9b7e6e9a7?w=400&h=500&fit=crop",
-                "productUrl": "/products/golden-saffron"
+                "productUrl": "/products/golden-saffron",
+                "visible": true,
+                "order": 12,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "jasmine-dusk",
@@ -519,7 +625,11 @@
                 "badge": null,
                 "accentColor": "#fef3e2",
                 "imageUrl": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400&h=500&fit=crop",
-                "productUrl": "/products/jasmine-dusk"
+                "productUrl": "/products/jasmine-dusk",
+                "visible": true,
+                "order": 13,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             },
             {
                 "id": "midnight-vetiver",
@@ -544,10 +654,46 @@
                 "badge": null,
                 "accentColor": "#1c2a1c",
                 "imageUrl": "https://images.unsplash.com/photo-1590739293931-a4b688c9f08d?w=400&h=500&fit=crop",
-                "productUrl": "/products/midnight-vetiver"
+                "productUrl": "/products/midnight-vetiver",
+                "visible": true,
+                "order": 14,
+                "createdAt": "2025-01-01T00:00:00.000Z",
+                "updatedAt": "2025-01-01T00:00:00.000Z"
             }
         ]
     },
+    "collectionTiles": [
+        {
+            "id": "tile-signature",
+            "label": "Signature",
+            "heading": "Signature Collection",
+            "subtext": "The house icons — built to last a lifetime",
+            "href": "/products?category=Signature+Collection",
+            "imageUrl": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=900&h=640&fit=crop",
+            "visible": true,
+            "order": 0
+        },
+        {
+            "id": "tile-luxury",
+            "label": "Luxury",
+            "heading": "Luxury Collection",
+            "subtext": "Rare ingredients, opulent compositions",
+            "href": "/products?category=Luxury+Collection",
+            "imageUrl": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=900&h=640&fit=crop",
+            "visible": true,
+            "order": 1
+        },
+        {
+            "id": "tile-limited",
+            "label": "Limited",
+            "heading": "Limited Edition",
+            "subtext": "Numbered, unrepeatable, collectible",
+            "href": "/products?category=Limited+Edition",
+            "imageUrl": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=900&h=640&fit=crop",
+            "visible": true,
+            "order": 2
+        }
+    ],
     "testimonials": {
         "headline": "What Our Customers Say",
         "items": [
@@ -556,21 +702,27 @@
                 "quote": "Noir Elixir is pure magic. The bold, seductive blend is perfect for evenings out, and I always receive compliments on it.",
                 "author": "Sophia L.",
                 "title": "Ceo Of Alpha Company",
-                "rating": 5
+                "rating": 5,
+                "visible": true,
+                "order": 0
             },
             {
                 "id": 2,
                 "quote": "Celestial Blossom is my everyday signature. Light, feminine, and utterly elegant — it lasts all day beautifully.",
                 "author": "Amara K.",
                 "title": "Head of Design, Bloom Studio",
-                "rating": 5
+                "rating": 5,
+                "visible": true,
+                "order": 1
             },
             {
                 "id": 3,
                 "quote": "The packaging alone is a work of art. Mystic Dawn has a depth that I have never experienced in any other fragrance.",
                 "author": "James R.",
                 "title": "Lifestyle Curator",
-                "rating": 5
+                "rating": 5,
+                "visible": true,
+                "order": 2
             }
         ]
     },
@@ -580,7 +732,33 @@
         "cta": {
             "label": "Learn More",
             "href": "#about"
-        }
+        },
+        "pillars": [
+            {
+                "id": "p1",
+                "icon": "🌿",
+                "title": "Responsibly Sourced",
+                "body": "Every raw material is ethically harvested — aged oud, Bulgarian rose, Himalayan botanicals — with full traceability."
+            },
+            {
+                "id": "p2",
+                "icon": "✦",
+                "title": "Small Batch Crafted",
+                "body": "Each fragrance is blended in limited quantities, never mass-produced. Quality over volume, always."
+            },
+            {
+                "id": "p3",
+                "icon": "🧪",
+                "title": "No Synthetic Shortcuts",
+                "body": "We use only natural isolates and absolutes. No artificial fixatives, no cheap synthetics hidden in the base."
+            },
+            {
+                "id": "p4",
+                "icon": "🌍",
+                "title": "Low-Impact Packaging",
+                "body": "Bottles are reusable, packaging is recycled. Our footprint stays as light as our finest top notes."
+            }
+        ]
     },
     "newsletter": {
         "headline": "Stay Connected with",
@@ -660,5 +838,13 @@
             "label": "AbionSoft",
             "href": "#"
         }
+    },
+    "seo": {
+        "metaTitle": "ANOK — Luxury Fragrances from Kathmandu",
+        "metaDescription": "ANOK is a Kathmandu-born house of fragrance. Rare, slow-crafted perfumes that hold time, memory and the quiet weight of luxury.",
+        "keywords": "ANOK, luxury perfume, fragrance, Kathmandu, Nepal, oud, rose, amber",
+        "ogImage": "/logo.png",
+        "ogTitle": "ANOK — Luxury Fragrances",
+        "ogDescription": "Rare, slow-crafted perfumes from the heart of Kathmandu. Discover the Signature, Luxury, and Limited Edition collections."
     }
 }

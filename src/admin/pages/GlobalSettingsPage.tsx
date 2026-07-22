@@ -5,7 +5,7 @@ import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
 import type {
     BrandData, HeroData, StatItem, AboutData,
-    CommitmentData, NewsletterData, NavLink, FooterData, FooterNavColumn,
+    CommitmentData, CommitmentPillar, NewsletterData, NavLink, FooterData, FooterNavColumn,
 } from "../types/cms.types";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 
@@ -376,6 +376,11 @@ const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     <Textarea value={form.description} onChange={(e) => set("description", e.target.value)} />
                 </Field>
             </Card>
+            <Card title="Background Video">
+                <Field label="Video URL" hint="Direct MP4 link — Pexels, CDN, etc. Used as the hero background.">
+                    <Input value={form.videoUrl} onChange={(e) => set("videoUrl", e.target.value)} placeholder="https://..." />
+                </Field>
+            </Card>
             <Card title="CTA Buttons">
                 <div style={{ marginBottom: 20 }}>
                     <div style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 12 }}>Primary</div>
@@ -482,7 +487,15 @@ const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     <Field label="Section Label"><Input value={form.sectionLabel} onChange={(e) => set("sectionLabel", e.target.value)} /></Field>
                     <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
                 </div>
-                <Field label="Body"><Textarea value={form.body} onChange={(e) => set("body", e.target.value)} style={{ minHeight: 90 }} /></Field>
+                <Field label="Body (main paragraph)">
+                    <Textarea value={form.body} onChange={(e) => set("body", e.target.value)} style={{ minHeight: 90 }} />
+                </Field>
+                <Field label="Body Extended" hint="Optional second paragraph shown on the About page.">
+                    <Textarea value={form.bodyExtended ?? ""} onChange={(e) => set("bodyExtended", e.target.value)} style={{ minHeight: 90 }} />
+                </Field>
+                <Field label="Brand Quote" hint="The italic pull-quote shown in the story card.">
+                    <Textarea value={form.brandQuote ?? ""} onChange={(e) => set("brandQuote", e.target.value)} style={{ minHeight: 72 }} />
+                </Field>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                     <Field label="CTA Label"><Input value={form.cta.label} onChange={(e) => setCta("label", e.target.value)} /></Field>
                     <Field label="CTA Link"><Input value={form.cta.href} onChange={(e) => setCta("href", e.target.value)} /></Field>
@@ -525,6 +538,13 @@ const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const [saving, setSaving] = useState(false);
     const set = (k: keyof CommitmentData, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
     const setCta = (f2: "label" | "href", v: string) => setForm((f) => ({ ...f, cta: { ...f.cta, [f2]: v } }));
+
+    const setPillar = (i: number, k: keyof CommitmentPillar, v: string) => {
+        const next = [...form.pillars]; next[i] = { ...next[i], [k]: v }; set("pillars", next);
+    };
+    const addPillar = () => set("pillars", [...form.pillars, { id: `p${Date.now()}`, icon: "✦", title: "", body: "" }]);
+    const removePillar = (i: number) => set("pillars", form.pillars.filter((_, x) => x !== i));
+
     const save = async () => {
         setSaving(true); await new Promise((r) => setTimeout(r, 300));
         await updateSection("commitment", form); setSaving(false);
@@ -543,6 +563,34 @@ const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     </div>
                 </div>
             </Card>
+
+            <Card title="Commitment Pillars" subtitle="Shown as feature cards on the About page" action={
+                <button onClick={addPillar}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "var(--charcoal)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", cursor: "pointer" }}>
+                    <Plus size={13} /> Add Pillar
+                </button>
+            }>
+                {form.pillars.map((p, i) => (
+                    <div key={p.id} style={{ display: "grid", gridTemplateColumns: "52px 1fr 1fr auto", gap: "0 12px", alignItems: "end", marginBottom: 12, padding: "12px 0", borderBottom: i < form.pillars.length - 1 ? "1px solid var(--border)" : "none" }}>
+                        <Field label={i === 0 ? "Icon" : ""} hint="Emoji">
+                            <Input value={p.icon} onChange={(e) => setPillar(i, "icon", e.target.value)} style={{ textAlign: "center", fontSize: "1.2rem" }} />
+                        </Field>
+                        <Field label={i === 0 ? "Title" : ""}>
+                            <Input value={p.title} onChange={(e) => setPillar(i, "title", e.target.value)} placeholder="Responsibly Sourced" />
+                        </Field>
+                        <Field label={i === 0 ? "Body" : ""}>
+                            <Input value={p.body} onChange={(e) => setPillar(i, "body", e.target.value)} placeholder="Description…" />
+                        </Field>
+                        <div style={{ paddingBottom: 20 }}>
+                            <button onClick={() => removePillar(i)} disabled={form.pillars.length <= 1}
+                                style={{ padding: 7, background: "none", border: "none", cursor: form.pillars.length <= 1 ? "not-allowed" : "pointer", color: form.pillars.length <= 1 ? "var(--text-faint)" : "#e05555" }}>
+                                <Trash2 size={14} />
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </Card>
+
             <SaveBtn loading={saving} onClick={save} />
         </>
     );
