@@ -20,7 +20,7 @@ const Newsletter: React.FC = () => {
       <div className="container newsletter-inner">
         <div className="section-label" style={{ justifyContent: "center", marginBottom: 20 }}>
           <span className="section-label-line" />
-          <span className="eyebrow">Exclusive Access</span>
+          <span className="eyebrow">{NEWSLETTER.eyebrow}</span>
           <span className="section-label-line" />
         </div>
 

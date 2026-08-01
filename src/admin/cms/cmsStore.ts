@@ -53,7 +53,12 @@ export async function loadStore(): Promise<SiteData> {
             featuredProduct: { ...DEFAULT_SITE_DATA.featuredProduct, ...(raw.featuredProduct ?? {}) },
             // Arrays: use the saved version if present, otherwise fall back to defaults
             stats: raw.stats ?? DEFAULT_SITE_DATA.stats,
-            navLinks: raw.navLinks ?? DEFAULT_SITE_DATA.navLinks,
+            // Stamp enabled:true on any link that predates the field
+            navLinks: (raw.navLinks ?? DEFAULT_SITE_DATA.navLinks).map((l) => ({
+                ...l,
+                enabled: l.enabled ?? true,
+            })),
+            mobileCtaLabel: (raw as Partial<SiteData>).mobileCtaLabel ?? DEFAULT_SITE_DATA.mobileCtaLabel,
             collection: raw.collection
                 ? {
                     ...DEFAULT_SITE_DATA.collection,
@@ -67,10 +72,32 @@ export async function loadStore(): Promise<SiteData> {
                         ?? DEFAULT_SITE_DATA.collection.shippingRows,
                     craftsmanshipText: (raw.collection as typeof DEFAULT_SITE_DATA.collection).craftsmanshipText
                         ?? DEFAULT_SITE_DATA.collection.craftsmanshipText,
+                    sectionTag: (raw.collection as typeof DEFAULT_SITE_DATA.collection).sectionTag
+                        ?? DEFAULT_SITE_DATA.collection.sectionTag,
+                    pageTag: (raw.collection as typeof DEFAULT_SITE_DATA.collection).pageTag
+                        ?? DEFAULT_SITE_DATA.collection.pageTag,
+                    pageSubtitle: (raw.collection as typeof DEFAULT_SITE_DATA.collection).pageSubtitle
+                        ?? DEFAULT_SITE_DATA.collection.pageSubtitle,
+                    ctaExploreLabel: (raw.collection as typeof DEFAULT_SITE_DATA.collection).ctaExploreLabel
+                        ?? DEFAULT_SITE_DATA.collection.ctaExploreLabel,
                 }
                 : DEFAULT_SITE_DATA.collection,
-            collectionTiles: raw.collectionTiles ?? DEFAULT_SITE_DATA.collectionTiles,
-            testimonials: raw.testimonials ?? DEFAULT_SITE_DATA.testimonials,
+            // collectionTiles may be old array format or new object format — normalise to object
+            collectionTiles: (() => {
+                const raw_ct = (raw as Partial<SiteData>).collectionTiles;
+                if (!raw_ct) return DEFAULT_SITE_DATA.collectionTiles;
+                if (Array.isArray(raw_ct)) {
+                    // Legacy: was stored as plain array, wrap it
+                    return { ...DEFAULT_SITE_DATA.collectionTiles, items: raw_ct };
+                }
+                return { ...DEFAULT_SITE_DATA.collectionTiles, ...raw_ct };
+            })(),
+            testimonials: raw.testimonials
+                ? { ...DEFAULT_SITE_DATA.testimonials, ...raw.testimonials }
+                : DEFAULT_SITE_DATA.testimonials,
+            contact: (raw as Partial<SiteData>).contact
+                ? { ...DEFAULT_SITE_DATA.contact, ...(raw as Partial<SiteData>).contact }
+                : DEFAULT_SITE_DATA.contact,
         };
 
         _cache = data;

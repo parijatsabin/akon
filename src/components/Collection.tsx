@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSiteData } from "../PublicSite";
 import type { ProductItem } from "../admin/types/cms.types";
 import { useVisibleCount } from "../hooks/useVisibleCount";
+import WhatsAppButton from "./WhatsAppButton";
 
 const AUTO_DELAY = 3500;
 const RESUME_AFTER = 6000;
@@ -37,7 +38,12 @@ const ProductCard: React.FC<{ item: ProductItem; sizes: string[] }> = ({ item, s
                         <button key={s} onClick={() => setSelectedSize(s)} className={`size-chip${s === selectedSize ? " active" : ""}`}>{s}</button>
                     ))}
                 </div>
-                <button className="btn btn-gold" style={{ width: "100%", justifyContent: "center", marginTop: "auto" }}>Add To Cart</button>
+                <WhatsAppButton
+                    name={item.name}
+                    size={selectedSize}
+                    price={item.price}
+                    style={{ width: "100%", marginTop: "auto", fontSize: "0.78rem" }}
+                />
             </div>
         </div>
     );
@@ -86,7 +92,7 @@ const Collection: React.FC = () => {
         <section id="collection" className="section bg-parchment">
             <div className="container">
                 <div className="collection-header">
-                    <span className="tag">Curated for You</span>
+                    <span className="tag">{COLLECTION.sectionTag}</span>
                     <h2 className="section-title">{COLLECTION.headline}</h2>
                 </div>
 

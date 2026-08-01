@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { useSiteData } from "../PublicSite";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import WhatsAppButton from "../components/WhatsAppButton";
 
 const StarIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--gold)" stroke="none">
@@ -272,8 +273,9 @@ const ProductDetailPage: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Quantity + Add to cart */}
+                        {/* Quantity + Order on WhatsApp */}
                         <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+                            {/* Qty stepper */}
                             <div
                                 style={{
                                     display: "flex",
@@ -304,12 +306,14 @@ const ProductDetailPage: React.FC = () => {
                                     +
                                 </button>
                             </div>
-                            <button
-                                className="btn btn-gold"
-                                style={{ flex: 1, minWidth: 160, justifyContent: "center" }}
-                            >
-                                Add to Cart
-                            </button>
+                            {/* WhatsApp CTA — sends product name, size, qty, price */}
+                            <WhatsAppButton
+                                name={product.name}
+                                size={selectedSize}
+                                qty={qty}
+                                price={product.price}
+                                style={{ flex: 1, minWidth: 160 }}
+                            />
                         </div>
 
                         {/* Trust signals */}

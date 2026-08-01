@@ -6,7 +6,7 @@ const CollectionTiles: React.FC = () => {
     const { collectionTiles } = useSiteData();
 
     // Sort by order, filter visible only
-    const tiles = [...collectionTiles]
+    const tiles = [...collectionTiles.items]
         .filter((t) => t.visible)
         .sort((a, b) => a.order - b.order);
 
@@ -16,8 +16,8 @@ const CollectionTiles: React.FC = () => {
         <section className="section bg-cream">
             <div className="container">
                 <div className="section-header">
-                    <span className="tag">Explore</span>
-                    <h2 className="section-title">Our Collections</h2>
+                    <span className="tag">{collectionTiles.sectionTag}</span>
+                    <h2 className="section-title">{collectionTiles.headline}</h2>
                 </div>
                 <div className="tiles-grid">
                     {tiles.map((tile) => (

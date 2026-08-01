@@ -33,6 +33,8 @@ export interface BrandData {
 export interface NavLink {
     label: string;
     href: string;
+    /** When false the link is hidden in the navbar but the page remains accessible */
+    enabled: boolean;
 }
 
 export interface CtaButton {
@@ -64,6 +66,9 @@ export interface AboutData {
     cta: CtaButton;
     whyHeadline: string;
     whyTagline: string;
+    differenceSectionTag: string;
+    ctaStripTag: string;
+    ctaStripHeading: string;
     reasons: ReasonItem[];
 }
 
@@ -109,7 +114,11 @@ export interface TrustSignal {
 }
 
 export interface CollectionData {
+    sectionTag: string;
     headline: string;
+    pageTag: string;
+    pageSubtitle: string;
+    ctaExploreLabel: string;
     items: ProductItem[];
     productSizes: string[];
     shippingRows: ShippingRow[];
@@ -130,11 +139,13 @@ export interface TestimonialItem {
 }
 
 export interface TestimonialsData {
+    sectionTag: string;
     headline: string;
     items: TestimonialItem[];
 }
 
 export interface CommitmentData {
+    tag: string;
     headline: string;
     body: string;
     cta: CtaButton;
@@ -149,6 +160,7 @@ export interface CommitmentPillar {
 }
 
 export interface NewsletterData {
+    eyebrow: string;
     headline: string;
     brandHighlight: string;
     subtext: string;
@@ -168,6 +180,7 @@ export interface FooterNavColumn {
 
 export interface FooterData {
     tagline: string;
+    hoursHeading: string;
     navColumns: FooterNavColumn[];
     credit: { label: string; href: string };
 }
@@ -186,6 +199,12 @@ export interface CollectionTileItem {
     order: number;
 }
 
+export interface CollectionTilesSection {
+    sectionTag: string;
+    headline: string;
+    items: CollectionTileItem[];
+}
+
 // ── SEO ───────────────────────────────────────────────────────
 export interface SeoData {
     metaTitle: string;
@@ -196,10 +215,18 @@ export interface SeoData {
     ogDescription: string;
 }
 
+// ── Contact page ──────────────────────────────────────────────
+export interface ContactData {
+    pageTag: string;
+    pageSubtitle: string;
+    subjects: string[];
+}
+
 // ── Root document ─────────────────────────────────────────────
 export interface SiteData {
     brand: BrandData;
     navLinks: NavLink[];
+    mobileCtaLabel: string;
     hero: HeroData;
     stats: StatItem[];
     about: AboutData;
@@ -208,10 +235,11 @@ export interface SiteData {
     /** Full product catalog — managed separately, shown on /products page */
     collection: CollectionData;
     /** Homepage collection category showcase tiles */
-    collectionTiles: CollectionTileItem[];
+    collectionTiles: CollectionTilesSection;
     testimonials: TestimonialsData;
     commitment: CommitmentData;
     newsletter: NewsletterData;
     footer: FooterData;
+    contact: ContactData;
     seo: SeoData;
 }

@@ -64,7 +64,7 @@ const DashboardPage: React.FC = () => {
     const productCount = data.collection.items.length;
     const visibleProductCount = data.collection.items.filter((p) => p.visible).length;
     const reviewCount = data.testimonials.items.length;
-    const navCount = data.navLinks.length;
+    const navCount = data.navLinks.filter((l) => l.enabled !== false).length;
 
     return (
         <div>

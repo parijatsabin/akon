@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSiteData } from "../PublicSite";
+import WhatsAppButton from "./WhatsAppButton";
 
 const SignatureProduct: React.FC = () => {
-    const { featuredProduct: product, collection: COLLECTION } = useSiteData();
+    const { featuredProduct: product, collection: COLLECTION, navLinks } = useSiteData();
     const sizes = COLLECTION.productSizes;
     const [selectedSize, setSelectedSize] = useState(sizes[0] ?? "");
+
+    // Only show "Explore Full Collection" if the /products nav link is enabled in CMS
+    const collectionNavEnabled = navLinks.some(
+        (l) => l.href === "/products" && l.enabled !== false
+    );
 
     return (
         <section id="signature" className="section bg-cream">
@@ -67,13 +73,20 @@ const SignatureProduct: React.FC = () => {
 
                         {/* CTAs */}
                         <div className="sig-ctas">
-                            <button className="btn btn-gold" style={{ flex: "1 1 auto", minWidth: 160, justifyContent: "center" }}>Add to Cart</button>
-                            <Link to="/products" className="btn btn-outline" style={{ flex: "1 1 auto", minWidth: 160, justifyContent: "center" }}>
-                                Explore Full Collection
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M5 12h14M12 5l7 7-7 7" />
-                                </svg>
-                            </Link>
+                            <WhatsAppButton
+                                name={product.name}
+                                size={selectedSize}
+                                price={product.price}
+                                style={{ flex: "1 1 auto", minWidth: 160 }}
+                            />
+                            {collectionNavEnabled && (
+                                <Link to="/products" className="btn btn-outline" style={{ flex: "1 1 auto", minWidth: 160, justifyContent: "center" }}>
+                                    Explore Full Collection
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M5 12h14M12 5l7 7-7 7" />
+                                    </svg>
+                                </Link>
+                            )}
                         </div>
                     </div>
 

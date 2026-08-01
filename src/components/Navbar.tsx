@@ -23,11 +23,14 @@ const NavItem: React.FC<{ href: string; label: string; scrolled: boolean; onClic
 };
 
 const Navbar: React.FC = () => {
-    const { brand: BRAND, navLinks: NAV_LINKS } = useSiteData();
+    const { brand: BRAND, navLinks: NAV_LINKS, mobileCtaLabel } = useSiteData();
     const location = useLocation();
     const isHome = location.pathname === "/";
     const [scrolled, setScrolled] = useState(!isHome);
     const [mobileOpen, setMobileOpen] = useState(false);
+
+    // Only show links that are enabled in the CMS
+    const activeLinks = NAV_LINKS.filter((l) => l.enabled !== false);
 
     useEffect(() => {
         if (!isHome) { setScrolled(true); return; }
@@ -57,7 +60,7 @@ const Navbar: React.FC = () => {
                 </Link>
 
                 <nav className="desktop-nav" style={{ display: "flex", gap: 4, marginLeft: "auto" }}>
-                    {NAV_LINKS.map((link) => <NavItem key={link.label} href={link.href} label={link.label} scrolled={scrolled} />)}
+                    {activeLinks.map((link) => <NavItem key={link.label} href={link.href} label={link.label} scrolled={scrolled} />)}
                 </nav>
 
                 <button
@@ -83,7 +86,7 @@ const Navbar: React.FC = () => {
                 borderTop: mobileOpen ? "1px solid var(--border)" : "none",
             }}>
                 <div style={{ padding: "12px 24px 32px" }}>
-                    {NAV_LINKS.map((link) => {
+                    {activeLinks.map((link) => {
                         const s: React.CSSProperties = { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px 4px", fontWeight: 600, fontSize: "0.95rem", letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--text-main)", borderBottom: "1px solid var(--border)", transition: "color 0.2s" };
                         const arrow = <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>;
                         return link.href.startsWith("/")
@@ -91,7 +94,7 @@ const Navbar: React.FC = () => {
                             : <a key={link.label} href={link.href} onClick={() => setMobileOpen(false)} style={s}>{link.label}{arrow}</a>;
                     })}
                     <Link to="/products" onClick={() => setMobileOpen(false)} style={{ display: "block", marginTop: 22, padding: "14px 0", background: "var(--gold)", color: "#fff", textAlign: "center", borderRadius: "var(--radius-sm)", fontWeight: 700, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                        Shop Now
+                        {mobileCtaLabel}
                     </Link>
                 </div>
             </div>

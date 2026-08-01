@@ -645,7 +645,8 @@ const NavigationTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const { toast } = useToast();
     const [links, setLinks] = useState<NavLink[]>(() => readStore().navLinks);
     const [saving, setSaving] = useState(false);
-    const setLink = (i: number, k: keyof NavLink, v: string) => {
+
+    const setLink = (i: number, k: keyof NavLink, v: unknown) => {
         const n = [...links]; n[i] = { ...n[i], [k]: v }; setLinks(n);
     };
     const moveUp = (i: number) => { if (!i) return; const n = [...links];[n[i - 1], n[i]] = [n[i], n[i - 1]]; setLinks(n); };
@@ -656,25 +657,64 @@ const NavigationTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
         await updateSection("navLinks", links); setSaving(false);
         toast("Navigation saved!"); onSave();
     };
+
     return (
         <>
-            <Card title="Menu Links" subtitle="Use ↑↓ to reorder" action={
-                <button onClick={() => setLinks((p) => [...p, { label: "", href: "#" }])}
+            <Card title="Menu Links" subtitle="Use ↑↓ to reorder. Toggle to show/hide without deleting." action={
+                <button onClick={() => setLinks((p) => [...p, { label: "", href: "#", enabled: true }])}
                     style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "var(--charcoal)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", cursor: "pointer" }}>
                     <Plus size={13} /> Add
                 </button>
             }>
                 {links.map((link, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 0", borderBottom: i < links.length - 1 ? "1px solid var(--border)" : "none" }}>
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 0", borderBottom: i < links.length - 1 ? "1px solid var(--border)" : "none", opacity: link.enabled === false ? 0.5 : 1, transition: "opacity 0.18s" }}>
+                        {/* Reorder */}
                         <div style={{ display: "flex", flexDirection: "column", gap: 1, flexShrink: 0 }}>
                             <button onClick={() => moveUp(i)} disabled={!i} style={{ padding: "1px 4px", background: "none", border: "none", cursor: !i ? "not-allowed" : "pointer", opacity: !i ? 0.3 : 1, color: "var(--text-muted)", fontSize: 11 }}>▲</button>
                             <GripVertical size={13} style={{ color: "var(--text-faint)", margin: "0 auto" }} />
                             <button onClick={() => moveDown(i)} disabled={i === links.length - 1} style={{ padding: "1px 4px", background: "none", border: "none", cursor: i === links.length - 1 ? "not-allowed" : "pointer", opacity: i === links.length - 1 ? 0.3 : 1, color: "var(--text-muted)", fontSize: 11 }}>▼</button>
                         </div>
+
+                        {/* Label + href */}
                         <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 12px" }}>
-                            <Field label={i === 0 ? "Label" : ""}><Input value={link.label} onChange={(e) => setLink(i, "label", e.target.value)} placeholder="Home" /></Field>
-                            <Field label={i === 0 ? "Href" : ""}><Input value={link.href} onChange={(e) => setLink(i, "href", e.target.value)} placeholder="#home" /></Field>
+                            <Field label={i === 0 ? "Label" : ""}>
+                                <Input value={link.label} onChange={(e) => setLink(i, "label", e.target.value)} placeholder="Home" />
+                            </Field>
+                            <Field label={i === 0 ? "Href" : ""}>
+                                <Input value={link.href} onChange={(e) => setLink(i, "href", e.target.value)} placeholder="/home" />
+                            </Field>
                         </div>
+
+                        {/* Enabled toggle */}
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flexShrink: 0 }}>
+                            {i === 0 && (
+                                <span style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-muted)", whiteSpace: "nowrap" }}>
+                                    Show
+                                </span>
+                            )}
+                            <span
+                                role="checkbox"
+                                aria-checked={link.enabled !== false}
+                                title={link.enabled !== false ? "Visible in navbar — click to hide" : "Hidden from navbar — click to show"}
+                                onClick={() => setLink(i, "enabled", !(link.enabled !== false))}
+                                style={{
+                                    display: "inline-flex", alignItems: "center",
+                                    width: 38, height: 20, borderRadius: 10,
+                                    background: link.enabled !== false ? "var(--gold)" : "var(--border)",
+                                    padding: "2px", transition: "background 0.22s",
+                                    cursor: "pointer", flexShrink: 0,
+                                }}
+                            >
+                                <span style={{
+                                    width: 16, height: 16, borderRadius: "50%", background: "#fff",
+                                    boxShadow: "0 1px 3px rgba(0,0,0,0.20)",
+                                    transform: link.enabled !== false ? "translateX(18px)" : "translateX(0)",
+                                    transition: "transform 0.22s", display: "block",
+                                }} />
+                            </span>
+                        </div>
+
+                        {/* Delete */}
                         <button onClick={() => setLinks((p) => p.filter((_, x) => x !== i))} disabled={links.length <= 1}
                             style={{ padding: 7, background: "none", border: "none", cursor: links.length <= 1 ? "not-allowed" : "pointer", color: links.length <= 1 ? "var(--text-faint)" : "#e05555", flexShrink: 0 }}>
                             <Trash2 size={14} />
@@ -682,12 +722,24 @@ const NavigationTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     </div>
                 ))}
             </Card>
+
+            {/* Live preview */}
             <Card title="Preview">
-                <nav style={{ display: "flex", gap: 6, background: "var(--charcoal)", padding: "12px 18px", borderRadius: "var(--radius-sm)", flexWrap: "wrap" }}>
-                    {links.map((l, i) => <span key={i} style={{ fontSize: "0.80rem", fontWeight: 600, color: "rgba(255,255,255,0.65)", padding: "5px 14px", borderRadius: 4 }}>{l.label || "…"}</span>)}
+                <nav style={{ display: "flex", gap: 6, background: "var(--charcoal)", padding: "12px 18px", borderRadius: "var(--radius-sm)", flexWrap: "wrap", alignItems: "center" }}>
+                    {links.filter((l) => l.enabled !== false).map((l, i) => (
+                        <span key={i} style={{ fontSize: "0.80rem", fontWeight: 600, color: "rgba(255,255,255,0.65)", padding: "5px 14px", borderRadius: 4 }}>
+                            {l.label || "…"}
+                        </span>
+                    ))}
+                    {links.filter((l) => l.enabled === false).length > 0 && (
+                        <span style={{ marginLeft: "auto", fontSize: "0.70rem", color: "rgba(255,255,255,0.30)", fontStyle: "italic" }}>
+                            {links.filter((l) => l.enabled === false).length} hidden
+                        </span>
+                    )}
                     <span style={{ marginLeft: "auto", fontSize: "0.76rem", background: "var(--gold)", color: "#fff", fontWeight: 700, padding: "5px 14px", borderRadius: 4 }}>Shop Now</span>
                 </nav>
             </Card>
+
             <SaveBtn loading={saving} onClick={save} />
         </>
     );
