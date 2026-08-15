@@ -9,7 +9,7 @@
  *   <a href={waLink} target="_blank" rel="noopener noreferrer">Order on WhatsApp</a>
  */
 
-import { useSiteData } from "../PublicSite";
+import { useSiteData } from "../data/SiteDataProvider";
 
 interface WhatsAppOptions {
     name: string;

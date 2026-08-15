@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { readStore, updateSection } from "../cms/cmsStore";
-import { Card } from "../components/ui/Card";
+import { readStore } from "../../data/siteRepository";
+import { saveSection } from "../lib/saveSection";
+import { Section } from "../components/ui/Section";
 import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
-import type { SeoData } from "../types/cms.types";
+import type { SeoData } from "../../data/types";
 import { Search } from "lucide-react";
 
 const SeoPage: React.FC = () => {
@@ -16,17 +17,15 @@ const SeoPage: React.FC = () => {
     const handleSave = async () => {
         if (!form.metaTitle.trim()) { toast("Meta title is required.", "error"); return; }
         setSaving(true);
-        await new Promise((r) => setTimeout(r, 300));
-        await updateSection("seo", form);
+        await saveSection("seo", form, toast, "SEO settings saved!");
         setSaving(false);
-        toast("SEO settings saved!");
     };
 
     return (
         <div>
             <div style={{ marginBottom: 32 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: "var(--radius-sm)", background: "var(--gold)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
+                    <div style={{ width: 40, height: 40, borderRadius: "var(--radius-sm)", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--on-accent)" }}>
                         <Search size={20} />
                     </div>
                     <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.9rem", fontWeight: 700, color: "var(--text-main)" }}>
@@ -39,7 +38,7 @@ const SeoPage: React.FC = () => {
             </div>
 
             {/* Search Engine */}
-            <Card title="Search Engine">
+            <Section title="Search Engine">
                 <Field label="Meta Title" required hint="Shown in browser tabs and search results. Ideal: 50–60 characters.">
                     <Input value={form.metaTitle} onChange={(e) => set("metaTitle", e.target.value)} />
                     <div style={{ marginTop: 5, fontSize: "0.72rem", color: form.metaTitle.length > 60 ? "#e05555" : "var(--text-faint)" }}>
@@ -57,7 +56,7 @@ const SeoPage: React.FC = () => {
                 </Field>
 
                 {/* Live SERP preview */}
-                <div style={{ marginTop: 8, padding: "16px 18px", background: "var(--parchment)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }}>
+                <div style={{ marginTop: 8, padding: "16px 18px", background: "var(--sunken-deep)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }}>
                     <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--text-faint)", marginBottom: 10 }}>
                         Search Result Preview
                     </div>
@@ -71,10 +70,10 @@ const SeoPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            </Card>
+            </Section>
 
             {/* Open Graph / Social */}
-            <Card title="Social Sharing (Open Graph)">
+            <Section title="Social Sharing (Open Graph)">
                 <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", marginBottom: 20, lineHeight: 1.6 }}>
                     Controls how the page looks when shared on Facebook, LinkedIn, WhatsApp and other platforms. Leave blank to fall back to the meta title/description above.
                 </p>
@@ -115,7 +114,7 @@ const SeoPage: React.FC = () => {
                         </div>
                     </div>
                 )}
-            </Card>
+            </Section>
 
             <SaveBtn loading={saving} onClick={handleSave} />
         </div>

@@ -1,212 +1,50 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSiteData } from "../../PublicSite";
-import { StatCard } from "../components/ui/Card";
-import {
-    ShoppingBag, MessageSquare, Settings, ArrowRight,
-    LayoutDashboard, Globe, Star, LayoutGrid, Search, Package,
-} from "lucide-react";
+import { useSiteData } from "../../data/SiteDataProvider";
+import { Stat } from "../components/ui/Section";
+import { ArrowRight } from "lucide-react";
 
 const SECTIONS = [
-    {
-        label: "Global Settings",
-        href: "/admin/settings",
-        icon: <Settings size={22} />,
-        desc: "Hero, About, Navigation, Footer, Newsletter, Stats, Brand info and more — all in one tabbed view.",
-        tags: ["Brand", "Hero", "Stats", "About", "Navigation", "Newsletter", "Footer", "Commitment"],
-    },
-    {
-        label: "Signature Product",
-        href: "/admin/featured",
-        icon: <Star size={22} />,
-        desc: "Manage the flagship product shown on the homepage. Pick from the catalog or set fields manually.",
-        tags: ["Featured", "Flagship", "Homepage"],
-    },
-    {
-        label: "Collection",
-        href: "/admin/collection",
-        icon: <ShoppingBag size={22} />,
-        desc: "Add, edit, reorder and remove products. Manage fragrance notes, pricing, badges and visibility.",
-        tags: ["Products", "Pricing", "Images", "Badges", "Visibility"],
-    },
-    {
-        label: "Collection Settings",
-        href: "/admin/collection-settings",
-        icon: <Package size={22} />,
-        desc: "Manage product sizes, trust signals, shipping info and craftsmanship text shown on product pages.",
-        tags: ["Sizes", "Shipping", "Trust Signals", "Craftsmanship"],
-    },
-    {
-        label: "Collection Tiles",
-        href: "/admin/collection-tiles",
-        icon: <LayoutGrid size={22} />,
-        desc: "Manage the homepage category showcase tiles — images, labels, links and visibility.",
-        tags: ["Homepage", "Categories", "Tiles"],
-    },
-    {
-        label: "Testimonials",
-        href: "/admin/testimonials",
-        icon: <MessageSquare size={22} />,
-        desc: "Manage customer reviews. Add new quotes, update star ratings, author details and visibility.",
-        tags: ["Reviews", "Ratings", "Quotes"],
-    },
-    {
-        label: "SEO",
-        href: "/admin/seo",
-        icon: <Search size={22} />,
-        desc: "Configure meta title, description, keywords and Open Graph social sharing settings.",
-        tags: ["Meta", "Open Graph", "Social", "Keywords"],
-    },
+    { label: "Settings", href: "/admin/settings", note: "Brand, hero, about, navigation, footer" },
+    { label: "Signature Product", href: "/admin/featured", note: "Notes, pricing, sizes, imagery" },
+    { label: "Testimonials", href: "/admin/testimonials", note: "Customer reviews" },
+    { label: "SEO", href: "/admin/seo", note: "Meta tags and social sharing" },
 ];
 
 const DashboardPage: React.FC = () => {
     const data = useSiteData();
-    const productCount = data.collection.items.length;
-    const visibleProductCount = data.collection.items.filter((p) => p.visible).length;
-    const reviewCount = data.testimonials.items.length;
-    const navCount = data.navLinks.filter((l) => l.enabled !== false).length;
 
     return (
         <div>
-            {/* Header */}
-            <div style={{ marginBottom: 36 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: "var(--radius-sm)", background: "var(--gold)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
-                        <LayoutDashboard size={20} />
-                    </div>
-                    <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.9rem", fontWeight: 700, color: "var(--text-main)" }}>
-                        Dashboard
-                    </h1>
+            <header className="adm-page-head">
+                <h1 className="adm-page-title">Dashboard</h1>
+                <p className="adm-page-sub">{data.brand.name} content studio</p>
+            </header>
+
+            <div className="adm-stat-row">
+                <Stat label="Product sizes" value={data.featuredProduct.sizes.length} />
+                <Stat label="Testimonials" value={data.testimonials.items.length} />
+                <Stat label="Nav links" value={data.navLinks.filter((l) => l.enabled !== false).length} />
+                <Stat label="Sections" value={SECTIONS.length} />
+            </div>
+
+            <div className="adm-featured">
+                <div className="adm-featured-label">Currently featured</div>
+                <div className="adm-featured-name">{data.featuredProduct.name}</div>
+                <div className="adm-featured-meta">
+                    {data.featuredProduct.collection} · {data.featuredProduct.price}
                 </div>
-                <p style={{ fontSize: "0.90rem", color: "var(--text-muted)", marginLeft: 52 }}>
-                    Welcome back, <strong>{data.brand.name}</strong> Content Studio.
-                </p>
             </div>
 
-            {/* Stat cards */}
-            <div className="dash-stat-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20, marginBottom: 44 }}>
-                <StatCard label="Products" value={`${visibleProductCount} / ${productCount}`} icon={<ShoppingBag size={20} />} />
-                <StatCard label="Testimonials" value={reviewCount} icon={<Star size={20} />} />
-                <StatCard label="Nav Links" value={navCount} icon={<Globe size={20} />} />
-                <StatCard label="Sections" value={11} icon={<Settings size={20} />} />
-            </div>
-
-            {/* Flagship product banner */}
-            <div
-                style={{
-                    marginBottom: 36,
-                    background: "var(--charcoal)",
-                    borderRadius: "var(--radius)",
-                    padding: "20px 24px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 20,
-                    flexWrap: "wrap",
-                }}
-            >
-                <img
-                    src={data.featuredProduct.imageUrl}
-                    alt={data.featuredProduct.name}
-                    style={{ width: 52, height: 64, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid rgba(162,127,63,0.30)", flexShrink: 0 }}
-                />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 3 }}>
-                        ✦ Currently Featured on Homepage
-                    </div>
-                    <div style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 700, color: "#fff", marginBottom: 1 }}>
-                        {data.featuredProduct.name}
-                    </div>
-                    <div style={{ fontSize: "0.80rem", color: "rgba(255,255,255,0.45)" }}>
-                        {data.featuredProduct.collection} · {data.featuredProduct.price}
-                    </div>
-                </div>
-                <Link
-                    to="/admin/featured"
-                    style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 7,
-                        padding: "9px 18px",
-                        borderRadius: "var(--radius-sm)",
-                        background: "rgba(162,127,63,0.20)",
-                        border: "1px solid rgba(162,127,63,0.35)",
-                        color: "var(--gold-light)",
-                        fontSize: "0.78rem",
-                        fontWeight: 700,
-                        letterSpacing: "0.06em",
-                        textTransform: "uppercase",
-                        textDecoration: "none",
-                        transition: "background 0.18s",
-                        flexShrink: 0,
-                    }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(162,127,63,0.32)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(162,127,63,0.20)"; }}
-                >
-                    Change
-                    <ArrowRight size={13} />
-                </Link>
-            </div>
-
-            {/* Section cards */}
-            <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 700, color: "var(--text-main)", marginBottom: 18 }}>
-                Manage Content
-            </h2>
-            <div className="dash-section-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginBottom: 40 }}>
+            <nav className="adm-list" aria-label="Content sections">
                 {SECTIONS.map((s) => (
-                    <Link key={s.href} to={s.href} style={{ textDecoration: "none" }}>
-                        <div
-                            style={{ background: "#fff", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "28px 24px", height: "100%", display: "flex", flexDirection: "column", gap: 14, transition: "all 0.22s", boxShadow: "var(--shadow)", cursor: "pointer" }}
-                            onMouseEnter={(e) => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = "var(--gold-subtle)"; el.style.boxShadow = "var(--shadow-gold)"; el.style.transform = "translateY(-3px)"; }}
-                            onMouseLeave={(e) => { const el = e.currentTarget as HTMLDivElement; el.style.borderColor = "var(--border)"; el.style.boxShadow = "var(--shadow)"; el.style.transform = "translateY(0)"; }}
-                        >
-                            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-                                <div style={{ width: 48, height: 48, borderRadius: "var(--radius-sm)", background: "var(--parchment)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--gold)", flexShrink: 0 }}>
-                                    {s.icon}
-                                </div>
-                                <ArrowRight size={15} style={{ color: "var(--text-faint)", marginTop: 4 }} />
-                            </div>
-                            <div>
-                                <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.05rem", color: "var(--text-main)", marginBottom: 8 }}>{s.label}</div>
-                                <p style={{ fontSize: "0.83rem", color: "var(--text-muted)", lineHeight: 1.6, marginBottom: 14 }}>{s.desc}</p>
-                                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                                    {s.tags.map((t) => (
-                                        <span key={t} style={{ fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.06em", padding: "3px 9px", borderRadius: 20, background: "var(--parchment)", color: "var(--gold)", border: "1px solid var(--border)" }}>
-                                            {t}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+                    <Link key={s.href} to={s.href} className="adm-list-row">
+                        <span className="adm-list-label">{s.label}</span>
+                        <span className="adm-list-note">{s.note}</span>
+                        <ArrowRight size={15} className="adm-list-arrow" />
                     </Link>
                 ))}
-            </div>
-
-            {/* Brand snapshot */}
-            <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 700, color: "var(--text-main)", marginBottom: 16 }}>
-                Brand Snapshot
-            </h2>
-            <div style={{ background: "#fff", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "24px", boxShadow: "var(--shadow)" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 14 }}>
-                    {[
-                        { label: "Brand Name", value: data.brand.name },
-                        { label: "Email", value: data.brand.email },
-                        { label: "Location", value: data.brand.location },
-                        { label: "Phone", value: data.brand.phoneDisplay },
-                        { label: "Hero Heading", value: data.hero.mainHeading.replace("\n", " ") },
-                        { label: "CTA Primary", value: data.hero.ctaPrimary.label },
-                    ].map((row) => (
-                        <div key={row.label} style={{ padding: "12px 14px", background: "var(--parchment)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }}>
-                            <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 4 }}>{row.label}</div>
-                            <div style={{ fontSize: "0.86rem", color: "var(--text-main)", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{row.value}</div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <style>{`
-        @media (max-width: 900px)  { .dash-section-grid { grid-template-columns: 1fr 1fr !important; } .dash-stat-grid { grid-template-columns: 1fr 1fr !important; } }
-        @media (max-width: 560px)  { .dash-section-grid { grid-template-columns: 1fr !important; } .dash-stat-grid { grid-template-columns: 1fr 1fr !important; } }
-      `}</style>
+            </nav>
         </div>
     );
 };

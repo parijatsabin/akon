@@ -1,34 +1,43 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useSiteData } from "../PublicSite";
+import { useSiteData } from "../data/SiteDataProvider";
+import { useReveal } from "../hooks/useReveal";
 import WhatsAppButton from "./WhatsAppButton";
 
-const SignatureProduct: React.FC = () => {
-    const { featuredProduct: product, collection: COLLECTION, navLinks } = useSiteData();
-    const sizes = COLLECTION.productSizes;
-    const [selectedSize, setSelectedSize] = useState(sizes[0] ?? "");
+const TIERS = ["top", "heart", "base"] as const;
 
-    // Only show "Explore Full Collection" if the /products nav link is enabled in CMS
-    const collectionNavEnabled = navLinks.some(
-        (l) => l.href === "/products" && l.enabled !== false
-    );
+const SignatureProduct: React.FC = () => {
+    const { featuredProduct: product } = useSiteData();
+    const [selectedSize, setSelectedSize] = useState(product.sizes[0] ?? "");
+    const [activeImage, setActiveImage] = useState(0);
+
+    const headerRef = useReveal<HTMLDivElement>();
+    const galleryRef = useReveal<HTMLDivElement>();
+    const contentRef = useReveal<HTMLDivElement>();
+    const detailRef = useReveal<HTMLDivElement>();
+
+    // Guards against an editor emptying the gallery in the CMS.
+    const images = product.images.length > 0 ? product.images : [""];
+    const current = images[Math.min(activeImage, images.length - 1)];
 
     return (
-        <section id="signature" className="section bg-cream">
+        <section id="signature" className="section bg-white">
             <div className="container">
 
-                {/* Header */}
-                <div className="sig-header">
+                {/* ── Header ── */}
+                <div ref={headerRef} className="sig-header reveal">
                     <div className="sig-eyebrow-row">
                         <div className="sig-eyebrow-line" />
-                        <span className="eyebrow">The Signature Collection</span>
+                        <span className="eyebrow">{product.collection}</span>
                         <div className="sig-eyebrow-line" />
                     </div>
-                    <h2 className="section-title-lg" style={{ marginBottom: 18 }}>{product.name}</h2>
+                    <h2 className="section-title-lg">{product.name}</h2>
+                    <p className="sig-concentration">
+                        {product.concentration} · {product.headlineSize}
+                    </p>
                     <div className="sig-price-row">
-                        <div style={{ display: "flex", gap: 4 }}>
+                        <div className="sig-stars" aria-hidden="true">
                             {[1, 2, 3, 4, 5].map((s) => (
-                                <svg key={s} width="18" height="18" viewBox="0 0 24 24" fill="var(--gold)" stroke="none">
+                                <svg key={s} width="18" height="18" viewBox="0 0 24 24" fill="var(--accent)" stroke="none">
                                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                                 </svg>
                             ))}
@@ -38,40 +47,81 @@ const SignatureProduct: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Two-column */}
+                {/* ── Gallery + buy panel ── */}
                 <div className="sig-grid">
-                    {/* LEFT */}
-                    <div className="sig-content">
-                        <span className="eyebrow">{product.collection}</span>
-                        <div className="gold-divider" style={{ margin: 0 }} />
-                        <p style={{ fontSize: "0.96rem", lineHeight: 1.85, color: "var(--text-muted)" }}>{product.description}</p>
+                    {/* Gallery */}
+                    <div ref={galleryRef} className="reveal sig-gallery">
+                        <div className="sig-img-wrap">
+                            <img
+                                key={current}
+                                className="sig-img"
+                                src={current}
+                                alt={`${product.name} — view ${activeImage + 1} of ${images.length}`}
+                                loading="lazy"
+                            />
+                        </div>
+
+                        {images.length > 1 && (
+                            <div className="sig-thumbs" role="tablist" aria-label={`${product.name} images`}>
+                                {images.map((src, i) => (
+                                    <button
+                                        key={src}
+                                        role="tab"
+                                        aria-selected={i === activeImage}
+                                        aria-label={`View image ${i + 1}`}
+                                        className={`sig-thumb${i === activeImage ? " is-active" : ""}`}
+                                        onClick={() => setActiveImage(i)}
+                                    >
+                                        <img src={src} alt="" loading="lazy" />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Buy panel */}
+                    <div ref={contentRef} className="sig-content reveal reveal-stagger">
+                        <p className="sig-tagline">{product.tagline}</p>
+                        <p className="sig-desc">{product.description}</p>
 
                         {/* Notes */}
                         <div className="sig-notes-box">
-                            <div className="eyebrow" style={{ marginBottom: 16 }}>Fragrance Notes</div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                                {([{ tier: "Top", notes: product.notes.top }, { tier: "Heart", notes: product.notes.heart }, { tier: "Base", notes: product.notes.base }] as const).map(({ tier, notes }) => (
-                                    <div key={tier} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                                        <span style={{ fontSize: "0.70rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-faint)", minWidth: 42, paddingTop: 4 }}>{tier}</span>
-                                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                                            {notes.map((n) => <span key={n} className="note-chip">{n}</span>)}
+                            <div className="eyebrow sig-notes-title">The Olfactory Experience</div>
+                            {TIERS.map((tier) => {
+                                const layer = product.notes[tier];
+                                return (
+                                    <div key={tier} className="sig-note-row">
+                                        <span className="sig-note-tier">{tier}</span>
+                                        <div className="sig-note-detail">
+                                            <div className="sig-note-chips">
+                                                {layer.ingredients.map((n) => (
+                                                    <span key={n} className="note-chip">{n}</span>
+                                                ))}
+                                            </div>
+                                            <p className="sig-note-impression">{layer.impression}</p>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                );
+                            })}
                         </div>
 
-                        {/* Size selector */}
+                        {/* Size */}
                         <div>
                             <div className="sig-size-label">Select Size</div>
-                            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                {sizes.map((s) => (
-                                    <button key={s} onClick={() => setSelectedSize(s)} className={`size-chip${s === selectedSize ? " active" : ""}`}>{s}</button>
+                            <div className="sig-size-row">
+                                {product.sizes.map((s) => (
+                                    <button
+                                        key={s}
+                                        onClick={() => setSelectedSize(s)}
+                                        aria-pressed={s === selectedSize}
+                                        className={`size-chip${s === selectedSize ? " active" : ""}`}
+                                    >
+                                        {s}
+                                    </button>
                                 ))}
                             </div>
                         </div>
 
-                        {/* CTAs */}
                         <div className="sig-ctas">
                             <WhatsAppButton
                                 name={product.name}
@@ -79,32 +129,58 @@ const SignatureProduct: React.FC = () => {
                                 price={product.price}
                                 style={{ flex: "1 1 auto", minWidth: 160 }}
                             />
-                            {collectionNavEnabled && (
-                                <Link to="/products" className="btn btn-outline" style={{ flex: "1 1 auto", minWidth: 160, justifyContent: "center" }}>
-                                    Explore Full Collection
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M5 12h14M12 5l7 7-7 7" />
-                                    </svg>
-                                </Link>
-                            )}
                         </div>
-                    </div>
 
-                    {/* RIGHT — image */}
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                        <div className="sig-img-wrap">
-                            <img src={product.imageUrl} alt={product.name} />
-                            <div className="sig-img-gradient" />
-                            <div className="sig-price-badge frosted-badge">
-                                <div className="eyebrow" style={{ marginBottom: 2 }}>Starting from</div>
-                                <div style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 700, color: "var(--gold-dim)" }}>{product.price}</div>
-                            </div>
-                            <div className="sig-gold-dot">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
-                                </svg>
-                            </div>
+                        {product.orderingNote && (
+                            <p className="sig-ordering-note">{product.orderingNote}</p>
+                        )}
+                    </div>
+                </div>
+
+                {/* ── Highlights / specs / how to wear ── */}
+                <div ref={detailRef} className="sig-detail reveal">
+                    {product.highlights.length > 0 && (
+                        <div className="sig-highlights">
+                            {product.highlights.map((h) => (
+                                <div key={h.id} className="sig-highlight">
+                                    <h3 className="sig-highlight-title">{h.title}</h3>
+                                    <p className="sig-highlight-body">{h.body}</p>
+                                </div>
+                            ))}
                         </div>
+                    )}
+
+                    <div className="sig-detail-grid">
+                        {product.specs.length > 0 && (
+                            <div>
+                                <h3 className="sig-detail-heading">Details &amp; Specifications</h3>
+                                <dl className="sig-specs">
+                                    {product.specs.map((s) => (
+                                        <div key={s.label} className="sig-spec-row">
+                                            <dt>{s.label}</dt>
+                                            <dd>{s.value}</dd>
+                                        </div>
+                                    ))}
+                                </dl>
+                            </div>
+                        )}
+
+                        {product.usage.length > 0 && (
+                            <div>
+                                <h3 className="sig-detail-heading">How to Wear It</h3>
+                                <ol className="sig-usage">
+                                    {product.usage.map((u, i) => (
+                                        <li key={u.id} className="sig-usage-step">
+                                            <span className="sig-usage-num">{String(i + 1).padStart(2, "0")}</span>
+                                            <div>
+                                                <div className="sig-usage-title">{u.title}</div>
+                                                <p className="sig-usage-body">{u.body}</p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ol>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

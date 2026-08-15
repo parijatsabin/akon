@@ -41,19 +41,19 @@ const LoginPage: React.FC = () => {
     const inputStyle = (focused: boolean): React.CSSProperties => ({
         width: "100%",
         padding: "13px 16px",
-        border: `1.5px solid ${focused ? "var(--gold)" : "#e2dbd0"}`,
+        border: `1.5px solid ${focused ? "var(--accent)" : "var(--border)"}`,
         borderRadius: 8,
         fontFamily: "var(--font-body)",
         fontSize: "0.95rem",
         color: "var(--text-main)",
-        background: focused ? "#fdfaf5" : "#faf7f2",
+        background: focused ? "var(--white)" : "var(--sunken)",
         outline: "none",
         transition: "border-color 0.2s, background 0.2s",
-        boxShadow: focused ? "0 0 0 3px rgba(162,127,63,0.10)" : "none",
+        boxShadow: focused ? "0 0 0 3px var(--accent-glow)" : "none",
     });
 
     return (
-        <div style={{
+        <div className="adm" style={{
             minHeight: "100vh",
             display: "flex",
             fontFamily: "var(--font-body)",
@@ -62,7 +62,7 @@ const LoginPage: React.FC = () => {
             {/* ── LEFT PANEL — brand ── */}
             <div style={{
                 flex: "0 0 48%",
-                background: "var(--charcoal)",
+                background: "var(--noir)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -71,16 +71,16 @@ const LoginPage: React.FC = () => {
                 overflow: "hidden",
                 padding: "60px 48px",
             }}
-                className="login-left"
+                className="login-left on-noir"
             >
                 {/* Decorative gold rings */}
-                <div style={{ position: "absolute", top: "-120px", left: "-120px", width: 420, height: 420, borderRadius: "50%", border: "1px solid rgba(162,127,63,0.14)", pointerEvents: "none" }} />
-                <div style={{ position: "absolute", top: "-60px", left: "-60px", width: 260, height: 260, borderRadius: "50%", border: "1px solid rgba(162,127,63,0.10)", pointerEvents: "none" }} />
-                <div style={{ position: "absolute", bottom: "-100px", right: "-100px", width: 360, height: 360, borderRadius: "50%", border: "1px solid rgba(162,127,63,0.12)", pointerEvents: "none" }} />
-                <div style={{ position: "absolute", bottom: "-40px", right: "-40px", width: 200, height: 200, borderRadius: "50%", border: "1px solid rgba(162,127,63,0.08)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", top: "-120px", left: "-120px", width: 420, height: 420, borderRadius: "50%", border: "1px solid rgba(197,165,114,0.14)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", top: "-60px", left: "-60px", width: 260, height: 260, borderRadius: "50%", border: "1px solid rgba(197,165,114,0.10)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", bottom: "-100px", right: "-100px", width: 360, height: 360, borderRadius: "50%", border: "1px solid rgba(197,165,114,0.12)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", bottom: "-40px", right: "-40px", width: 200, height: 200, borderRadius: "50%", border: "1px solid rgba(197,165,114,0.08)", pointerEvents: "none" }} />
 
                 {/* Gold horizontal rule top */}
-                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, transparent, var(--gold), transparent)" }} />
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }} />
 
                 {/* Content */}
                 <div style={{ position: "relative", textAlign: "center", maxWidth: 360 }}>
@@ -93,7 +93,7 @@ const LoginPage: React.FC = () => {
                             style={{
                                 height: 300,
                                 width: "auto",
-                                filter: "brightness(0) invert(1) drop-shadow(0 0 20px rgba(162,127,63,0.50))",
+                                filter: "brightness(0) invert(1) drop-shadow(0 0 20px rgba(197,165,114,0.50))",
                                 margin: "0 auto",
                                 display: "block",
                             }}
@@ -110,7 +110,7 @@ const LoginPage: React.FC = () => {
             {/* ── RIGHT PANEL — form ── */}
             <div style={{
                 flex: 1,
-                background: "#fff",
+                background: "var(--surface-raised)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -121,15 +121,15 @@ const LoginPage: React.FC = () => {
                 className="login-right"
             >
                 {/* Top-right corner accent */}
-                <div style={{ position: "absolute", top: 0, right: 0, width: 180, height: 180, background: "radial-gradient(circle at top right, rgba(162,127,63,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", top: 0, right: 0, width: 180, height: 180, background: "radial-gradient(circle at top right, rgba(197,165,114,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
 
                 <div style={{ width: "100%", maxWidth: 400 }}>
 
                     {/* Greeting */}
                     <div style={{ marginBottom: 36 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                            <div style={{ width: 36, height: 3, background: "var(--gold)", borderRadius: 2 }} />
-                            <span style={{ fontSize: "0.70rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--gold)" }}>
+                            <div style={{ width: 36, height: 3, background: "var(--accent)", borderRadius: 2 }} />
+                            <span style={{ fontSize: "0.70rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--accent-text)" }}>
                                 Admin Access
                             </span>
                         </div>
@@ -178,7 +178,7 @@ const LoginPage: React.FC = () => {
                                 Username
                             </label>
                             <div style={{ position: "relative" }}>
-                                <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: userFocus ? "var(--gold)" : "#c5bdb3", transition: "color 0.2s", pointerEvents: "none" }}>
+                                <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: userFocus ? "var(--accent)" : "#c5bdb3", transition: "color 0.2s", pointerEvents: "none" }}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
                                     </svg>
@@ -203,7 +203,7 @@ const LoginPage: React.FC = () => {
                                 Password
                             </label>
                             <div style={{ position: "relative" }}>
-                                <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: passFocus ? "var(--gold)" : "#c5bdb3", transition: "color 0.2s", pointerEvents: "none" }}>
+                                <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: passFocus ? "var(--accent)" : "#c5bdb3", transition: "color 0.2s", pointerEvents: "none" }}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                     </svg>
@@ -221,8 +221,8 @@ const LoginPage: React.FC = () => {
                                 <button
                                     type="button"
                                     onClick={() => setShowPass((s) => !s)}
-                                    style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#c5bdb3", padding: 4, display: "flex", transition: "color 0.2s" }}
-                                    onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
+                                    style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-faint)", padding: 4, display: "flex", transition: "color 0.2s" }}
+                                    onMouseEnter={(e) => (e.currentTarget.style.color = "var(--accent)")}
                                     onMouseLeave={(e) => (e.currentTarget.style.color = "#c5bdb3")}
                                 >
                                     {showPass ? (
@@ -246,8 +246,8 @@ const LoginPage: React.FC = () => {
                             style={{
                                 width: "100%",
                                 padding: "14px 0",
-                                background: loading ? "var(--gold-subtle)" : "var(--gold)",
-                                color: "#fff",
+                                background: loading ? "var(--accent-soft)" : "var(--accent)",
+                                color: "var(--on-accent)",
                                 border: "none",
                                 borderRadius: 8,
                                 fontFamily: "var(--font-body)",
@@ -261,10 +261,10 @@ const LoginPage: React.FC = () => {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 gap: 10,
-                                boxShadow: loading ? "none" : "0 6px 24px rgba(162,127,63,0.35)",
+                                boxShadow: loading ? "none" : "0 6px 24px rgba(197,165,114,0.35)",
                             }}
-                            onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = "var(--gold-dim)"; e.currentTarget.style.transform = "translateY(-1px)"; } }}
-                            onMouseLeave={(e) => { if (!loading) { e.currentTarget.style.background = "var(--gold)"; e.currentTarget.style.transform = "translateY(0)"; } }}
+                            onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = "var(--accent-soft)"; e.currentTarget.style.transform = "translateY(-1px)"; } }}
+                            onMouseLeave={(e) => { if (!loading) { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.transform = "translateY(0)"; } }}
                         >
                             {loading ? (
                                 <>

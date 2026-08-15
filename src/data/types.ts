@@ -49,12 +49,10 @@ export interface HeroData {
     description: string;
     ctaPrimary: CtaButton;
     ctaSecondary: CtaButton;
+    /** Looping background video. Takes precedence over backgroundImage. */
     videoUrl: string;
-}
-
-export interface StatItem {
-    value: string;
-    label: string;
+    /** Still fallback, used when videoUrl is blank. */
+    backgroundImage: string;
 }
 
 export interface AboutData {
@@ -69,6 +67,8 @@ export interface AboutData {
     differenceSectionTag: string;
     ctaStripTag: string;
     ctaStripHeading: string;
+    /** Background photo behind the closing CTA strip. Empty string = flat colour. */
+    ctaStripImage: string;
     reasons: ReasonItem[];
 }
 
@@ -78,52 +78,61 @@ export interface ReasonItem {
     body: string;
 }
 
+/** One tier of the fragrance pyramid: what is in it, and how it reads. */
+export interface NoteLayer {
+    ingredients: string[];
+    impression: string;
+}
+
 export interface FragranceNotes {
-    top: string[];
-    heart: string[];
-    base: string[];
+    top: NoteLayer;
+    heart: NoteLayer;
+    base: NoteLayer;
+}
+
+/** A short selling point shown as a card above the fold. */
+export interface ProductHighlight {
+    id: string;
+    title: string;
+    body: string;
+}
+
+/** One row of the specification table. */
+export interface ProductSpec {
+    label: string;
+    value: string;
+}
+
+/** One numbered step in the "How to Wear It" guidance. */
+export interface UsageStep {
+    id: string;
+    title: string;
+    body: string;
 }
 
 export interface ProductItem {
     id: string;
     name: string;
+    /** The line this fragrance belongs to, e.g. "Signature Collection" */
     collection: string;
+    /** Concentration, e.g. "Eau de Parfum (EDP)" */
+    concentration: string;
+    /** Headline bottle size shown beside the price, e.g. "100 mL / 3.4 fl. oz." */
+    headlineSize: string;
+    /** Short lead paragraph shown at the top of the section. */
+    tagline: string;
     notes: FragranceNotes;
     description: string;
     price: string;
-    badge: string | null;
-    accentColor: string;
-    imageUrl: string;
-    productUrl: string;
-    /** Whether the product is visible on the public site */
-    visible: boolean;
-    /** Display order (lower = shown first) */
-    order: number;
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
-}
-
-export interface ShippingRow {
-    label: string;
-    value: string;
-}
-
-export interface TrustSignal {
-    icon: string;
-    text: string;
-}
-
-export interface CollectionData {
-    sectionTag: string;
-    headline: string;
-    pageTag: string;
-    pageSubtitle: string;
-    ctaExploreLabel: string;
-    items: ProductItem[];
-    productSizes: string[];
-    shippingRows: ShippingRow[];
-    craftsmanshipText: string[];
-    trustSignals: TrustSignal[];
+    /** Gallery. The first entry is the default view. Never empty. */
+    images: string[];
+    /** Bottle sizes offered, e.g. ["100 ml", "50 ml"] */
+    sizes: string[];
+    highlights: ProductHighlight[];
+    specs: ProductSpec[];
+    usage: UsageStep[];
+    /** Informational ordering/returns note. Empty string hides the block. */
+    orderingNote: string;
 }
 
 export interface TestimonialItem {
@@ -149,6 +158,8 @@ export interface CommitmentData {
     headline: string;
     body: string;
     cta: CtaButton;
+    /** Section photo. Empty string = the original centred, text-only layout. */
+    imageUrl: string;
     pillars: CommitmentPillar[];
 }
 
@@ -166,6 +177,8 @@ export interface NewsletterData {
     subtext: string;
     placeholder: string;
     cta: string;
+    /** Background photo behind the dark newsletter band. Empty string = flat colour. */
+    backgroundImage: string;
 }
 
 export interface FooterNavLink {
@@ -185,26 +198,6 @@ export interface FooterData {
     credit: { label: string; href: string };
 }
 
-// ── Collection tile (homepage category showcase) ──────────────
-export interface CollectionTileItem {
-    id: string;
-    label: string;
-    heading: string;
-    subtext: string;
-    href: string;
-    imageUrl: string;
-    /** Whether the tile is shown on the homepage */
-    visible: boolean;
-    /** Display order (lower = shown first) */
-    order: number;
-}
-
-export interface CollectionTilesSection {
-    sectionTag: string;
-    headline: string;
-    items: CollectionTileItem[];
-}
-
 // ── SEO ───────────────────────────────────────────────────────
 export interface SeoData {
     metaTitle: string;
@@ -222,24 +215,50 @@ export interface ContactData {
     subjects: string[];
 }
 
+// ── Policy pages (Privacy, Terms) ─────────────────────────────
+export interface PolicySection {
+    id: string;
+    heading: string;
+    /** Plain text. Blank lines separate paragraphs. */
+    body: string;
+}
+
+export interface PolicyPageData {
+    title: string;
+    intro: string;
+    /** Free text, e.g. "15 August 2026" — shown under the title. */
+    lastUpdated: string;
+    sections: PolicySection[];
+}
+
+// ── FAQ ───────────────────────────────────────────────────────
+export interface FaqItem {
+    id: string;
+    question: string;
+    answer: string;
+}
+
+export interface FaqData {
+    title: string;
+    intro: string;
+    items: FaqItem[];
+}
+
 // ── Root document ─────────────────────────────────────────────
 export interface SiteData {
     brand: BrandData;
     navLinks: NavLink[];
-    mobileCtaLabel: string;
     hero: HeroData;
-    stats: StatItem[];
     about: AboutData;
-    /** The single flagship product shown in the Signature Collection homepage section */
+    /** The single flagship product V1 is built around */
     featuredProduct: ProductItem;
-    /** Full product catalog — managed separately, shown on /products page */
-    collection: CollectionData;
-    /** Homepage collection category showcase tiles */
-    collectionTiles: CollectionTilesSection;
     testimonials: TestimonialsData;
     commitment: CommitmentData;
     newsletter: NewsletterData;
     footer: FooterData;
     contact: ContactData;
+    privacy: PolicyPageData;
+    terms: PolicyPageData;
+    faq: FaqData;
     seo: SeoData;
 }

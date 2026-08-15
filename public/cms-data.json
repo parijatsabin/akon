@@ -71,11 +71,6 @@
       "enabled": true
     },
     {
-      "label": "Collection",
-      "href": "/products",
-      "enabled": false
-    },
-    {
       "label": "Contact",
       "href": "/contact",
       "enabled": true
@@ -92,33 +87,16 @@
     },
     "ctaSecondary": {
       "label": "Our Story",
-      "href": "#about"
+      "href": "/about"
     },
-    "videoUrl": "https://videos.pexels.com/video-files/33233525/14160278_3840_2160_25fps.mp4"
+    "videoUrl": "https://videos.pexels.com/video-files/33233525/14160278_3840_2160_25fps.mp4",
+    "backgroundImage": ""
   },
-  "stats": [
-    {
-      "value": "140+",
-      "label": "Products Available"
-    },
-    {
-      "value": "1M+",
-      "label": "Sales Already"
-    },
-    {
-      "value": "80+",
-      "label": "Industrial Franchises"
-    },
-    {
-      "value": "1.01m",
-      "label": "Connections"
-    }
-  ],
   "about": {
     "sectionLabel": "\"Our Legacy Of Luxury\"",
     "headline": "About Us",
     "body": "ANOK is a Kathmandu-born house of fragrance — composing rare, slow-crafted perfumes that hold time, memory and the quiet weight of luxury.",
-    "bodyExtended": "Every fragrance we create begins with a question: what does this moment smell like? We source only the rarest raw materials — aged oud from the Arabian peninsula, Bulgarian rose absolutes, Himalayan botanicals — and blend them slowly, letting each accord mature before it meets the bottle.",
+    "bodyExtended": "Every fragrance we create begins with a question: what does this moment smell like? We source only the rarest raw materials — Calabrian bergamot, white orchid, Madagascar vanilla and sun-drenched driftwood — and blend them slowly, letting each accord mature before it meets the bottle.",
     "brandQuote": "Crafted for those who understand that a fragrance is not just a scent — it is a memory, an identity, a quiet statement of who you are.",
     "cta": {
       "label": "Learn More",
@@ -126,6 +104,9 @@
     },
     "whyHeadline": "Why Choose Us",
     "whyTagline": "Luxury redefined—crafted for the exceptional.",
+    "differenceSectionTag": "Our Difference",
+    "ctaStripTag": "Experience the Difference",
+    "ctaStripHeading": "Discover ANOK-001",
     "reasons": [
       {
         "id": "01",
@@ -144,566 +125,120 @@
       },
       {
         "id": "04",
-        "title": "Exclusive Collections",
-        "body": "Discover scents as rare and unique as the moments they inspire."
+        "title": "Made in Small Batches",
+        "body": "Every bottle is blended in limited quantities, never mass-produced. Quality over volume, always."
       }
-    ]
+    ],
+    "ctaStripImage": "/images/1.webp"
   },
   "featuredProduct": {
-    "id": "noir-veil",
-    "name": "Noir Veil",
+    "id": "anok-001",
+    "name": "ANOK-001",
     "collection": "Signature Collection",
-    "notes": {
-      "top": [
-        "Bergamot",
-        "Pink Pepper"
-      ],
-      "heart": [
-        "Bulgarian Rose",
-        "Iris"
-      ],
-      "base": [
-        "Oud",
-        "Amber"
-      ]
-    },
-    "description": "A nocturnal composition built on aged oud and Bulgarian rose — quiet, deliberate, unmistakably ANOK. Designed for those who move through the world with intention, Noir Veil is not a fragrance you wear. It is a presence you carry.",
+    "concentration": "Eau de Parfum (EDP)",
+    "headlineSize": "100 mL / 3.4 fl. oz.",
+    "tagline": "Indulge in the bold, sophisticated aroma of ANOK. Encased in a tactile, velvet-matte bottle with rich gold accents, this signature Eau de Parfum balances luminous citrus brightness with warm, earthy woods and velvety vanilla.",
+    "description": "Designed for those who command presence without saying a word. ANOK-001 is the first composition to carry our name — opening bright, settling deep, and staying with you long after you have left the room.",
     "price": "NPR 24,500",
-    "badge": "Signature",
-    "accentColor": "#1a1a1a",
-    "imageUrl": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&h=1000&fit=crop",
-    "productUrl": "/products/noir-veil",
-    "visible": true,
-    "order": 0,
-    "createdAt": "2025-01-01T00:00:00.000Z",
-    "updatedAt": "2025-01-01T00:00:00.000Z"
-  },
-  "collection": {
-    "headline": "Our Collection",
-    "productSizes": [
+    "images": [
+      "/images/4.webp",
+      "/images/6.webp",
+      "/images/7.webp"
+    ],
+    "sizes": [
       "100 ml",
       "50 ml",
       "30 ml",
       "10 ml"
     ],
-    "trustSignals": [
+    "notes": {
+      "top": {
+        "ingredients": [
+          "Calabrian Bergamot",
+          "Citrus Zest"
+        ],
+        "impression": "A bright, invigorating burst of fresh citrus sophistication."
+      },
+      "heart": {
+        "ingredients": [
+          "White Orchid",
+          "Madagascar Vanilla"
+        ],
+        "impression": "A smooth, elegant floral core with a subtle hint of warm sweetness."
+      },
+      "base": {
+        "ingredients": [
+          "Sun-Drenched Driftwood",
+          "Amber"
+        ],
+        "impression": "A deep, comforting grounding of rich woods and smoky resins."
+      }
+    },
+    "highlights": [
       {
-        "icon": "✓",
-        "text": "In Stock — ships within 2–3 business days"
+        "id": "h1",
+        "title": "Long-Lasting Performance",
+        "body": "Formulated with high-concentration fragrance oils to endure 8+ hours on skin."
       },
       {
-        "icon": "✦",
-        "text": "Free shipping on orders over NPR 5,000"
+        "id": "h2",
+        "title": "Artisanal Design",
+        "body": "A distinctive square matte bottle finished with a gold-embossed emblem and a crystal-clear architectural cap."
       },
       {
-        "icon": "✦",
-        "text": "Authentic ANOK fragrance, crafted in Nepal"
-      },
-      {
-        "icon": "✦",
-        "text": "30-day satisfaction guarantee"
+        "id": "h3",
+        "title": "Sustainably Sourced",
+        "body": "Crafted with responsibly harvested natural oils and cruelty-free ingredients."
       }
     ],
-    "shippingRows": [
+    "specs": [
       {
-        "label": "Standard Delivery",
-        "value": "2–3 business days within Kathmandu"
+        "label": "Fragrance Family",
+        "value": "Woody Citrus Amber"
       },
       {
-        "label": "Nationwide",
-        "value": "5–7 business days"
+        "label": "Concentration",
+        "value": "Eau de Parfum (EDP)"
       },
       {
-        "label": "Free Shipping",
-        "value": "On orders over NPR 5,000"
+        "label": "Gender Spectrum",
+        "value": "Unisex / Gender-Neutral"
       },
       {
-        "label": "Returns",
-        "value": "30 days, unopened & sealed"
+        "label": "Bottle Material",
+        "value": "Heavy-weight glass, matte-touch coating with gold detailing"
+      },
+      {
+        "label": "Country of Origin",
+        "value": "Crafted in Kathmandu, Nepal"
       }
     ],
-    "craftsmanshipText": [
-      "Each bottle is the result of months of meticulous blending by our in-house master perfumers in Kathmandu.",
-      "We source only the finest raw materials — from Bulgarian rose absolutes to aged Arabian oud — ensuring every spray carries the full weight of its ingredients.",
-      "ANOK fragrances are never rushed. They are matured, refined, and bottled only when they meet our exacting standards of excellence."
-    ],
-    "items": [
+    "usage": [
       {
-        "id": "noir-veil",
-        "name": "Noir Veil",
-        "collection": "Signature Collection",
-        "notes": {
-          "top": [
-            "Bergamot",
-            "Pink Pepper"
-          ],
-          "heart": [
-            "Bulgarian Rose",
-            "Iris"
-          ],
-          "base": [
-            "Oud",
-            "Amber"
-          ]
-        },
-        "description": "A nocturnal composition built on aged oud and Bulgarian rose — quiet, deliberate, unmistakably ANOK.",
-        "price": "NPR 24,500",
-        "badge": "Signature",
-        "accentColor": "#1a1a1a",
-        "imageUrl": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=500&fit=crop",
-        "productUrl": "/products/noir-veil",
-        "visible": true,
-        "order": 0,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
+        "id": "u1",
+        "title": "Target Pulse Points",
+        "body": "Spray directly onto the warm areas of the body — wrists, inner elbows, the base of the neck and behind the ears."
       },
       {
-        "id": "espresso-rouge",
-        "name": "Espresso Rouge",
-        "collection": "Luxury Collection",
-        "notes": {
-          "top": [
-            "Roasted Coffee",
-            "Cardamom"
-          ],
-          "heart": [
-            "Tonka",
-            "Cocoa Absolute"
-          ],
-          "base": [
-            "Vanilla",
-            "Cashmeran"
-          ]
-        },
-        "description": "Velvety espresso wrapped in vanilla and cashmere woods — gourmand without sweetness.",
-        "price": "NPR 28,900",
-        "badge": "Best Seller",
-        "accentColor": "#3d2817",
-        "imageUrl": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=500&fit=crop",
-        "productUrl": "/products/espresso-rouge",
-        "visible": true,
-        "order": 1,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
+        "id": "u2",
+        "title": "Do Not Rub",
+        "body": "Let the fragrance dry naturally on skin. Rubbing your wrists together breaks down the scent molecules and alters the top notes."
       },
       {
-        "id": "champagne-hour",
-        "name": "Champagne Hour",
-        "collection": "Signature Collection",
-        "notes": {
-          "top": [
-            "Champagne Accord",
-            "Mandarin"
-          ],
-          "heart": [
-            "Jasmine Sambac",
-            "Peach"
-          ],
-          "base": [
-            "White Musk",
-            "Sandalwood"
-          ]
-        },
-        "description": "Effervescent jasmine and peach over white musk — the held breath before a celebration.",
-        "price": "NPR 22,000",
-        "badge": null,
-        "accentColor": "#f9e4e4",
-        "imageUrl": "https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=400&h=500&fit=crop",
-        "productUrl": "/products/champagne-hour",
-        "visible": true,
-        "order": 2,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "obsidian-no-7",
-        "name": "Obsidian No. 7",
-        "collection": "Limited Edition",
-        "notes": {
-          "top": [
-            "Black Pepper",
-            "Saffron"
-          ],
-          "heart": [
-            "Leather",
-            "Smoked Iris"
-          ],
-          "base": [
-            "Vetiver",
-            "Patchouli"
-          ]
-        },
-        "description": "Smoked leather and vetiver in a faceted obsidian flacon. Numbered to 250 worldwide.",
-        "price": "NPR 42,000",
-        "badge": "Limited Edition",
-        "accentColor": "#222222",
-        "imageUrl": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400&h=500&fit=crop",
-        "productUrl": "/products/obsidian-no-7",
-        "visible": true,
-        "order": 3,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "kathmandu-bloom",
-        "name": "Kathmandu Bloom",
-        "collection": "Seasonal Fragrances",
-        "notes": {
-          "top": [
-            "Himalayan Rhododendron",
-            "Yuzu"
-          ],
-          "heart": [
-            "Magnolia",
-            "Lotus"
-          ],
-          "base": [
-            "White Tea",
-            "Cedarwood"
-          ]
-        },
-        "description": "A spring ode to the valley in bloom — luminous florals over the cool of mountain cedar.",
-        "price": "NPR 19,800",
-        "badge": null,
-        "accentColor": "#e4f0f5",
-        "imageUrl": "https://images.unsplash.com/photo-1588405748880-42d3054a1d71?w=400&h=500&fit=crop",
-        "productUrl": "/products/kathmandu-bloom",
-        "visible": true,
-        "order": 4,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "solar-amber",
-        "name": "Solar Amber",
-        "collection": "Luxury Collection",
-        "notes": {
-          "top": [
-            "Neroli",
-            "Bitter Orange"
-          ],
-          "heart": [
-            "Honey",
-            "Beeswax Absolute"
-          ],
-          "base": [
-            "Labdanum",
-            "Benzoin"
-          ]
-        },
-        "description": "Sun-warmed amber and honey suspended in neroli — golden, generous, slow to fade.",
-        "price": "NPR 26,400",
-        "badge": null,
-        "accentColor": "#f5e6c8",
-        "imageUrl": "https://images.unsplash.com/photo-1590736969955-71cc94901144?w=400&h=500&fit=crop",
-        "productUrl": "/products/solar-amber",
-        "visible": true,
-        "order": 5,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "wild-iris",
-        "name": "Wild Iris",
-        "collection": "Signature Collection",
-        "notes": {
-          "top": [
-            "Violet Leaf",
-            "Pear"
-          ],
-          "heart": [
-            "Iris",
-            "Jasmine"
-          ],
-          "base": [
-            "Musk",
-            "Cedar"
-          ]
-        },
-        "description": "A fresh and elegant blend of wild iris and delicate jasmine.",
-        "price": "NPR 21,500",
-        "badge": null,
-        "accentColor": "#e0d5f0",
-        "imageUrl": "https://images.unsplash.com/photo-1589733958979-162305875470?w=400&h=500&fit=crop",
-        "productUrl": "/products/wild-iris",
-        "visible": true,
-        "order": 6,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "coastal-breeze",
-        "name": "Coastal Breeze",
-        "collection": "Seasonal Fragrances",
-        "notes": {
-          "top": [
-            "Sea Salt",
-            "Citrus"
-          ],
-          "heart": [
-            "Lavender",
-            "Geranium"
-          ],
-          "base": [
-            "Driftwood",
-            "Amber"
-          ]
-        },
-        "description": "A refreshing scent inspired by ocean breezes and sun-warmed driftwood.",
-        "price": "NPR 18,900",
-        "badge": null,
-        "accentColor": "#d4e8f5",
-        "imageUrl": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=500&fit=crop",
-        "productUrl": "/products/coastal-breeze",
-        "visible": true,
-        "order": 7,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "velvet-oud",
-        "name": "Velvet Oud",
-        "collection": "Luxury Collection",
-        "notes": {
-          "top": [
-            "Saffron",
-            "Elemi"
-          ],
-          "heart": [
-            "Oud",
-            "Rose Absolute"
-          ],
-          "base": [
-            "Sandalwood",
-            "Musk"
-          ]
-        },
-        "description": "Rich Arabian oud meets velvety rose — an opulent statement of timeless luxury.",
-        "price": "NPR 38,000",
-        "badge": "New Arrival",
-        "accentColor": "#2e1a0e",
-        "imageUrl": "https://images.unsplash.com/photo-1563170351-be82bc888aa4?w=400&h=500&fit=crop",
-        "productUrl": "/products/velvet-oud",
-        "visible": true,
-        "order": 8,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "white-cedar",
-        "name": "White Cedar",
-        "collection": "Signature Collection",
-        "notes": {
-          "top": [
-            "Bergamot",
-            "Green Apple"
-          ],
-          "heart": [
-            "Cedar",
-            "Vetiver"
-          ],
-          "base": [
-            "White Musk",
-            "Ambergris"
-          ]
-        },
-        "description": "Clean cedarwood grounded in ambergris — understated elegance for the modern minimalist.",
-        "price": "NPR 20,500",
-        "badge": null,
-        "accentColor": "#e8ede8",
-        "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=500&fit=crop",
-        "productUrl": "/products/white-cedar",
-        "visible": true,
-        "order": 9,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "rose-noir",
-        "name": "Rose Noir",
-        "collection": "Luxury Collection",
-        "notes": {
-          "top": [
-            "Black Currant",
-            "Pear"
-          ],
-          "heart": [
-            "Dark Rose",
-            "Geranium"
-          ],
-          "base": [
-            "Patchouli",
-            "Oakmoss"
-          ]
-        },
-        "description": "A dark, sensual rose — layers of black currant and patchouli make this an unforgettable feminine signature.",
-        "price": "NPR 32,000",
-        "badge": null,
-        "accentColor": "#3d0a1a",
-        "imageUrl": "https://images.unsplash.com/photo-1547887538-047f814f0aee?w=400&h=500&fit=crop",
-        "productUrl": "/products/rose-noir",
-        "visible": true,
-        "order": 10,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "himalayan-mist",
-        "name": "Himalayan Mist",
-        "collection": "Seasonal Fragrances",
-        "notes": {
-          "top": [
-            "Snow Accord",
-            "Eucalyptus"
-          ],
-          "heart": [
-            "Juniper",
-            "Pine Needle"
-          ],
-          "base": [
-            "Moss",
-            "Cedarwood"
-          ]
-        },
-        "description": "The crisp, cold air of the high Himalayas — pine, juniper, and mountain mist in a bottle.",
-        "price": "NPR 17,500",
-        "badge": null,
-        "accentColor": "#d6e8f0",
-        "imageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop",
-        "productUrl": "/products/himalayan-mist",
-        "visible": true,
-        "order": 11,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "golden-saffron",
-        "name": "Golden Saffron",
-        "collection": "Limited Edition",
-        "notes": {
-          "top": [
-            "Saffron",
-            "Cardamom"
-          ],
-          "heart": [
-            "Jasmine",
-            "Rose"
-          ],
-          "base": [
-            "Oud",
-            "Amber",
-            "Sandalwood"
-          ]
-        },
-        "description": "Precious saffron from Kashmir woven with oud and amber — the most luxurious ANOK creation to date.",
-        "price": "NPR 52,000",
-        "badge": "Limited Edition",
-        "accentColor": "#c8960c",
-        "imageUrl": "https://images.unsplash.com/photo-1600612253971-57b9b7e6e9a7?w=400&h=500&fit=crop",
-        "productUrl": "/products/golden-saffron",
-        "visible": true,
-        "order": 12,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "jasmine-dusk",
-        "name": "Jasmine Dusk",
-        "collection": "Signature Collection",
-        "notes": {
-          "top": [
-            "Mandarin",
-            "Green Tea"
-          ],
-          "heart": [
-            "Jasmine Sambac",
-            "Tuberose"
-          ],
-          "base": [
-            "Vanilla",
-            "White Musk"
-          ]
-        },
-        "description": "Jasmine sambac in full bloom at dusk — warm, heady, and intoxicatingly feminine.",
-        "price": "NPR 23,000",
-        "badge": null,
-        "accentColor": "#fef3e2",
-        "imageUrl": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400&h=500&fit=crop",
-        "productUrl": "/products/jasmine-dusk",
-        "visible": true,
-        "order": 13,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
-      },
-      {
-        "id": "midnight-vetiver",
-        "name": "Midnight Vetiver",
-        "collection": "Luxury Collection",
-        "notes": {
-          "top": [
-            "Grapefruit",
-            "Pepper"
-          ],
-          "heart": [
-            "Vetiver",
-            "Tobacco Leaf"
-          ],
-          "base": [
-            "Leather",
-            "Benzoin"
-          ]
-        },
-        "description": "Deep vetiver and tobacco leaf cut with grapefruit — a brooding, masculine statement.",
-        "price": "NPR 29,500",
-        "badge": null,
-        "accentColor": "#1c2a1c",
-        "imageUrl": "https://images.unsplash.com/photo-1590739293931-a4b688c9f08d?w=400&h=500&fit=crop",
-        "productUrl": "/products/midnight-vetiver",
-        "visible": true,
-        "order": 14,
-        "createdAt": "2025-01-01T00:00:00.000Z",
-        "updatedAt": "2025-01-01T00:00:00.000Z"
+        "id": "u3",
+        "title": "Layer on Moisturised Skin",
+        "body": "Apply onto freshly moisturised skin to lock in the aroma for maximum projection and longevity."
       }
-    ]
+    ],
+    "orderingNote": "Orders are arranged directly with us over WhatsApp — we will confirm availability, delivery and payment with you. Every full-size bottle ships with a matching 2 ml trial sample, so you can test the scent before opening the 100 ml."
   },
-  "collectionTiles": [
-    {
-      "id": "tile-signature",
-      "label": "Signature",
-      "heading": "Signature Collection",
-      "subtext": "The house icons — built to last a lifetime",
-      "href": "/products?category=Signature+Collection",
-      "imageUrl": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=900&h=640&fit=crop",
-      "visible": true,
-      "order": 0
-    },
-    {
-      "id": "tile-luxury",
-      "label": "Luxury",
-      "heading": "Luxury Collection",
-      "subtext": "Rare ingredients, opulent compositions",
-      "href": "/products?category=Luxury+Collection",
-      "imageUrl": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=900&h=640&fit=crop",
-      "visible": true,
-      "order": 1
-    },
-    {
-      "id": "tile-limited",
-      "label": "Limited",
-      "heading": "Limited Edition",
-      "subtext": "Numbered, unrepeatable, collectible",
-      "href": "/products?category=Limited+Edition",
-      "imageUrl": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=900&h=640&fit=crop",
-      "visible": true,
-      "order": 2
-    }
-  ],
   "testimonials": {
+    "sectionTag": "Voices of Trust",
     "headline": "What Our Customers Say",
     "items": [
       {
         "id": 1,
-        "quote": "Noir Elixir is pure magic. The bold, seductive blend is perfect for evenings out, and I always receive compliments on it.",
+        "quote": "ANOK-001 is the first scent I have worn that people stop me to ask about. The oud is deep without ever turning heavy.",
         "author": "Sophia L.",
         "title": "Ceo Of Alpha Company",
         "rating": 5,
@@ -712,7 +247,7 @@
       },
       {
         "id": 2,
-        "quote": "Celestial Blossom is my everyday signature. Light, feminine, and utterly elegant — it lasts all day beautifully.",
+        "quote": "I wear ANOK-001 every day. It opens bright and citrus, then settles into something warm by the afternoon — it lasts beautifully.",
         "author": "Amara K.",
         "title": "Head of Design, Bloom Studio",
         "rating": 5,
@@ -721,7 +256,7 @@
       },
       {
         "id": 3,
-        "quote": "The packaging alone is a work of art. Mystic Dawn has a depth that I have never experienced in any other fragrance.",
+        "quote": "The bottle alone is a work of art. ANOK-001 has a depth I have not found in any other fragrance at this price.",
         "author": "James R.",
         "title": "Lifestyle Curator",
         "rating": 5,
@@ -731,6 +266,7 @@
     ]
   },
   "commitment": {
+    "tag": "Our Promise",
     "headline": "A Commitment To Purity",
     "body": "We believe in sustainable luxury. Every bottle of ANOK is crafted with responsibly sourced ingredients, ensuring a lasting impact on you—not on the environment.",
     "cta": {
@@ -762,39 +298,22 @@
         "title": "Low-Impact Packaging",
         "body": "Bottles are reusable, packaging is recycled. Our footprint stays as light as our finest top notes."
       }
-    ]
+    ],
+    "imageUrl": "/images/5.webp"
   },
   "newsletter": {
+    "eyebrow": "Exclusive Access",
     "headline": "Stay Connected with",
     "brandHighlight": "ANOK",
     "subtext": "Receive exclusive offers, early access to new fragrance launches, invitations to special events.",
     "placeholder": "Enter your email",
-    "cta": "Subscribe Now"
+    "cta": "Subscribe Now",
+    "backgroundImage": "/images/2.webp"
   },
   "footer": {
-    "tagline": "Refresh Your Senses With Exclusive Fragrances, Product Launches, And Special Offers Delivered To Your Inbox.",
+    "tagline": "Be first to hear about restocks, new releases and invitations to private ANOK events — delivered to your inbox.",
+    "hoursHeading": "Opening Hours",
     "navColumns": [
-      {
-        "heading": "Shop",
-        "links": [
-          {
-            "label": "Signature Collection",
-            "href": "/products?category=Signature+Collection"
-          },
-          {
-            "label": "Luxury Collection",
-            "href": "/products?category=Luxury+Collection"
-          },
-          {
-            "label": "Limited Editions",
-            "href": "/products?category=Limited+Edition"
-          },
-          {
-            "label": "Seasonal Fragrances",
-            "href": "/products?category=Seasonal+Fragrances"
-          }
-        ]
-      },
       {
         "heading": "Company",
         "links": [
@@ -817,23 +336,15 @@
         "links": [
           {
             "label": "FAQs",
-            "href": "#"
-          },
-          {
-            "label": "Shipping",
-            "href": "#"
-          },
-          {
-            "label": "Returns",
-            "href": "#"
+            "href": "/faq"
           },
           {
             "label": "Privacy Policy",
-            "href": "#"
+            "href": "/privacy"
           },
           {
             "label": "Terms of Use",
-            "href": "#"
+            "href": "/terms"
           }
         ]
       }
@@ -843,12 +354,164 @@
       "href": "#"
     }
   },
+  "contact": {
+    "pageTag": "Get In Touch",
+    "pageSubtitle": "We'd love to hear from you — reach out and we'll get back within one business day.",
+    "subjects": [
+      "General Enquiry",
+      "Order & Shipping",
+      "Product Information",
+      "Wholesale / Retail Partnership",
+      "Press & Media",
+      "Other"
+    ]
+  },
   "seo": {
     "metaTitle": "ANOK — Luxury Fragrances from Kathmandu",
-    "metaDescription": "ANOK is a Kathmandu-born house of fragrance. Rare, slow-crafted perfumes that hold time, memory and the quiet weight of luxury.",
-    "keywords": "ANOK, luxury perfume, fragrance, Kathmandu, Nepal, oud, rose, amber",
+    "metaDescription": "ANOK is a Kathmandu-born house of fragrance. ANOK-001 is our first Eau de Parfum — woody citrus amber, unisex, crafted in small batches.",
+    "keywords": "ANOK, ANOK-001, luxury perfume, fragrance, Kathmandu, Nepal, oud, rose, amber",
     "ogImage": "/logo.png",
     "ogTitle": "ANOK — Luxury Fragrances",
-    "ogDescription": "Rare, slow-crafted perfumes from the heart of Kathmandu. Discover the Signature, Luxury, and Limited Edition collections."
+    "ogDescription": "A rare, slow-crafted perfume from the heart of Kathmandu. Meet ANOK-001 — Calabrian bergamot, white orchid, Madagascar vanilla, driftwood and amber."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "This policy explains what personal information ANOK collects when you use this website or contact us, how we use it, and the choices you have. We keep it deliberately short, because we collect very little.",
+    "lastUpdated": "15 August 2026",
+    "sections": [
+      {
+        "id": "what-we-collect",
+        "heading": "What We Collect",
+        "body": "We collect only what you give us directly.\n\nWhen you send us a message through the contact form, we receive your name, email address, chosen subject and the content of your message. When you subscribe to our newsletter, we receive your email address. We do not ask for, store, or process payment card details anywhere on this website."
+      },
+      {
+        "id": "how-we-use-it",
+        "heading": "How We Use It",
+        "body": "We use your details for one purpose: to reply to you. Contact form submissions are used to answer your enquiry. Newsletter addresses are used to send occasional updates about ANOK — new releases, restocks and announcements.\n\nWe do not sell, rent or trade your information to anyone."
+      },
+      {
+        "id": "cookies",
+        "heading": "Cookies & Analytics",
+        "body": "This website does not set advertising or tracking cookies, and does not run third-party analytics or advertising pixels. If that changes, this policy will be updated before the change goes live."
+      },
+      {
+        "id": "third-parties",
+        "heading": "Third Parties",
+        "body": "Some parts of the site rely on outside services — for example our website host, and WhatsApp if you choose to start a conversation with us through the button on the site. Those services handle your data under their own privacy policies. We share your information with them only to the extent needed to run the site or answer you."
+      },
+      {
+        "id": "retention",
+        "heading": "How Long We Keep It",
+        "body": "We keep enquiry correspondence for as long as needed to deal with your question and any follow-up. Newsletter subscriptions are kept until you unsubscribe, which you can do at any time."
+      },
+      {
+        "id": "your-rights",
+        "heading": "Your Rights",
+        "body": "You can ask us at any time to tell you what information we hold about you, to correct it, or to delete it. Write to hello@anok.fragrance and we will act on your request."
+      },
+      {
+        "id": "contact",
+        "heading": "Contact Us",
+        "body": "Questions about this policy can go to hello@anok.fragrance, or by post to ANOK, Maharajgunj Chakrapath, Kathmandu, Nepal. You can also call us on +977 9868 765 432."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Terms of Use",
+    "intro": "These terms cover your use of the ANOK website. By browsing the site you accept them. If you do not agree with them, please do not use the site.",
+    "lastUpdated": "15 August 2026",
+    "sections": [
+      {
+        "id": "about-site",
+        "heading": "About This Site",
+        "body": "This website is operated by ANOK, based at Maharajgunj Chakrapath, Kathmandu, Nepal. It exists to present our fragrance and to let you get in touch with us.\n\nThis site is not an online shop. It has no cart and no checkout, and no order can be placed or completed through it. Enquiries and purchases are arranged directly with us by message, phone or WhatsApp."
+      },
+      {
+        "id": "product-info",
+        "heading": "Product Information & Pricing",
+        "body": "We describe our fragrance as accurately as we can, but product photography, notes and descriptions are presented for guidance and are not a guarantee of an exact match. Scent is experienced differently by different people.\n\nPrices shown on this site are indicative and may change without notice. The price confirmed with you directly at the time of purchase is the price that applies."
+      },
+      {
+        "id": "availability",
+        "heading": "Availability",
+        "body": "Our fragrance is produced in small batches. Listing it on this site is not a guarantee that stock is available at any given moment. We will confirm availability when you contact us."
+      },
+      {
+        "id": "intellectual-property",
+        "heading": "Intellectual Property",
+        "body": "All content on this site — including the ANOK name, logo, product photography, and written copy — belongs to us and is protected by copyright and trade mark law. You may not copy, reproduce or reuse it commercially without our written permission."
+      },
+      {
+        "id": "acceptable-use",
+        "heading": "Acceptable Use",
+        "body": "Please do not attempt to disrupt the site, gain unauthorised access to any part of it, or use the contact form or newsletter to send unsolicited, abusive or unlawful material."
+      },
+      {
+        "id": "liability",
+        "heading": "Liability",
+        "body": "We take care to keep this site accurate and available, but we provide it as it is. We are not liable for losses arising from your use of the site or from reliance on information published on it, to the extent the law allows us to limit that liability."
+      },
+      {
+        "id": "changes",
+        "heading": "Changes to These Terms",
+        "body": "We may update these terms as our business grows — for example if we begin selling online. The version published on this page is the one that applies."
+      },
+      {
+        "id": "governing-law",
+        "heading": "Governing Law",
+        "body": "These terms are governed by the laws of Nepal, and the courts of Nepal have jurisdiction over any dispute arising from them."
+      }
+    ]
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "intro": "Answers to what we get asked most. If your question is not here, send it to us — we reply to everything.",
+    "items": [
+      {
+        "id": "f1",
+        "question": "How do I buy ANOK-001?",
+        "answer": "There is no online checkout on this site yet. Message us through the contact form or tap the WhatsApp button and we will confirm availability, price and delivery with you directly."
+      },
+      {
+        "id": "f2",
+        "question": "What does ANOK-001 smell like?",
+        "answer": "It opens on Calabrian bergamot and citrus zest, moves through white orchid and Madagascar vanilla at the heart, and settles on sun-drenched driftwood and amber. Warm and woody rather than sharp — it develops slowly over the first hour on skin."
+      },
+      {
+        "id": "f3",
+        "question": "What sizes are available?",
+        "answer": "ANOK-001 is offered in 100 ml, 50 ml, 30 ml and 10 ml. The 10 ml is a good way to live with the fragrance before committing to a full bottle."
+      },
+      {
+        "id": "f4",
+        "question": "How long does it last?",
+        "answer": "Most people find it lasts through a working day. Oud and amber are heavy base notes that hold well, though longevity always varies with skin type, weather and how much you apply."
+      },
+      {
+        "id": "f5",
+        "question": "Do you deliver outside Kathmandu?",
+        "answer": "Yes. Tell us where you are when you get in touch and we will confirm delivery options and timing for your location."
+      },
+      {
+        "id": "f6",
+        "question": "Is it suitable for men or for women?",
+        "answer": "Both. We do not split our work into men's and women's fragrance. ANOK-001 is composed to be worn by anyone who likes it."
+      },
+      {
+        "id": "f7",
+        "question": "Are your ingredients natural?",
+        "answer": "We use responsibly harvested natural oils and cruelty-free ingredients, and avoid artificial fixatives and cheap synthetics. ANOK-001 is crafted in Kathmandu, Nepal."
+      },
+      {
+        "id": "f8",
+        "question": "How should I store my bottle?",
+        "answer": "Keep it upright, away from direct sunlight and away from heat. A drawer or a closed cupboard is ideal. Stored properly, an unopened bottle keeps for years."
+      },
+      {
+        "id": "f9",
+        "question": "Will you release more fragrances?",
+        "answer": "Yes. ANOK-001 is the first composition to carry our name, and the numbering is deliberate. Subscribe to the newsletter to hear about the next one first."
+      }
+    ]
   }
 }

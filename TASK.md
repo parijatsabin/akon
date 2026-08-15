@@ -1,327 +1,631 @@
-# Comprehensive Project Analysis and Admin CMS Architecture Planning Prompt
+# ANOK Perfumes Website - Version 1 Complete Codebase Audit, Cleanup & Architecture Refactoring
 
-Perform a complete end-to-end analysis of the entire project, including the current website implementation, existing Admin Panel/CMS implementation, project structure, data management approach, UI/UX architecture, and future scalability considerations.
+You are a **Senior Full Stack Software Architect**, **Senior React Developer**, **Senior Node.js Developer**, and **Senior UI/UX Engineer**.
 
-## Project Goal
+Your responsibility is **NOT** to immediately start modifying the project.
 
-The primary objective of this project is to build a simple, scalable, maintainable, and production-ready **Admin Panel (CMS)** that allows me to manage all website content dynamically without modifying the frontend code directly.
-
-The Admin Panel should become the single source of truth for managing all website data and content.
+Your first responsibility is to **understand the entire project**, analyze every file, identify problems, and create a detailed implementation plan before making any changes.
 
 ---
 
-## Current Situation
+# Project Overview
 
-* The website frontend has already been developed.
-* The Admin Panel/CMS basic implementation and some code structures have already been created.
-* We need to analyze:
+This project is the official website for a perfume brand.
 
-  * What has already been implemented.
-  * What architecture decisions are good.
-  * What needs to be improved.
-  * What should be removed or simplified.
-  * What should be centralized.
-  * What should be prepared for future scalability.
+The project currently contains:
+
+* Public Website
+* Admin CMS
+* Local JSON-based Data Management
+
+The website is almost completed, but over time the project has become:
+
+* bulky
+* inconsistent
+* difficult to maintain
+* contains redundant code
+* contains unnecessary components
+* contains unused logic
+* contains duplicate state management
+* has multiple data sources
+* is becoming difficult to scale
+
+The primary objective is to completely optimize the project while keeping Version 1 simple.
 
 ---
 
-## Data Management Strategy
+# VERY IMPORTANT
 
-For the current version, we are **NOT using a database**.
+## DO NOT ASSUME ANYTHING.
 
-Instead, we will manage all website content through separate JSON files.
+Whenever you find ambiguity:
+
+STOP.
+
+Do not continue.
+
+Ask questions.
+
+Never make architectural decisions without confirmation.
+
+If something affects existing functionality, explain:
+
+* what you found
+* why it is a problem
+* what solution you recommend
+
+Then wait for approval.
+
+---
+
+# Current Website Scope (Version 1)
+
+Version 1 should remain intentionally simple.
+
+Only these pages are required:
+
+* Home
+* About Us
+* Contact
+
+Nothing else.
+
+Do not introduce additional pages unless asked.
+
+---
+
+# Product Strategy
+
+Version 1 focuses on branding only ONE perfume.
+
+There is only one featured product.
+
+There are:
+
+* no categories
+* no collections
+* no men's section
+* no women's section
+* no product listing pages
+* no ecommerce
+* no cart
+* no checkout
+
+Everything should revolve around showcasing one premium perfume.
+
+Future expansion will happen later.
+
+Design the architecture so multiple products can be added later without rewriting the system.
+
+---
+
+# Admin CMS
+
+The CMS should also remain simple.
+
+Current purpose:
+
+Manage all website content from one place.
 
 Examples:
 
-* `home_data.json`
-* `product_data.json`
-* `about_data.json`
-* `contact_data.json`
-* `review_data.json`
-* `collection_data.json`
-* `settings_data.json`
-* `seo_data.json`
-* etc.
+* Home content
+* Hero section
+* Product information
+* About page
+* Contact information
+* Footer
+* Social links
+* SEO
+* Settings
 
-### Why separate JSON files?
+The CMS should feel lightweight and easy to understand.
 
-* Easier content management.
-* Cleaner project structure.
-* Easier maintenance.
-* Easier debugging.
-* Better modularity.
-* Future migration to PostgreSQL, MongoDB, or any other database becomes simpler.
-* Allows separation of concerns.
+If there are unnecessary settings, remove them.
+
+If multiple places edit the same data, consolidate them.
 
 ---
 
-## Main Analysis Tasks
+# Data Management
 
-Perform a comprehensive analysis of the project and provide:
+Current system uses local JSON files.
 
-### 1. Current Architecture Analysis
+This is intentional.
 
-Analyze:
+Keep using JSON.
 
-* Folder structure
-* Component structure
-* Data flow
-* State management
-* API structure
-* JSON management structure
-* Admin Panel architecture
-* Frontend rendering architecture
-* Reusability
-* Scalability
-* Maintainability
+However, there must be only ONE source of truth.
+
+Examples:
+
+Good:
+
+```
+data/
+    home.json
+    about.json
+    settings.json
+    product.json
+```
+
+Bad:
+
+* duplicate JSON
+* mock data
+* hardcoded constants
+* duplicate objects
+* fallback objects
+* duplicate configs
+
+Everything should come from one centralized data layer.
+
+---
+
+# Future Migration
+
+In the future we will migrate to:
+
+Node.js
+
+MySQL
+
+The architecture should make migration extremely easy.
+
+Meaning:
+
+Today
+
+Website
+↓
+
+JSON Repository
+↓
+
+React Components
+
+Later
+
+Website
+↓
+
+API Layer
+↓
+
+Node.js
+↓
+
+MySQL
+
+React components should require minimal or no changes during migration.
+
+Separate the data access layer from the UI.
+
+---
+
+# Architecture Goals
+
+Refactor the project into a clean, scalable structure.
+
+Expected characteristics:
+
+* modular
+* reusable
+* scalable
+* maintainable
+* readable
+* lightweight
+* predictable
+* organized
+
+Avoid:
+
+* large files
+* duplicated logic
+* nested conditions
+* unnecessary abstractions
+* over-engineering
+* dead code
+* unused hooks
+* unused utilities
+* repeated components
+
+---
+
+# Code Cleanup
+
+Perform a full audit.
+
+Identify:
+
+* unused files
+* unused assets
+* unused images
+* unused icons
+* unused fonts
+* unused libraries
+* unused npm packages
+* unused components
+* unused helper functions
+* unused CSS
+* unused Tailwind classes
+* unused imports
+* unused variables
+* commented code
+* obsolete logic
+* temporary fixes
+* duplicated code
+
+Create a cleanup report before deleting anything.
+
+---
+
+# Folder Structure
+
+Review the entire project.
+
+Recommend a professional folder structure.
+
+Example:
+
+```
+src/
+
+components/
+
+pages/
+
+layouts/
+
+features/
+
+hooks/
+
+services/
+
+repositories/
+
+context/
+
+constants/
+
+utils/
+
+types/
+
+assets/
+
+styles/
+
+data/
+
+admin/
+```
+
+Do not reorganize blindly.
+
+Explain every proposed change.
+
+---
+
+# Component Review
+
+Inspect every component.
+
+Determine:
+
+* Is it reusable?
+* Is it too large?
+* Should it be split?
+* Should it be merged?
+* Is it duplicated?
+* Is state managed correctly?
+* Does it follow consistent patterns?
+
+Refactor only when necessary.
+
+---
+
+# State Management
+
+Audit state management.
+
+Remove:
+
+* duplicated state
+* unnecessary useEffect
+* unnecessary memoization
+* unnecessary contexts
+* prop drilling where avoidable
+
+Recommend a simpler architecture.
+
+---
+
+# Performance Audit
+
+Inspect:
+
+* rendering performance
+* bundle size
+* image loading
+* lazy loading
+* memoization
+* routing
+* JSON loading
+* component rendering
+
+Remove unnecessary re-renders.
+
+---
+
+# Styling Review
+
+Review the styling system.
+
+Identify:
+
+* duplicate styles
+* inconsistent spacing
+* inconsistent typography
+* repeated utility classes
+* unnecessary wrappers
+* excessive nesting
+
+Make styling consistent.
+
+---
+
+# Admin Review
+
+Review the admin dashboard.
+
+Questions:
+
+Can this page be simpler?
+
+Can users manage data with fewer clicks?
+
+Are settings grouped logically?
+
+Is there duplicated functionality?
+
+Can components be reused?
+
+---
+
+# Website Review
+
+Audit:
+
+Navigation
+
+Hero
+
+About
+
+Featured Perfume
+
+Contact
+
+Footer
+
+Responsive behavior
+
+Animations
+
+Accessibility
+
+Loading states
+
+Empty states
+
+Error handling
+
+SEO
+
+Meta tags
+
+Structured data
+
+Performance
+
+---
+
+# Naming Convention
+
+Ensure consistency.
+
+Examples:
+
+Components:
+
+```
+HeroSection
+AboutSection
+FeaturedPerfume
+ContactForm
+```
+
+Hooks:
+
+```
+useHomeData
+useSettings
+```
+
+Utilities:
+
+```
+formatPrice
+generateMeta
+```
+
+JSON:
+
+```
+home.json
+product.json
+settings.json
+```
+
+---
+
+# Coding Standards
+
+Follow:
+
+* React Best Practices
+* Clean Architecture principles
+* SOLID (where appropriate)
+* DRY
+* KISS
+* Single Responsibility Principle
+
+Avoid unnecessary abstraction.
+
+---
+
+# Documentation
+
+Document every important decision.
+
+Whenever refactoring:
 
 Explain:
 
-* What is good.
-* What is problematic.
-* What should be improved.
-* What should be removed.
+* why
+* benefits
+* possible risks
+* migration impact
 
 ---
 
-### 2. Admin CMS Architecture Review
+# Expected Workflow
 
-Analyze whether the Admin Panel currently supports:
+DO NOT immediately rewrite code.
 
-* CRUD operations
-* Dynamic rendering
-* Reusable forms
-* Reusable tables
-* File/image management
-* Section management
-* Global settings
-* Feature toggles
-* Show/hide sections
-* Ordering/sorting
-* SEO management
-* Future role management
-* Audit/history possibilities
+Follow this exact process.
 
-Suggest:
+## Phase 1
 
-* Better CMS architecture.
-* Better folder structure.
-* Better component organization.
-* Better data management strategy.
+Read the entire project.
+
+Understand every module.
 
 ---
 
-### 3. JSON Data Architecture
+## Phase 2
 
-Design a clean and scalable JSON architecture.
+Create a project audit.
 
-Requirements:
+Include:
 
-* Separate JSON files for each module.
-* Standardized schema.
-* Easy migration to databases.
-* Support for:
+Architecture diagram
 
-  * Create
-  * Read
-  * Update
-  * Delete
-  * Sorting
-  * Visibility toggle
-  * Featured items
-  * Metadata
-  * SEO
-  * Timestamps
-  * Future versioning
+Folder structure
 
-Provide examples of:
+Current problems
 
-* Product JSON
-* Home JSON
-* About JSON
-* Reviews JSON
-* Collections JSON
-* Global Settings JSON
+Duplicate logic
+
+Dead code
+
+Unused files
+
+Performance issues
+
+Maintainability score
+
+Scalability score
+
+Technical debt
+
+Priority list
 
 ---
 
-### 4. Frontend Dynamic Rendering Analysis
+## Phase 3
 
-Ensure that:
+Present the findings.
 
-* Every website section is rendered dynamically.
-* No hardcoded content exists.
-* Components are reusable.
-* Components consume JSON data only.
-* New sections can be added without major code changes.
+Do NOT change code yet.
 
-Analyze:
-
-* Which areas are currently static.
-* Which areas should become dynamic.
-* How to centralize data consumption.
+Wait for approval.
 
 ---
 
-### 5. Admin Features Analysis
+## Phase 4
 
-Review and suggest improvements for:
+Create a detailed refactoring roadmap.
 
-#### Product Management
+Break work into small milestones.
 
-* CRUD
-* Featured product
-* Status
-* Visibility
-* Categories
-* Collections
-* Media gallery
+Example:
 
-#### Collection Management
+Milestone 1
 
-* Featured collections
-* Normal collections
-* Ordering
-* Visibility
+Project cleanup
 
-#### Home Page Management
+Milestone 2
 
-* Hero section
-* Banner
-* Features
-* Testimonials
-* Promotions
+Folder restructuring
 
-#### About Page Management
+Milestone 3
 
-* Company story
-* Mission
-* Vision
-* Team
+Data layer refactor
 
-#### Review Management
+Milestone 4
 
-* CRUD
-* Rating
-* Display order
-* Featured review
+Admin simplification
 
-#### Contact Management
+Milestone 5
 
-* Contact information
-* Social links
-* Maps
-* Business details
+Component optimization
 
-#### Global Settings
+Milestone 6
 
-* Brand information
-* Theme settings
-* Website configuration
-* Footer settings
-* Navigation settings
+Performance optimization
 
-#### SEO Management
+Milestone 7
 
-* Meta title
-* Meta description
-* Keywords
-* Open Graph
-* Structured data
+Final QA
 
 ---
 
-### 6. Code Quality Analysis
+## Phase 5
 
-Analyze:
+After approval,
 
-* Duplicate code
-* Repeated logic
-* Component reusability
-* Service layers
-* Utility functions
-* Hooks
-* API abstraction
-* Naming conventions
-* Folder structure
-* Type definitions
-* Error handling
-* Validation
-* Performance
+perform one milestone at a time.
 
-Suggest:
+Never refactor everything at once.
 
-* Refactoring opportunities.
-* Centralization opportunities.
-* Standardization improvements.
+Each milestone must:
+
+* compile successfully
+* preserve existing functionality
+* avoid regressions
+* be fully tested before moving on
 
 ---
 
-### 7. Future Scalability Planning
+# Success Criteria
 
-Design the architecture so that future migration becomes easy:
+At the end of this refactor:
 
-* JSON → PostgreSQL
-* JSON → MongoDB
-* Single Admin → Multi-user Admin
-* Static Roles → RBAC
-* Local files → Cloud storage
-* Single language → Multi-language
-* Single website → Multi-tenant CMS
+✅ The codebase is clean and easy to navigate.
 
----
+✅ There is only one source of truth for all website data.
 
-### 8. Create a Final Implementation Roadmap
+✅ The Admin CMS is lightweight and user-friendly.
 
-Provide:
+✅ There is no dead code, duplicate logic, or unnecessary complexity.
 
-#### What to Keep
+✅ The website remains a clean multi-page branding site (Home, About Us, Contact).
 
-* Existing implementations that are good.
+✅ Version 1 focuses on a single premium perfume.
 
-#### What to Improve
+✅ The architecture is ready for future migration to a Node.js + MySQL backend with minimal frontend changes.
 
-* Existing implementations that need refactoring.
-
-#### What to Remove
-
-* Unnecessary complexity or redundant code.
-
-#### What to Build Next
-
-* Prioritized implementation roadmap.
-
-#### What NOT to Do
-
-* Anti-patterns to avoid.
-* Overengineering risks.
-* Architecture mistakes.
-
----
-
-## Important Rules
-
-* Keep everything simple.
-* Avoid overengineering.
-* Maintain clean architecture.
-* Keep code centralized.
-* Avoid redundant code.
-* Use reusable components.
-* Make every section dynamic.
-* Design for future database migration.
-* Follow scalable project structure.
-* Follow industry standards.
-
----
-
-## Validation Requirements
-
-After completing the analysis:
-
-1. Recheck the entire architecture at least 2–3 times.
-2. Verify that every section is dynamic.
-3. Verify that all data can migrate to a database.
-4. Verify that there is no unnecessary duplication.
-5. Verify that the solution remains simple and maintainable.
-
-If any assumption or requirement is unclear, STOP and ASK questions before proceeding.
+**Most importantly: if you encounter any uncertainty, stop immediately, explain the issue, ask for clarification, and wait for approval before proceeding.**

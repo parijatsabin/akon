@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSiteData } from "../PublicSite";
+import { useSiteData } from "../data/SiteDataProvider";
 
 const IGIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="footer-root">
+    <footer className="footer-root on-noir">
       <div className="container">
         <div className="footer-main">
           {/* Brand */}

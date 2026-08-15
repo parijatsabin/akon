@@ -21,7 +21,7 @@ export const Field: React.FC<FieldProps> = ({ label, hint, error, required, chil
             }}
         >
             {label}
-            {required && <span style={{ color: "var(--gold)", marginLeft: 4 }}>*</span>}
+            {required && <span style={{ color: "var(--accent-text)", marginLeft: 4 }}>*</span>}
         </label>
         {children}
         {hint && !error && (
@@ -48,13 +48,13 @@ export const Input: React.FC<InputProps> = ({ fullWidth = true, style, ...props 
             fontFamily: "var(--font-body)",
             fontSize: "0.92rem",
             color: "var(--text-main)",
-            background: "var(--warm-white)",
+            background: "var(--surface-raised)",
             outline: "none",
             transition: "border-color 0.2s",
             ...style,
         }}
         onFocus={(e) => {
-            e.currentTarget.style.borderColor = "var(--gold)";
+            e.currentTarget.style.borderColor = "var(--accent)";
             props.onFocus?.(e);
         }}
         onBlur={(e) => {
@@ -79,7 +79,7 @@ export const Textarea: React.FC<TextareaProps> = ({ fullWidth = true, style, ...
             fontFamily: "var(--font-body)",
             fontSize: "0.92rem",
             color: "var(--text-main)",
-            background: "var(--warm-white)",
+            background: "var(--surface-raised)",
             outline: "none",
             resize: "vertical",
             minHeight: 90,
@@ -87,7 +87,7 @@ export const Textarea: React.FC<TextareaProps> = ({ fullWidth = true, style, ...
             ...style,
         }}
         onFocus={(e) => {
-            e.currentTarget.style.borderColor = "var(--gold)";
+            e.currentTarget.style.borderColor = "var(--accent)";
             props.onFocus?.(e);
         }}
         onBlur={(e) => {
@@ -113,7 +113,7 @@ export const Select: React.FC<SelectProps> = ({ options, fullWidth = true, style
             fontFamily: "var(--font-body)",
             fontSize: "0.92rem",
             color: "var(--text-main)",
-            background: "var(--warm-white)",
+            background: "var(--surface-raised)",
             outline: "none",
             cursor: "pointer",
             ...style,
@@ -140,8 +140,8 @@ export const SaveBtn: React.FC<SaveBtnProps> = ({ loading, onClick, label = "Sav
             alignItems: "center",
             gap: 8,
             padding: "11px 28px",
-            background: loading ? "var(--gold-subtle)" : "var(--gold)",
-            color: "#fff",
+            background: loading ? "var(--accent-soft)" : "var(--accent)",
+            color: "var(--on-accent)",
             border: "none",
             borderRadius: "var(--radius-sm)",
             fontFamily: "var(--font-body)",
@@ -151,14 +151,14 @@ export const SaveBtn: React.FC<SaveBtnProps> = ({ loading, onClick, label = "Sav
             textTransform: "uppercase",
             cursor: loading ? "not-allowed" : "pointer",
             transition: "background 0.22s, transform 0.18s",
-            boxShadow: "0 4px 14px rgba(162,127,63,0.28)",
+            boxShadow: "0 4px 14px rgba(197,165,114,0.24)",
         }}
-        onMouseEnter={(e) => { if (!loading) e.currentTarget.style.background = "var(--gold-dim)"; }}
-        onMouseLeave={(e) => { if (!loading) e.currentTarget.style.background = "var(--gold)"; }}
+        onMouseEnter={(e) => { if (!loading) e.currentTarget.style.background = "var(--accent-soft)"; }}
+        onMouseLeave={(e) => { if (!loading) e.currentTarget.style.background = "var(--accent)"; }}
     >
         {loading ? (
             <>
-                <span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+                <span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid rgba(20,18,14,0.30)", borderTopColor: "var(--on-accent)", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
                 Saving…
             </>
         ) : (
