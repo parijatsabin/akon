@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { readStore, updateSection } from "../cms/cmsStore";
-import { Card } from "../components/ui/Card";
+import { readStore } from "../../data/siteRepository";
+import { saveSection } from "../lib/saveSection";
+import { Section } from "../components/ui/Section";
 import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
-import type { TestimonialItem } from "../types/cms.types";
+import type { TestimonialItem } from "../../data/types";
 import { Plus, Trash2 } from "lucide-react";
 
 const emptyReview = (id: number): TestimonialItem => ({
@@ -23,7 +24,7 @@ const StarPicker: React.FC<{ value: number; onChange: (v: number) => void }> = (
                 key={n}
                 type="button"
                 onClick={() => onChange(n)}
-                style={{ background: "none", border: "none", cursor: "pointer", padding: 2, color: n <= value ? "var(--gold)" : "var(--border)", fontSize: "1.3rem", lineHeight: 1 }}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 2, color: n <= value ? "var(--accent)" : "var(--border)", fontSize: "1.3rem", lineHeight: 1 }}
                 title={`${n} star${n > 1 ? "s" : ""}`}
             >
                 ★
@@ -56,10 +57,10 @@ const TestimonialsPage: React.FC = () => {
             return;
         }
         setSaving(true);
-        await new Promise((r) => setTimeout(r, 350));
-        await updateSection("testimonials", { headline, items });
+        // Preserve sectionTag — this page does not edit it, and dropping it
+        // would strip the field from the saved document.
+        await saveSection("testimonials", { ...readStore().testimonials, headline, items }, toast, "Testimonials saved!");
         setSaving(false);
-        toast("Testimonials saved!");
     };
 
     return (
@@ -71,22 +72,22 @@ const TestimonialsPage: React.FC = () => {
                 </div>
                 <button
                     onClick={addReview}
-                    style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "11px 22px", background: "var(--charcoal)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.82rem", letterSpacing: "0.06em", cursor: "pointer" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "var(--charcoal-mid)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "var(--charcoal)"; }}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "11px 22px", background: "var(--noir)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.82rem", letterSpacing: "0.06em", cursor: "pointer" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "var(--noir-raised)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "var(--noir)"; }}
                 >
                     <Plus size={15} /> Add Review
                 </button>
             </div>
 
-            <Card title="Section Headline">
+            <Section title="Section Headline">
                 <Field label="Headline">
                     <Input value={headline} onChange={(e) => setHeadline(e.target.value)} />
                 </Field>
-            </Card>
+            </Section>
 
             {items.map((item, i) => (
-                <Card
+                <Section
                     key={item.id}
                     title={`Review ${i + 1} — ${item.author || "New"}`}
                     action={
@@ -113,7 +114,7 @@ const TestimonialsPage: React.FC = () => {
                         <StarPicker value={item.rating} onChange={(v) => setItem(item.id, "rating", v)} />
                     </Field>
                     {/* Visible toggle */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", background: "var(--parchment)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", background: "var(--sunken-deep)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }}>
                         <span
                             role="checkbox"
                             aria-checked={item.visible}
@@ -121,7 +122,7 @@ const TestimonialsPage: React.FC = () => {
                             style={{
                                 display: "inline-flex", alignItems: "center",
                                 width: 38, height: 20, borderRadius: 10,
-                                background: item.visible ? "var(--gold)" : "var(--border)",
+                                background: item.visible ? "var(--accent)" : "var(--border)",
                                 padding: "2px", transition: "background 0.22s", cursor: "pointer", flexShrink: 0,
                             }}
                         >
@@ -136,7 +137,7 @@ const TestimonialsPage: React.FC = () => {
                             {item.visible ? "Visible on site" : "Hidden from site"}
                         </span>
                     </div>
-                </Card>
+                </Section>
             ))}
 
             <SaveBtn loading={saving} onClick={handleSave} />

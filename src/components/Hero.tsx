@@ -1,18 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSiteData } from "../PublicSite";
+import { useSiteData } from "../data/SiteDataProvider";
 
 
 const Hero: React.FC = () => {
-  const { hero: HERO, stats: STATS } = useSiteData();
+  const { hero: HERO } = useSiteData();
 
   return (
     <section id="home" className="hero-section">
-      <video
-        src={HERO.videoUrl}
-        autoPlay muted loop playsInline preload="auto"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0, animation: "heroFadeIn 1.4s ease-in-out" }}
-      />
+      {/* Video wins when set; otherwise a still. Either can be swapped from the CMS. */}
+      {HERO.videoUrl ? (
+        <video
+          src={HERO.videoUrl}
+          autoPlay muted loop playsInline preload="auto"
+          className="hero-media"
+        />
+      ) : HERO.backgroundImage ? (
+        <img src={HERO.backgroundImage} alt="" aria-hidden="true" className="hero-media" />
+      ) : null}
       <div className="hero-overlay-dark" />
       <div className="hero-overlay-radial" />
       <div className="hero-overlay-bottom" />
@@ -28,7 +33,7 @@ const Hero: React.FC = () => {
           <div className="hero-rule" />
           <p className="hero-desc">{HERO.description}</p>
           <div className="hero-ctas">
-            <a href={HERO.ctaPrimary.href} className="btn btn-gold" style={{ padding: "0.95rem 2.6rem", minWidth: 175, justifyContent: "center" }}>
+            <a href={HERO.ctaPrimary.href} className="btn btn-accent" style={{ padding: "0.95rem 2.6rem", minWidth: 175, justifyContent: "center" }}>
               {HERO.ctaPrimary.label}
             </a>
             <Link to={HERO.ctaSecondary.href} className="btn-hero-ghost">
@@ -50,19 +55,6 @@ const Hero: React.FC = () => {
               </svg>
             </Link>
           </div>
-        </div>
-      </div>
-
-      {/* Stats strip */}
-      <div className="hero-stats-strip">
-        <div className="hero-stats-sep" />
-        <div className="hero-stats-grid">
-          {STATS.map((stat, i) => (
-            <div key={i} className="hero-stat-item">
-              <div className="hero-stat-value">{stat.value}</div>
-              <div className="hero-stat-label">{stat.label}</div>
-            </div>
-          ))}
         </div>
       </div>
     </section>

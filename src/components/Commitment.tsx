@@ -1,25 +1,38 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { useSiteData } from "../PublicSite";
+import { useSiteData } from "../data/SiteDataProvider";
+import { useReveal } from "../hooks/useReveal";
+import SmartLink from "./SmartLink";
 
 const Commitment: React.FC = () => {
   const { commitment: COMMITMENT } = useSiteData();
-  const isRoute = COMMITMENT.cta.href.startsWith("/");
+  const ref = useReveal<HTMLDivElement>();
+  const hasImage = COMMITMENT.imageUrl !== "";
+
+  const copy = (
+    <div>
+      <span className="tag">{COMMITMENT.tag}</span>
+      <h2 className="commit-headline">{COMMITMENT.headline}</h2>
+      <p className="commit-body">{COMMITMENT.body}</p>
+      <div>
+        <SmartLink href={COMMITMENT.cta.href} className="btn btn-solid">
+          {COMMITMENT.cta.label}
+        </SmartLink>
+      </div>
+    </div>
+  );
 
   return (
-    <section className="section bg-parchment">
-      <div style={{ textAlign: "center" }}>
-        <span className="tag">{COMMITMENT.tag}</span>
-        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem,3.6vw,3rem)", fontWeight: 700, lineHeight: 1.1, color: "var(--text-main)", marginBottom: 24 }}>
-          {COMMITMENT.headline}
-        </h2>
-        <p style={{ fontSize: "1rem", color: "var(--text-muted)", lineHeight: 1.9, marginBottom: 38 }}>
-          {COMMITMENT.body}
-        </p>
-        {isRoute
-          ? <Link to={COMMITMENT.cta.href} className="btn btn-dark">{COMMITMENT.cta.label}</Link>
-          : <a href={COMMITMENT.cta.href} className="btn btn-dark">{COMMITMENT.cta.label}</a>
-        }
+    <section className="section bg-sunken">
+      <div className="container">
+        {/* Without a photo this falls back to the original centred, text-only block. */}
+        <div ref={ref} className={`reveal reveal-stagger ${hasImage ? "commit-split" : "commit-block"}`}>
+          {hasImage && (
+            <div className="commit-img-wrap">
+              <img src={COMMITMENT.imageUrl} alt={COMMITMENT.headline} loading="lazy" />
+            </div>
+          )}
+          {copy}
+        </div>
       </div>
     </section>
   );

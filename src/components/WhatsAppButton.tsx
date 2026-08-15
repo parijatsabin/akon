@@ -36,7 +36,7 @@ export const WhatsAppButton: React.FC<Props> = ({ name, size, price, qty, classN
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`btn btn-gold ${className ?? ""}`}
+            className={`btn btn-accent ${className ?? ""}`}
             style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, textDecoration: "none", ...style }}
             aria-label={`Order ${name} on WhatsApp`}
         >

@@ -29,7 +29,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const colors: Record<ToastType, { bg: string; border: string; icon: string }> = {
         success: { bg: "#f0faf4", border: "#4caf7d", icon: "✓" },
         error: { bg: "#fff0f0", border: "#e05555", icon: "✕" },
-        info: { bg: "var(--parchment)", border: "var(--gold)", icon: "i" },
+        info: { bg: "var(--sunken-deep)", border: "var(--accent)", icon: "i" },
     };
 
     return (
@@ -64,7 +64,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                                 boxShadow: "var(--shadow-lg)",
                                 fontFamily: "var(--font-body)",
                                 fontSize: "0.90rem",
-                                color: "var(--text-main)",
+                                color: "var(--ink)",
                                 minWidth: 280,
                                 maxWidth: 400,
                                 animation: "toastIn 0.3s ease",

@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { readStore, updateSection } from "../cms/cmsStore";
-import { Card } from "../components/ui/Card";
+import { readStore } from "../../data/siteRepository";
+import { saveSection } from "../lib/saveSection";
+import { Section } from "../components/ui/Section";
 import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
 import type {
-    BrandData, HeroData, StatItem, AboutData,
+    BrandData, HeroData, AboutData,
     CommitmentData, CommitmentPillar, NewsletterData, NavLink, FooterData, FooterNavColumn,
-} from "../types/cms.types";
+} from "../../data/types";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 
 /* ── Tab bar ──────────────────────────────────────────────────── */
 const TABS = [
     { id: "brand", label: "Brand" },
     { id: "hero", label: "Hero" },
-    { id: "stats", label: "Stats" },
     { id: "about", label: "About" },
     { id: "commitment", label: "Commitment" },
     { id: "newsletter", label: "Newsletter" },
@@ -29,9 +29,9 @@ const tabStyle = (active: boolean): React.CSSProperties => ({
     fontWeight: 700,
     letterSpacing: "0.06em",
     border: "none",
-    borderBottom: active ? "2px solid var(--gold)" : "2px solid transparent",
+    borderBottom: active ? "2px solid var(--accent)" : "2px solid transparent",
     background: "transparent",
-    color: active ? "var(--gold)" : "var(--text-muted)",
+    color: active ? "var(--accent)" : "var(--text-muted)",
     cursor: "pointer",
     transition: "all 0.18s",
     whiteSpace: "nowrap",
@@ -72,7 +72,6 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
 
     const save = async () => {
         setSaving(true);
-        await new Promise((r) => setTimeout(r, 300));
         // Always stamp default times on open days when useDefaultTime is on before persisting
         const dataToSave: BrandData = {
             ...form,
@@ -80,10 +79,9 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 ? form.hours.map((h) => (h.isClosed ? h : { ...h, openTime: "09:00", closeTime: "17:00" }))
                 : form.hours,
         };
-        await updateSection("brand", dataToSave);
+        const ok = await saveSection("brand", dataToSave, toast, "Brand settings saved!");
         setSaving(false);
-        toast("Brand settings saved!");
-        onSave();
+        if (ok) onSave();
     };
 
     // Shared th style
@@ -96,7 +94,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
         letterSpacing: "0.12em",
         textTransform: "uppercase",
         color: "var(--text-muted)",
-        background: "var(--parchment)",
+        background: "var(--sunken-deep)",
         whiteSpace: "nowrap",
     };
 
@@ -109,7 +107,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
         fontFamily: "var(--font-body)",
         fontSize: "0.84rem",
         color: disabled ? "var(--text-faint)" : "var(--text-main)",
-        background: disabled ? "var(--parchment)" : "#fff",
+        background: disabled ? "var(--sunken-deep)" : "#fff",
         outline: "none",
         width: "100%",
         cursor: disabled ? "not-allowed" : "text",
@@ -119,7 +117,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     return (
         <>
             {/* ── Brand Identity ── */}
-            <Card title="Brand Identity">
+            <Section title="Brand Identity">
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                     <Field label="Brand Name" required>
                         <Input value={form.name} onChange={(e) => set("name", e.target.value)} />
@@ -131,11 +129,11 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 <Field label="Short Description">
                     <Textarea value={form.shortDescription} onChange={(e) => set("shortDescription", e.target.value)} style={{ minHeight: 90 }} />
                 </Field>
-            </Card>
+            </Section>
 
             {/* ── Contact + Social (side by side) ── */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 24 }}>
-                <Card title="Contact">
+                <Section title="Contact">
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                         <Field label="Email"><Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
                         <Field label="Phone"><Input value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
@@ -143,19 +141,19 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                         <Field label="Location"><Input value={form.location} onChange={(e) => set("location", e.target.value)} /></Field>
                     </div>
                     <Field label="Maps Embed URL"><Input value={form.mapEmbed} onChange={(e) => set("mapEmbed", e.target.value)} /></Field>
-                </Card>
+                </Section>
 
-                <Card title="Social Links">
+                <Section title="Social Links">
                     <div style={{ minWidth: 220 }}>
                         <Field label="Instagram"><Input value={form.socialLinks.instagram} onChange={(e) => setSocial("instagram", e.target.value)} /></Field>
                         <Field label="Facebook"><Input value={form.socialLinks.facebook} onChange={(e) => setSocial("facebook", e.target.value)} /></Field>
                         <Field label="Pinterest"><Input value={form.socialLinks.pinterest} onChange={(e) => setSocial("pinterest", e.target.value)} /></Field>
                     </div>
-                </Card>
+                </Section>
             </div>
 
             {/* ── Business Hours — full width ── */}
-            <Card
+            <Section
                 title="Business Hours"
                 action={
                     /* Default Time toggle */
@@ -175,7 +173,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                                 width: 44,
                                 height: 24,
                                 borderRadius: 12,
-                                background: form.useDefaultTime ? "var(--gold)" : "var(--border)",
+                                background: form.useDefaultTime ? "var(--accent)" : "var(--border)",
                                 padding: "2px",
                                 transition: "background 0.22s",
                                 flexShrink: 0,
@@ -256,7 +254,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                                                     onChange={(e) => setHour(i, "openTime", e.target.value)}
                                                     disabled={isDisabled}
                                                     style={timeInputStyle(isDisabled)}
-                                                    onFocus={(e) => { if (!isDisabled) e.currentTarget.style.borderColor = "var(--gold)"; }}
+                                                    onFocus={(e) => { if (!isDisabled) e.currentTarget.style.borderColor = "var(--accent)"; }}
                                                     onBlur={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
                                                 />
                                             )}
@@ -285,7 +283,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                                                     onChange={(e) => setHour(i, "closeTime", e.target.value)}
                                                     disabled={isDisabled}
                                                     style={timeInputStyle(isDisabled)}
-                                                    onFocus={(e) => { if (!isDisabled) e.currentTarget.style.borderColor = "var(--gold)"; }}
+                                                    onFocus={(e) => { if (!isDisabled) e.currentTarget.style.borderColor = "var(--accent)"; }}
                                                     onBlur={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
                                                 />
                                             )}
@@ -334,7 +332,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 {/* Helper note */}
                 <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                        <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--gold)", display: "inline-block", flexShrink: 0 }} />
+                        <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--accent)", display: "inline-block", flexShrink: 0 }} />
                         <span style={{ fontSize: "0.75rem", color: "var(--text-faint)" }}>Default Time on — times locked to 09:00 AM – 05:00 PM</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
@@ -342,7 +340,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                         <span style={{ fontSize: "0.75rem", color: "var(--text-faint)" }}>Is Closed on — day shown as "Closed" on the website</span>
                     </div>
                 </div>
-            </Card>
+            </Section>
 
             <SaveBtn loading={saving} onClick={save} />
         </>
@@ -358,13 +356,14 @@ const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const setCta = (cta: "ctaPrimary" | "ctaSecondary", field: "label" | "href", v: string) =>
         setForm((f) => ({ ...f, [cta]: { ...f[cta], [field]: v } }));
     const save = async () => {
-        setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        await updateSection("hero", form); setSaving(false);
-        toast("Hero saved!"); onSave();
+        setSaving(true);
+        const ok = await saveSection("hero", form, toast, "Hero saved!");
+        setSaving(false);
+        if (ok) onSave();
     };
     return (
         <>
-            <Card title="Labels & Heading">
+            <Section title="Labels & Heading">
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                     <Field label="Small Label"><Input value={form.smallLabel} onChange={(e) => set("smallLabel", e.target.value)} /></Field>
                     <Field label="Highlight Pill"><Input value={form.smallLabelHighlight} onChange={(e) => set("smallLabelHighlight", e.target.value)} /></Field>
@@ -375,15 +374,21 @@ const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 <Field label="Description">
                     <Textarea value={form.description} onChange={(e) => set("description", e.target.value)} />
                 </Field>
-            </Card>
-            <Card title="Background Video">
-                <Field label="Video URL" hint="Direct MP4 link — Pexels, CDN, etc. Used as the hero background.">
+            </Section>
+            <Section title="Background Media">
+                <Field label="Video URL" hint="Direct MP4 link. Takes priority — clear this field to use the image below instead.">
                     <Input value={form.videoUrl} onChange={(e) => set("videoUrl", e.target.value)} placeholder="https://..." />
                 </Field>
-            </Card>
-            <Card title="CTA Buttons">
+                <Field label="Background Image" hint="Used only when the video URL is blank. Path under /public, e.g. /images/7.jpg">
+                    <Input value={form.backgroundImage} onChange={(e) => set("backgroundImage", e.target.value)} placeholder="/images/…" />
+                </Field>
+                {!form.videoUrl && form.backgroundImage && (
+                    <img src={form.backgroundImage} alt="" style={{ width: "100%", maxHeight: 160, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }} />
+                )}
+            </Section>
+            <Section title="CTA Buttons">
                 <div style={{ marginBottom: 20 }}>
-                    <div style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 12 }}>Primary</div>
+                    <div style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--accent-text)", marginBottom: 12 }}>Primary</div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                         <Field label="Label"><Input value={form.ctaPrimary.label} onChange={(e) => setCta("ctaPrimary", "label", e.target.value)} /></Field>
                         <Field label="Link"><Input value={form.ctaPrimary.href} onChange={(e) => setCta("ctaPrimary", "href", e.target.value)} /></Field>
@@ -396,71 +401,20 @@ const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                         <Field label="Link"><Input value={form.ctaSecondary.href} onChange={(e) => setCta("ctaSecondary", "href", e.target.value)} /></Field>
                     </div>
                 </div>
-            </Card>
-            <Card title="Live Preview">
-                <div style={{ background: "var(--charcoal)", borderRadius: "var(--radius-sm)", padding: "28px 24px" }}>
+            </Section>
+            <Section title="Live Preview">
+                <div style={{ background: "var(--noir)", borderRadius: "var(--radius-sm)", padding: "28px 24px" }}>
                     <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 14 }}>
                         <span style={{ fontSize: "0.72rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)" }}>{form.smallLabel}</span>
-                        <span style={{ background: "var(--gold)", color: "#fff", fontSize: "0.70rem", fontWeight: 700, padding: "3px 12px", borderRadius: 3 }}>{form.smallLabelHighlight}</span>
+                        <span style={{ background: "var(--accent)", color: "var(--on-accent)", fontSize: "0.70rem", fontWeight: 700, padding: "3px 12px", borderRadius: 3 }}>{form.smallLabelHighlight}</span>
                     </div>
                     <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.4rem, 2.5vw, 2.2rem)", fontWeight: 700, color: "#fff", whiteSpace: "pre-line", lineHeight: 1.1, marginBottom: 12 }}>
                         {form.mainHeading}
                     </h2>
                     <p style={{ fontSize: "0.88rem", color: "rgba(255,255,255,0.55)", maxWidth: 480 }}>{form.description}</p>
                 </div>
-            </Card>
+            </Section>
             <SaveBtn loading={saving} onClick={save} />
-        </>
-    );
-};
-
-/* ── Stats ────────────────────────────────────────────────────── */
-const StatsTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
-    const { toast } = useToast();
-    const [stats, setStats] = useState<StatItem[]>(() => readStore().stats);
-    const [saving, setSaving] = useState(false);
-    const setItem = (i: number, k: keyof StatItem, v: string) => {
-        const n = [...stats]; n[i] = { ...n[i], [k]: v }; setStats(n);
-    };
-    const save = async () => {
-        if (stats.some((s) => !s.value.trim() || !s.label.trim())) { toast("All fields required.", "error"); return; }
-        setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        await updateSection("stats", stats); setSaving(false);
-        toast("Stats saved!"); onSave();
-    };
-    return (
-        <>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16, marginBottom: 24 }}>
-                {stats.map((s, i) => (
-                    <Card key={i} title={`Stat ${i + 1}`} action={
-                        stats.length > 1 ? (
-                            <button onClick={() => setStats((p) => p.filter((_, x) => x !== i))}
-                                style={{ fontSize: "0.75rem", color: "#e05555", background: "#fff0f0", border: "1px solid #f5c0c0", borderRadius: "var(--radius-sm)", padding: "4px 10px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600 }}>
-                                Remove
-                            </button>
-                        ) : undefined
-                    }>
-                        <Field label="Value" hint="E.g. 140+"><Input value={s.value} onChange={(e) => setItem(i, "value", e.target.value)} /></Field>
-                        <Field label="Label"><Input value={s.label} onChange={(e) => setItem(i, "label", e.target.value)} /></Field>
-                    </Card>
-                ))}
-            </div>
-            {/* Preview */}
-            <div style={{ background: "var(--charcoal)", borderRadius: "var(--radius)", padding: "20px 24px", marginBottom: 20, display: "flex" }}>
-                {stats.map((s, i) => (
-                    <div key={i} style={{ flex: 1, textAlign: "center", padding: "6px 10px", borderRight: i < stats.length - 1 ? "1px solid rgba(255,255,255,0.12)" : "none" }}>
-                        <div style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: 700, color: "var(--gold-light)" }}>{s.value || "—"}</div>
-                        <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.50)", marginTop: 4 }}>{s.label || "Label"}</div>
-                    </div>
-                ))}
-            </div>
-            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                <button onClick={() => setStats((p) => [...p, { value: "", label: "" }])}
-                    style={{ padding: "9px 20px", background: "transparent", border: "1.5px solid var(--gold)", color: "var(--gold)", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.80rem", cursor: "pointer" }}>
-                    + Add Stat
-                </button>
-                <SaveBtn loading={saving} onClick={save} />
-            </div>
         </>
     );
 };
@@ -476,13 +430,14 @@ const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
         const r = [...form.reasons]; r[i] = { ...r[i], [f2]: v }; set("reasons", r);
     };
     const save = async () => {
-        setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        await updateSection("about", form); setSaving(false);
-        toast("About saved!"); onSave();
+        setSaving(true);
+        const ok = await saveSection("about", form, toast, "About saved!");
+        setSaving(false);
+        if (ok) onSave();
     };
     return (
         <>
-            <Card title="About Block">
+            <Section title="About Block">
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                     <Field label="Section Label"><Input value={form.sectionLabel} onChange={(e) => set("sectionLabel", e.target.value)} /></Field>
                     <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
@@ -500,16 +455,19 @@ const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     <Field label="CTA Label"><Input value={form.cta.label} onChange={(e) => setCta("label", e.target.value)} /></Field>
                     <Field label="CTA Link"><Input value={form.cta.href} onChange={(e) => setCta("href", e.target.value)} /></Field>
                 </div>
-            </Card>
-            <Card title="Why Choose Us">
+            </Section>
+            <Section title="Why Choose Us">
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                     <Field label="Headline"><Input value={form.whyHeadline} onChange={(e) => set("whyHeadline", e.target.value)} /></Field>
                     <Field label="Tagline"><Input value={form.whyTagline} onChange={(e) => set("whyTagline", e.target.value)} /></Field>
                 </div>
+                <Field label="Section Tag" hint="Small uppercase label above the headline.">
+                    <Input value={form.differenceSectionTag} onChange={(e) => set("differenceSectionTag", e.target.value)} />
+                </Field>
                 <div style={{ marginTop: 8 }}>
                     {form.reasons.map((r, i) => (
                         <div key={r.id} style={{ display: "grid", gridTemplateColumns: "40px 1fr 1fr auto", gap: "0 16px", alignItems: "end", marginBottom: 12 }}>
-                            <Field label={i === 0 ? "ID" : ""}><Input value={r.id} readOnly style={{ background: "var(--parchment)", cursor: "default" }} /></Field>
+                            <Field label={i === 0 ? "ID" : ""}><Input value={r.id} readOnly style={{ background: "var(--sunken-deep)", cursor: "default" }} /></Field>
                             <Field label={i === 0 ? "Title" : ""}><Input value={r.title} onChange={(e) => setReason(i, "title", e.target.value)} /></Field>
                             <Field label={i === 0 ? "Body" : ""}><Input value={r.body} onChange={(e) => setReason(i, "body", e.target.value)} /></Field>
                             <div style={{ paddingBottom: 20 }}>
@@ -521,11 +479,23 @@ const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                         </div>
                     ))}
                     <button onClick={() => set("reasons", [...form.reasons, { id: String(form.reasons.length + 1).padStart(2, "0"), title: "", body: "" }])}
-                        style={{ fontSize: "0.78rem", color: "var(--gold)", background: "transparent", border: "1px solid var(--gold)", borderRadius: "var(--radius-sm)", padding: "5px 14px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 5 }}>
+                        style={{ fontSize: "0.78rem", color: "var(--accent-text)", background: "transparent", border: "1px solid var(--accent)", borderRadius: "var(--radius-sm)", padding: "5px 14px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 5 }}>
                         <Plus size={12} /> Add Reason
                     </button>
                 </div>
-            </Card>
+            </Section>
+            <Section title="Closing CTA Strip">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                    <Field label="Tag"><Input value={form.ctaStripTag} onChange={(e) => set("ctaStripTag", e.target.value)} /></Field>
+                    <Field label="Heading"><Input value={form.ctaStripHeading} onChange={(e) => set("ctaStripHeading", e.target.value)} /></Field>
+                </div>
+                <Field label="Background Image" hint="Path under /public, e.g. /images/1.webp. Leave blank for a plain background.">
+                    <Input value={form.ctaStripImage} onChange={(e) => set("ctaStripImage", e.target.value)} />
+                </Field>
+                {form.ctaStripImage !== "" && (
+                    <img src={form.ctaStripImage} alt="" style={{ width: "100%", maxHeight: 150, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }} />
+                )}
+            </Section>
             <SaveBtn loading={saving} onClick={save} />
         </>
     );
@@ -546,27 +516,35 @@ const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const removePillar = (i: number) => set("pillars", form.pillars.filter((_, x) => x !== i));
 
     const save = async () => {
-        setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        await updateSection("commitment", form); setSaving(false);
-        toast("Commitment saved!"); onSave();
+        setSaving(true);
+        const ok = await saveSection("commitment", form, toast, "Commitment saved!");
+        setSaving(false);
+        if (ok) onSave();
     };
     return (
         <>
-            <Card title="Content & CTA">
+            <Section title="Content & CTA">
+                <Field label="Tag" hint="Small uppercase label above the headline."><Input value={form.tag} onChange={(e) => set("tag", e.target.value)} /></Field>
                 <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
                 <Field label="Body"><Textarea value={form.body} onChange={(e) => set("body", e.target.value)} style={{ minHeight: 110 }} /></Field>
+                <Field label="Section Image" hint="Path under /public, e.g. /images/3.webp. Leave blank for a centred, text-only layout.">
+                    <Input value={form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} />
+                </Field>
+                {form.imageUrl !== "" && (
+                    <img src={form.imageUrl} alt="" style={{ width: 160, aspectRatio: "4/5", objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }} />
+                )}
                 <div style={{ paddingTop: 16, borderTop: "1px solid var(--border)", marginTop: 4 }}>
-                    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>CTA Button</div>
+                    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent-text)", marginBottom: 14 }}>CTA Button</div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                         <Field label="Label"><Input value={form.cta.label} onChange={(e) => setCta("label", e.target.value)} /></Field>
                         <Field label="Link"><Input value={form.cta.href} onChange={(e) => setCta("href", e.target.value)} /></Field>
                     </div>
                 </div>
-            </Card>
+            </Section>
 
-            <Card title="Commitment Pillars" subtitle="Shown as feature cards on the About page" action={
+            <Section title="Commitment Pillars" action={
                 <button onClick={addPillar}
-                    style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "var(--charcoal)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", cursor: "pointer" }}>
+                    style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "var(--noir)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", cursor: "pointer" }}>
                     <Plus size={13} /> Add Pillar
                 </button>
             }>
@@ -589,7 +567,7 @@ const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                         </div>
                     </div>
                 ))}
-            </Card>
+            </Section>
 
             <SaveBtn loading={saving} onClick={save} />
         </>
@@ -603,38 +581,50 @@ const NewsletterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const [saving, setSaving] = useState(false);
     const set = (k: keyof NewsletterData, v: string) => setForm((f) => ({ ...f, [k]: v }));
     const save = async () => {
-        setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        await updateSection("newsletter", form); setSaving(false);
-        toast("Newsletter saved!"); onSave();
+        setSaving(true);
+        const ok = await saveSection("newsletter", form, toast, "Newsletter saved!");
+        setSaving(false);
+        if (ok) onSave();
     };
     return (
         <>
-            <Card title="Copy & Form">
+            <Section title="Copy & Form">
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                     <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
                     <Field label="Brand Highlight"><Input value={form.brandHighlight} onChange={(e) => set("brandHighlight", e.target.value)} /></Field>
                 </div>
                 <Field label="Subtext"><Input value={form.subtext} onChange={(e) => set("subtext", e.target.value)} /></Field>
                 <div style={{ paddingTop: 16, borderTop: "1px solid var(--border)", marginTop: 4 }}>
-                    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>Form</div>
+                    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent-text)", marginBottom: 14 }}>Form</div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                         <Field label="Placeholder"><Input value={form.placeholder} onChange={(e) => set("placeholder", e.target.value)} /></Field>
                         <Field label="Button Label"><Input value={form.cta} onChange={(e) => set("cta", e.target.value)} /></Field>
                     </div>
                 </div>
-            </Card>
-            <Card title="Preview">
-                <div style={{ background: "var(--charcoal)", borderRadius: "var(--radius-sm)", padding: "24px", textAlign: "center" }}>
+                <Field label="Background Image" hint="Path under /public, e.g. /images/2.webp. A dark scrim is applied automatically. Leave blank for a plain background.">
+                    <Input value={form.backgroundImage} onChange={(e) => set("backgroundImage", e.target.value)} />
+                </Field>
+            </Section>
+            <Section title="Preview">
+                <div style={{ background: "var(--noir)", borderRadius: "var(--radius-sm)", padding: "24px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+                    {form.backgroundImage !== "" && (
+                        <>
+                            <img src={form.backgroundImage} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                            <div style={{ position: "absolute", inset: 0, background: "rgba(20,16,13,0.80)" }} />
+                        </>
+                    )}
+                    <div style={{ position: "relative" }}>
                     <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem", fontWeight: 700, color: "#fff", marginBottom: 8 }}>
-                        {form.headline} <span style={{ color: "var(--gold-light)" }}>{form.brandHighlight}</span>
+                        {form.headline} <span style={{ color: "var(--accent-soft)" }}>{form.brandHighlight}</span>
                     </h3>
                     <p style={{ color: "rgba(255,255,255,0.50)", marginBottom: 18, fontSize: "0.85rem" }}>{form.subtext}</p>
                     <div style={{ display: "flex", maxWidth: 380, margin: "0 auto", borderRadius: "var(--radius-sm)", overflow: "hidden" }}>
                         <div style={{ flex: 1, background: "rgba(255,255,255,0.07)", padding: "11px 14px", color: "rgba(255,255,255,0.35)", fontSize: "0.84rem", fontStyle: "italic" }}>{form.placeholder}</div>
-                        <div style={{ padding: "11px 18px", background: "var(--gold)", color: "#fff", fontSize: "0.78rem", fontWeight: 700 }}>{form.cta}</div>
+                        <div style={{ padding: "11px 18px", background: "var(--accent)", color: "var(--on-accent)", fontSize: "0.78rem", fontWeight: 700 }}>{form.cta}</div>
+                    </div>
                     </div>
                 </div>
-            </Card>
+            </Section>
             <SaveBtn loading={saving} onClick={save} />
         </>
     );
@@ -653,16 +643,17 @@ const NavigationTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const moveDown = (i: number) => { if (i === links.length - 1) return; const n = [...links];[n[i], n[i + 1]] = [n[i + 1], n[i]]; setLinks(n); };
     const save = async () => {
         if (links.some((l) => !l.label.trim())) { toast("All labels required.", "error"); return; }
-        setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        await updateSection("navLinks", links); setSaving(false);
-        toast("Navigation saved!"); onSave();
+        setSaving(true);
+        const ok = await saveSection("navLinks", links, toast, "Navigation saved!");
+        setSaving(false);
+        if (ok) onSave();
     };
 
     return (
         <>
-            <Card title="Menu Links" subtitle="Use ↑↓ to reorder. Toggle to show/hide without deleting." action={
+            <Section title="Menu Links" action={
                 <button onClick={() => setLinks((p) => [...p, { label: "", href: "#", enabled: true }])}
-                    style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "var(--charcoal)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", cursor: "pointer" }}>
+                    style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "var(--noir)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", cursor: "pointer" }}>
                     <Plus size={13} /> Add
                 </button>
             }>
@@ -700,7 +691,7 @@ const NavigationTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                                 style={{
                                     display: "inline-flex", alignItems: "center",
                                     width: 38, height: 20, borderRadius: 10,
-                                    background: link.enabled !== false ? "var(--gold)" : "var(--border)",
+                                    background: link.enabled !== false ? "var(--accent)" : "var(--border)",
                                     padding: "2px", transition: "background 0.22s",
                                     cursor: "pointer", flexShrink: 0,
                                 }}
@@ -721,11 +712,11 @@ const NavigationTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                         </button>
                     </div>
                 ))}
-            </Card>
+            </Section>
 
             {/* Live preview */}
-            <Card title="Preview">
-                <nav style={{ display: "flex", gap: 6, background: "var(--charcoal)", padding: "12px 18px", borderRadius: "var(--radius-sm)", flexWrap: "wrap", alignItems: "center" }}>
+            <Section title="Preview">
+                <nav style={{ display: "flex", gap: 6, background: "var(--noir)", padding: "12px 18px", borderRadius: "var(--radius-sm)", flexWrap: "wrap", alignItems: "center" }}>
                     {links.filter((l) => l.enabled !== false).map((l, i) => (
                         <span key={i} style={{ fontSize: "0.80rem", fontWeight: 600, color: "rgba(255,255,255,0.65)", padding: "5px 14px", borderRadius: 4 }}>
                             {l.label || "…"}
@@ -736,9 +727,8 @@ const NavigationTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                             {links.filter((l) => l.enabled === false).length} hidden
                         </span>
                     )}
-                    <span style={{ marginLeft: "auto", fontSize: "0.76rem", background: "var(--gold)", color: "#fff", fontWeight: 700, padding: "5px 14px", borderRadius: 4 }}>Shop Now</span>
                 </nav>
-            </Card>
+            </Section>
 
             <SaveBtn loading={saving} onClick={save} />
         </>
@@ -765,22 +755,23 @@ const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
         const cols = [...form.navColumns]; cols[ci] = { ...cols[ci], links: cols[ci].links.filter((_, i) => i !== li) }; set("navColumns", cols);
     };
     const save = async () => {
-        setSaving(true); await new Promise((r) => setTimeout(r, 300));
-        await updateSection("footer", form); setSaving(false);
-        toast("Footer saved!"); onSave();
+        setSaving(true);
+        const ok = await saveSection("footer", form, toast, "Footer saved!");
+        setSaving(false);
+        if (ok) onSave();
     };
     return (
         <>
-            <Card title="Footer Info">
+            <Section title="Footer Info">
                 <Field label="Tagline"><Textarea value={form.tagline} onChange={(e) => set("tagline", e.target.value)} style={{ minHeight: 72 }} /></Field>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                     <Field label="Credit Label"><Input value={form.credit.label} onChange={(e) => set("credit", { ...form.credit, label: e.target.value })} /></Field>
                     <Field label="Credit URL"><Input value={form.credit.href} onChange={(e) => set("credit", { ...form.credit, href: e.target.value })} /></Field>
                 </div>
-            </Card>
+            </Section>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(420px, 1fr))", gap: 24, marginBottom: 0 }}>
                 {form.navColumns.map((col, ci) => (
-                    <Card key={ci} title={`Column ${ci + 1}: ${col.heading || "Untitled"}`} action={
+                    <Section key={ci} title={`Column ${ci + 1}: ${col.heading || "Untitled"}`} action={
                         form.navColumns.length > 1 ? (
                             <button onClick={() => set("navColumns", form.navColumns.filter((_, i) => i !== ci))}
                                 style={{ fontSize: "0.75rem", color: "#e05555", background: "#fff0f0", border: "1px solid #f5c0c0", borderRadius: "var(--radius-sm)", padding: "4px 10px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600 }}>
@@ -803,15 +794,15 @@ const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                             </div>
                         ))}
                         <button onClick={() => addColLink(ci)}
-                            style={{ fontSize: "0.76rem", color: "var(--gold)", background: "transparent", border: "1px solid var(--gold)", borderRadius: "var(--radius-sm)", padding: "4px 12px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                            style={{ fontSize: "0.76rem", color: "var(--accent-text)", background: "transparent", border: "1px solid var(--accent)", borderRadius: "var(--radius-sm)", padding: "4px 12px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
                             <Plus size={11} /> Add Link
                         </button>
-                    </Card>
+                    </Section>
                 ))}
             </div>
             <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
                 <button onClick={() => set("navColumns", [...form.navColumns, { heading: "", links: [{ label: "", href: "#" }] }])}
-                    style={{ padding: "9px 20px", background: "transparent", border: "1.5px solid var(--gold)", color: "var(--gold)", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.80rem", cursor: "pointer" }}>
+                    style={{ padding: "9px 20px", background: "transparent", border: "1.5px solid var(--accent)", color: "var(--accent-text)", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.80rem", cursor: "pointer" }}>
                     + Add Column
                 </button>
                 <SaveBtn loading={saving} onClick={save} />
@@ -829,7 +820,6 @@ const GlobalSettingsPage: React.FC = () => {
     const tabContent: Record<TabId, React.ReactNode> = {
         brand: <BrandTab onSave={onSave} />,
         hero: <HeroTab onSave={onSave} />,
-        stats: <StatsTab onSave={onSave} />,
         about: <AboutTab onSave={onSave} />,
         commitment: <CommitmentTab onSave={onSave} />,
         newsletter: <NewsletterTab onSave={onSave} />,
@@ -850,7 +840,7 @@ const GlobalSettingsPage: React.FC = () => {
                     </p>
                 </div>
                 {lastSaved && (
-                    <span style={{ fontSize: "0.78rem", color: "var(--gold)", fontWeight: 600 }}>
+                    <span style={{ fontSize: "0.78rem", color: "var(--accent-text)", fontWeight: 600 }}>
                         Last saved at {lastSaved}
                     </span>
                 )}

@@ -1,0 +1,349 @@
+/* ═══════════════════════════════════════════════════════════════
+   ANOK Admin — flat, quiet, document-like.
+   The CMS is a tool, not a showcase: no cards, no shadows, no tiles.
+   Inherits the light :root tokens; only the sidebar goes dark, via .on-noir.
+   ═══════════════════════════════════════════════════════════════ */
+
+.adm {
+  /* A hair off pure white so white inputs read as raised against it. */
+  --surface: #fbfaf8;
+
+  min-height: 100vh;
+  background: var(--surface);
+  color: var(--text-main);
+  font-family: var(--font-body);
+}
+
+/* ─── Shell ───────────────────────────────────────────────────── */
+.adm-shell {
+  display: flex;
+}
+
+.adm-sidebar {
+  /* Dark island inside the light admin — carries .on-noir in the markup. */
+  width: 212px;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  background: var(--noir);
+  color: var(--text-main);
+}
+
+.adm-brand {
+  padding: 26px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.adm-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.adm-brand-sub {
+  font-size: 0.58rem;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-top: 6px;
+}
+
+.adm-nav {
+  flex: 1;
+  padding: 14px 0;
+}
+
+.adm-nav-link {
+  display: block;
+  padding: 11px 22px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-left: 2px solid transparent;
+  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.adm-nav-link:hover {
+  color: var(--text-main);
+}
+
+.adm-nav-link.is-active {
+  color: var(--accent-soft);
+  border-left-color: var(--accent);
+}
+
+.adm-sidebar-foot {
+  border-top: 1px solid var(--border);
+  padding: 8px 0;
+}
+
+.adm-foot-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 22px;
+  font-size: 0.80rem;
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.adm-foot-btn:hover {
+  color: var(--text-main);
+}
+
+.adm-foot-btn-danger:hover {
+  color: #e88;
+}
+
+.adm-scrim {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: rgba(14, 13, 12, 0.45);
+  border: none;
+}
+
+.adm-main {
+  margin-left: 212px;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.adm-topbar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-raised);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.adm-user {
+  margin-left: auto;
+  font-size: 0.80rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.adm-mob-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-main);
+}
+
+.adm-content {
+  flex: 1;
+  padding: 34px 40px 60px;
+}
+
+@media (max-width: 880px) {
+  .adm-sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .adm-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .adm-scrim {
+    display: block;
+  }
+
+  .adm-main {
+    margin-left: 0;
+  }
+
+  .adm-mob-btn {
+    display: flex;
+  }
+
+  .adm-topbar,
+  .adm-content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* ─── Page header ─────────────────────────────────────────────── */
+.adm-page-head {
+  margin-bottom: 32px;
+}
+
+.adm-page-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.adm-page-sub {
+  font-size: 0.84rem;
+  color: var(--text-faint);
+  margin-top: 4px;
+}
+
+/* ─── Flat section ────────────────────────────────────────────── */
+.adm-section {
+  margin-bottom: 38px;
+}
+
+.adm-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.adm-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* ─── Stats ───────────────────────────────────────────────────── */
+.adm-stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+  padding-bottom: 26px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--border);
+}
+
+.adm-stat-value {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-main);
+}
+
+.adm-stat-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-top: 7px;
+}
+
+/* ─── Featured strip ──────────────────────────────────────────── */
+.adm-featured {
+  padding: 18px 20px;
+  margin-bottom: 34px;
+  border-left: 2px solid var(--accent);
+  background: var(--accent-glow);
+}
+
+.adm-featured-label {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+}
+
+.adm-featured-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-top: 5px;
+}
+
+.adm-featured-meta {
+  font-size: 0.80rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ─── Navigation list ─────────────────────────────────────────── */
+.adm-list {
+  border-top: 1px solid var(--border);
+}
+
+.adm-list-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 17px 4px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-main);
+  transition: padding-left var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.adm-list-row:hover {
+  padding-left: 12px;
+  color: var(--accent-strong);
+}
+
+.adm-list-label {
+  font-weight: 600;
+  font-size: 0.92rem;
+  min-width: 190px;
+}
+
+.adm-list-note {
+  font-size: 0.80rem;
+  color: var(--text-faint);
+  flex: 1;
+}
+
+.adm-list-arrow {
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+
+.adm-list-row:hover .adm-list-arrow {
+  color: var(--accent-strong);
+}
+
+/* ─── Forms ───────────────────────────────────────────────────── */
+
+
+@media (max-width: 720px) {
+
+  .adm-stat-row {
+    gap: 28px;
+  }
+
+  .adm-list-label {
+    min-width: 0;
+  }
+
+  .adm-list-note {
+    display: none;
+  }
+}
