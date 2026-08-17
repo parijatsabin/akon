@@ -18,6 +18,31 @@ const PinIcon = () => (
   </svg>
 );
 
+/**
+ * Footer link columns. These were three CMS tables (columns, links, and the
+ * join) for six links that point at fixed routes. They are constants now —
+ * changing a label is a code change, which is the trade accepted when the
+ * navigation tables were dropped.
+ */
+const FOOTER_NAV_COLUMNS = [
+  {
+    heading: "Company",
+    links: [
+      { label: "About Us", href: "/about" },
+      { label: "Our Story", href: "/about" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    heading: "Support",
+    links: [
+      { label: "FAQs", href: "/faq" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Use", href: "/terms" },
+    ],
+  },
+] as const;
+
 const Footer: React.FC = () => {
   const { footer: FOOTER, brand: BRAND } = useSiteData();
   const year = new Date().getFullYear();
@@ -51,7 +76,7 @@ const Footer: React.FC = () => {
 
           {/* Nav + Hours */}
           <div className="footer-nav">
-            {FOOTER.navColumns.map((col) => (
+            {FOOTER_NAV_COLUMNS.map((col) => (
               <div key={col.heading}>
                 <h4 className="footer-col-heading">{col.heading}</h4>
                 <ul style={{ display: "flex", flexDirection: "column", gap: 12 }}>

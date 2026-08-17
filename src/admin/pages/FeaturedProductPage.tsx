@@ -176,7 +176,7 @@ const FeaturedProductPage: React.FC = () => {
                 </button>
             }>
                 <p style={{ fontSize: "0.80rem", color: "var(--text-faint)", marginBottom: 14 }}>
-                    Paths under <code>/public</code>, e.g. <code>/images/4.png</code>. The first image is shown by default.
+                    Full Supabase Storage URLs. The first image is shown by default. An address that does not match a stored asset is dropped on save.
                 </p>
                 {product.images.map((src, i) => (
                     <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
@@ -185,7 +185,7 @@ const FeaturedProductPage: React.FC = () => {
                                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }} />}
                         </div>
                         <div style={{ flex: 1 }}>
-                            <Input value={src} onChange={(e) => setImage(i, e.target.value)} placeholder="/images/…" />
+                            <Input value={src} onChange={(e) => setImage(i, e.target.value)} placeholder="https://…supabase.co/storage/v1/…" />
                         </div>
                         <button onClick={() => moveImage(i, -1)} disabled={i === 0} title="Move up" style={iconBtn(i === 0)}>↑</button>
                         <button onClick={() => moveImage(i, 1)} disabled={i === product.images.length - 1} title="Move down" style={iconBtn(i === product.images.length - 1)}>↓</button>

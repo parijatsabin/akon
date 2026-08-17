@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSiteData } from "../data/SiteDataProvider";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { supabase } from "../lib/supabase";
 
 const IGIcon = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" /></svg>;
 const FBIcon = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>;
@@ -27,6 +28,8 @@ const ContactPage: React.FC = () => {
     const [form, setForm] = useState<FormState>({ name: "", email: "", subject: SUBJECTS[0] ?? "", message: "" });
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErrors] = useState<Partial<FormState>>({});
+    const [pending, setPending] = useState(false);
+    const [sendError, setSendError] = useState<string | null>(null);
 
     useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, []);
 
@@ -39,7 +42,35 @@ const ContactPage: React.FC = () => {
         if (!form.message.trim()) e.message = "Message is required.";
         setErrors(e); return Object.keys(e).length === 0;
     };
-    const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); if (validate()) setSubmitted(true); };
+    /**
+     * Sends the enquiry to Supabase. The success screen now appears only after
+     * the row is actually written — previously it appeared unconditionally and
+     * the message was discarded, which told the visitor their enquiry had been
+     * received when nothing had been kept.
+     */
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (pending || !validate()) return;
+
+        setPending(true);
+        setSendError(null);
+
+        const { error } = await supabase.from("contacts").insert({
+            kind: "enquiry",
+            name: form.name.trim(),
+            email: form.email.trim(),
+            subject: form.subject,
+            message: form.message.trim(),
+        });
+
+        setPending(false);
+
+        if (error) {
+            setSendError("Your message could not be sent. Please try again, or email us directly.");
+            return;
+        }
+        setSubmitted(true);
+    };
 
     return (
         <div style={{ minHeight: "100vh", background: "var(--white)" }}>
@@ -104,10 +135,15 @@ const ContactPage: React.FC = () => {
                                         {errors.message && <p className="contact-error">{errors.message}</p>}
                                     </div>
                                     <div>
-                                        <button type="submit" className="btn btn-accent" style={{ minWidth: 180, justifyContent: "center" }}>
-                                            Send Message
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+                                        <button type="submit" disabled={pending} className="btn btn-accent" style={{ minWidth: 180, justifyContent: "center", opacity: pending ? 0.7 : 1 }}>
+                                            {pending ? "Sending…" : "Send Message"}
+                                            {!pending && <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>}
                                         </button>
+                                        {sendError && (
+                                            <p role="alert" style={{ marginTop: 12, color: "#b00", fontSize: "0.86rem" }}>
+                                                {sendError}
+                                            </p>
+                                        )}
                                     </div>
                                 </form>
                             )}

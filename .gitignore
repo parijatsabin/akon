@@ -24,3 +24,10 @@ lerna-debug.log*
 !.dev.vars.example
 .env*
 !.env.example
+
+# Claude Code machine-local settings (.mcp.json IS shared and stays tracked)
+.claude/settings.local.json
+
+# Supabase CLI local state (link target, tool versions) — machine-specific
+supabase/.temp
+supabase/.branches

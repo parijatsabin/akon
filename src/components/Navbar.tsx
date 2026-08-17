@@ -16,15 +16,27 @@ const NavItem: React.FC<{ href: string; label: string; onClick?: () => void }> =
         : <a href={href} className={cls} onClick={onClick}>{label}</a>;
 };
 
+/**
+ * The navbar points at three fixed routes that are defined in App.tsx. These
+ * were CMS-managed rows, but the labels and targets never changed and a table
+ * per link was not earning its keep. Editing them is now a code change — a
+ * deliberate exception to "all content comes from the database".
+ */
+const NAV_LINKS = [
+    { label: "Home", href: "/" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
+] as const;
+
 const Navbar: React.FC = () => {
-    const { brand: BRAND, navLinks: NAV_LINKS } = useSiteData();
+    const { brand: BRAND } = useSiteData();
     const location = useLocation();
     const isHome = location.pathname === "/";
     const [scrolled, setScrolled] = useState(!isHome);
     const [mobileOpen, setMobileOpen] = useState(false);
 
     // Only show links that are enabled in the CMS
-    const activeLinks = NAV_LINKS.filter((l) => l.enabled !== false);
+    const activeLinks = NAV_LINKS;
 
     useEffect(() => {
         if (!isHome) { setScrolled(true); return; }

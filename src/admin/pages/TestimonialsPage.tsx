@@ -7,7 +7,7 @@ import { useToast } from "../components/ui/Toast";
 import type { TestimonialItem } from "../../data/types";
 import { Plus, Trash2 } from "lucide-react";
 
-const emptyReview = (id: number): TestimonialItem => ({
+const emptyReview = (id: string): TestimonialItem => ({
     id,
     quote: "",
     author: "",
@@ -40,13 +40,15 @@ const TestimonialsPage: React.FC = () => {
     const [items, setItems] = useState<TestimonialItem[]>(store.testimonials.items);
     const [saving, setSaving] = useState(false);
 
-    const setItem = (id: number, key: keyof TestimonialItem, value: unknown) =>
+    const setItem = (id: string, key: keyof TestimonialItem, value: unknown) =>
         setItems((prev) => prev.map((t) => (t.id === id ? { ...t, [key]: value } : t)));
 
     const addReview = () =>
-        setItems((prev) => [...prev, emptyReview(Date.now())]);
+        // A client-side placeholder id. The database assigns the real uuid on
+        // save; this only has to be unique among the rows on screen.
+        setItems((prev) => [...prev, emptyReview(crypto.randomUUID())]);
 
-    const removeReview = (id: number) => {
+    const removeReview = (id: string) => {
         if (!window.confirm("Remove this testimonial?")) return;
         setItems((prev) => prev.filter((t) => t.id !== id));
     };

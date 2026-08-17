@@ -10,6 +10,7 @@ const NAV_ITEMS = [
     { label: "Testimonials", href: "/admin/testimonials" },
     { label: "Pages", href: "/admin/pages" },
     { label: "SEO", href: "/admin/seo" },
+    { label: "Inbox", href: "/admin/inbox" },
 ];
 
 interface Props { children: React.ReactNode; }
@@ -19,8 +20,10 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    const handleLogout = () => {
-        logout();
+    // logout() is async now — it revokes the Supabase session server-side.
+    // Awaiting it means we never navigate away with the session still live.
+    const handleLogout = async () => {
+        await logout();
         navigate("/admin/login", { replace: true });
     };
 

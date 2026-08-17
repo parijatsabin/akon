@@ -1,12 +1,15 @@
 /**
  * saveSection — shared save path for every admin form.
  *
- * Writes now fail loudly (there is no production write endpoint by design),
- * so every call site needs the same handling: persist, report, never leave
- * the button spinning. Centralised here rather than repeated per page.
+ * The signature is unchanged from the JSON era, so no admin page needed
+ * editing when the storage moved to Supabase. What changed is underneath:
+ * this used to PUT the whole cms-data.json through a dev-only Vite middleware
+ * and fail outright in production. It now writes the section's own tables,
+ * works on the deployed site, and reports the database's error verbatim.
  */
 
-import { updateSection, SiteDataError } from "../../data/siteRepository";
+import { saveSiteSection } from "../../data/adminRepository";
+import { SiteDataError } from "../../data/siteRepository";
 import type { SiteData } from "../../data/types";
 
 type Toast = (message: string, type?: "success" | "error") => void;
@@ -18,7 +21,7 @@ export async function saveSection<K extends keyof SiteData>(
     successMessage: string
 ): Promise<boolean> {
     try {
-        await updateSection(section, value);
+        await saveSiteSection(section, value);
         toast(successMessage);
         return true;
     } catch (err) {
@@ -28,6 +31,7 @@ export async function saveSection<K extends keyof SiteData>(
                 : "Save failed. Check the console for details.",
             "error"
         );
+        console.error("[cms] Save failed.", err);
         return false;
     }
 }

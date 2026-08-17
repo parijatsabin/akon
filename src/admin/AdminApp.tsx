@@ -13,6 +13,7 @@ import FeaturedProductPage from "./pages/FeaturedProductPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import PagesPage from "./pages/PagesPage";
 import SeoPage from "./pages/SeoPage";
+import InboxPage from "./pages/InboxPage";
 
 const AdminApp: React.FC = () => (
     <AuthProvider>
@@ -34,6 +35,7 @@ const AdminApp: React.FC = () => (
                                     <Route path="testimonials" element={<TestimonialsPage />} />
                                     <Route path="pages" element={<PagesPage />} />
                                     <Route path="seo" element={<SeoPage />} />
+                                    <Route path="inbox" element={<InboxPage />} />
                                     {/* Legacy route redirects */}
                                     <Route path="hero" element={<Navigate to="/admin/settings" replace />} />
                                     <Route path="stats" element={<Navigate to="/admin/settings" replace />} />

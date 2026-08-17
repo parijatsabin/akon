@@ -86,7 +86,7 @@ const SeoPage: React.FC = () => {
                 <Field label="OG Image URL" hint="Recommended: 1200×630px. Direct image URL or path from /public.">
                     <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                         <div style={{ flex: 1 }}>
-                            <Input value={form.ogImage} onChange={(e) => set("ogImage", e.target.value)} placeholder="https://... or /logo.png" />
+                            <Input value={form.ogImage} onChange={(e) => set("ogImage", e.target.value)} placeholder="https://…supabase.co/storage/v1/…" />
                         </div>
                         {form.ogImage && (
                             <img

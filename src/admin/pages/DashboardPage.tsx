@@ -24,7 +24,7 @@ const DashboardPage: React.FC = () => {
             <div className="adm-stat-row">
                 <Stat label="Product sizes" value={data.featuredProduct.sizes.length} />
                 <Stat label="Testimonials" value={data.testimonials.items.length} />
-                <Stat label="Nav links" value={data.navLinks.filter((l) => l.enabled !== false).length} />
+                <Stat label="FAQ items" value={data.faq.items.length} />
                 <Stat label="Sections" value={SECTIONS.length} />
             </div>
 

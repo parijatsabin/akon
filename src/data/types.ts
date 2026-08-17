@@ -1,6 +1,12 @@
 // ============================================================
-// CMS Type Definitions — mirrors siteContent.ts structure.
-// When moving to a backend API these become your request/response DTOs.
+// CMS type definitions.
+//
+// This is the contract between the database and the UI: get_site_data()
+// returns exactly this shape, and every key here maps to a row in
+// site_content, or to the company / products table.
+//
+// Navigation is deliberately absent. The navbar and footer links point at
+// fixed routes and are constants in Navbar.tsx / Footer.tsx.
 // ============================================================
 
 export interface BusinessHour {
@@ -28,13 +34,6 @@ export interface BrandData {
     hours: BusinessHour[];
     socialLinks: SocialLinks;
     mapEmbed: string;
-}
-
-export interface NavLink {
-    label: string;
-    href: string;
-    /** When false the link is hidden in the navbar but the page remains accessible */
-    enabled: boolean;
 }
 
 export interface CtaButton {
@@ -136,7 +135,11 @@ export interface ProductItem {
 }
 
 export interface TestimonialItem {
-    id: number;
+    /**
+     * A uuid from the database. Was a number when content lived in a JSON file
+     * that people hand-edited; it is only ever used as a React key.
+     */
+    id: string;
     quote: string;
     author: string;
     title: string;
@@ -181,20 +184,9 @@ export interface NewsletterData {
     backgroundImage: string;
 }
 
-export interface FooterNavLink {
-    label: string;
-    href: string;
-}
-
-export interface FooterNavColumn {
-    heading: string;
-    links: FooterNavLink[];
-}
-
 export interface FooterData {
     tagline: string;
     hoursHeading: string;
-    navColumns: FooterNavColumn[];
     credit: { label: string; href: string };
 }
 
@@ -247,7 +239,6 @@ export interface FaqData {
 // ── Root document ─────────────────────────────────────────────
 export interface SiteData {
     brand: BrandData;
-    navLinks: NavLink[];
     hero: HeroData;
     about: AboutData;
     /** The single flagship product V1 is built around */

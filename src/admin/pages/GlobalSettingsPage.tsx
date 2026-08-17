@@ -6,9 +6,9 @@ import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
 import type {
     BrandData, HeroData, AboutData,
-    CommitmentData, CommitmentPillar, NewsletterData, NavLink, FooterData, FooterNavColumn,
+    CommitmentData, CommitmentPillar, NewsletterData, FooterData,
 } from "../../data/types";
-import { Plus, Trash2, GripVertical } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 
 /* ── Tab bar ──────────────────────────────────────────────────── */
 const TABS = [
@@ -17,7 +17,6 @@ const TABS = [
     { id: "about", label: "About" },
     { id: "commitment", label: "Commitment" },
     { id: "newsletter", label: "Newsletter" },
-    { id: "navigation", label: "Navigation" },
     { id: "footer", label: "Footer" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
@@ -379,8 +378,8 @@ const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 <Field label="Video URL" hint="Direct MP4 link. Takes priority — clear this field to use the image below instead.">
                     <Input value={form.videoUrl} onChange={(e) => set("videoUrl", e.target.value)} placeholder="https://..." />
                 </Field>
-                <Field label="Background Image" hint="Used only when the video URL is blank. Path under /public, e.g. /images/7.jpg">
-                    <Input value={form.backgroundImage} onChange={(e) => set("backgroundImage", e.target.value)} placeholder="/images/…" />
+                <Field label="Background Image" hint="Used only when the video URL is blank. Full Supabase Storage URL. Copy it from an existing image field or the Storage bucket — a /public path no longer resolves.">
+                    <Input value={form.backgroundImage} onChange={(e) => set("backgroundImage", e.target.value)} placeholder="https://…supabase.co/storage/v1/…" />
                 </Field>
                 {!form.videoUrl && form.backgroundImage && (
                     <img src={form.backgroundImage} alt="" style={{ width: "100%", maxHeight: 160, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }} />
@@ -489,7 +488,7 @@ const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     <Field label="Tag"><Input value={form.ctaStripTag} onChange={(e) => set("ctaStripTag", e.target.value)} /></Field>
                     <Field label="Heading"><Input value={form.ctaStripHeading} onChange={(e) => set("ctaStripHeading", e.target.value)} /></Field>
                 </div>
-                <Field label="Background Image" hint="Path under /public, e.g. /images/1.webp. Leave blank for a plain background.">
+                <Field label="Background Image" hint="Full Supabase Storage URL. Copy it from an existing image field or the Storage bucket — a /public path no longer resolves. Leave blank for a plain background.">
                     <Input value={form.ctaStripImage} onChange={(e) => set("ctaStripImage", e.target.value)} />
                 </Field>
                 {form.ctaStripImage !== "" && (
@@ -527,7 +526,7 @@ const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 <Field label="Tag" hint="Small uppercase label above the headline."><Input value={form.tag} onChange={(e) => set("tag", e.target.value)} /></Field>
                 <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
                 <Field label="Body"><Textarea value={form.body} onChange={(e) => set("body", e.target.value)} style={{ minHeight: 110 }} /></Field>
-                <Field label="Section Image" hint="Path under /public, e.g. /images/3.webp. Leave blank for a centred, text-only layout.">
+                <Field label="Section Image" hint="Full Supabase Storage URL. Copy it from an existing image field or the Storage bucket — a /public path no longer resolves. Leave blank for a centred, text-only layout.">
                     <Input value={form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} />
                 </Field>
                 {form.imageUrl !== "" && (
@@ -601,7 +600,7 @@ const NewsletterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                         <Field label="Button Label"><Input value={form.cta} onChange={(e) => set("cta", e.target.value)} /></Field>
                     </div>
                 </div>
-                <Field label="Background Image" hint="Path under /public, e.g. /images/2.webp. A dark scrim is applied automatically. Leave blank for a plain background.">
+                <Field label="Background Image" hint="Full Supabase Storage URL. Copy it from an existing image field or the Storage bucket — a /public path no longer resolves. A dark scrim is applied automatically. Leave blank for a plain background.">
                     <Input value={form.backgroundImage} onChange={(e) => set("backgroundImage", e.target.value)} />
                 </Field>
             </Section>
@@ -631,109 +630,6 @@ const NewsletterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
 };
 
 /* ── Navigation ───────────────────────────────────────────────── */
-const NavigationTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
-    const { toast } = useToast();
-    const [links, setLinks] = useState<NavLink[]>(() => readStore().navLinks);
-    const [saving, setSaving] = useState(false);
-
-    const setLink = (i: number, k: keyof NavLink, v: unknown) => {
-        const n = [...links]; n[i] = { ...n[i], [k]: v }; setLinks(n);
-    };
-    const moveUp = (i: number) => { if (!i) return; const n = [...links];[n[i - 1], n[i]] = [n[i], n[i - 1]]; setLinks(n); };
-    const moveDown = (i: number) => { if (i === links.length - 1) return; const n = [...links];[n[i], n[i + 1]] = [n[i + 1], n[i]]; setLinks(n); };
-    const save = async () => {
-        if (links.some((l) => !l.label.trim())) { toast("All labels required.", "error"); return; }
-        setSaving(true);
-        const ok = await saveSection("navLinks", links, toast, "Navigation saved!");
-        setSaving(false);
-        if (ok) onSave();
-    };
-
-    return (
-        <>
-            <Section title="Menu Links" action={
-                <button onClick={() => setLinks((p) => [...p, { label: "", href: "#", enabled: true }])}
-                    style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "var(--noir)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", cursor: "pointer" }}>
-                    <Plus size={13} /> Add
-                </button>
-            }>
-                {links.map((link, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 0", borderBottom: i < links.length - 1 ? "1px solid var(--border)" : "none", opacity: link.enabled === false ? 0.5 : 1, transition: "opacity 0.18s" }}>
-                        {/* Reorder */}
-                        <div style={{ display: "flex", flexDirection: "column", gap: 1, flexShrink: 0 }}>
-                            <button onClick={() => moveUp(i)} disabled={!i} style={{ padding: "1px 4px", background: "none", border: "none", cursor: !i ? "not-allowed" : "pointer", opacity: !i ? 0.3 : 1, color: "var(--text-muted)", fontSize: 11 }}>▲</button>
-                            <GripVertical size={13} style={{ color: "var(--text-faint)", margin: "0 auto" }} />
-                            <button onClick={() => moveDown(i)} disabled={i === links.length - 1} style={{ padding: "1px 4px", background: "none", border: "none", cursor: i === links.length - 1 ? "not-allowed" : "pointer", opacity: i === links.length - 1 ? 0.3 : 1, color: "var(--text-muted)", fontSize: 11 }}>▼</button>
-                        </div>
-
-                        {/* Label + href */}
-                        <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 12px" }}>
-                            <Field label={i === 0 ? "Label" : ""}>
-                                <Input value={link.label} onChange={(e) => setLink(i, "label", e.target.value)} placeholder="Home" />
-                            </Field>
-                            <Field label={i === 0 ? "Href" : ""}>
-                                <Input value={link.href} onChange={(e) => setLink(i, "href", e.target.value)} placeholder="/home" />
-                            </Field>
-                        </div>
-
-                        {/* Enabled toggle */}
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flexShrink: 0 }}>
-                            {i === 0 && (
-                                <span style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-muted)", whiteSpace: "nowrap" }}>
-                                    Show
-                                </span>
-                            )}
-                            <span
-                                role="checkbox"
-                                aria-checked={link.enabled !== false}
-                                title={link.enabled !== false ? "Visible in navbar — click to hide" : "Hidden from navbar — click to show"}
-                                onClick={() => setLink(i, "enabled", !(link.enabled !== false))}
-                                style={{
-                                    display: "inline-flex", alignItems: "center",
-                                    width: 38, height: 20, borderRadius: 10,
-                                    background: link.enabled !== false ? "var(--accent)" : "var(--border)",
-                                    padding: "2px", transition: "background 0.22s",
-                                    cursor: "pointer", flexShrink: 0,
-                                }}
-                            >
-                                <span style={{
-                                    width: 16, height: 16, borderRadius: "50%", background: "#fff",
-                                    boxShadow: "0 1px 3px rgba(0,0,0,0.20)",
-                                    transform: link.enabled !== false ? "translateX(18px)" : "translateX(0)",
-                                    transition: "transform 0.22s", display: "block",
-                                }} />
-                            </span>
-                        </div>
-
-                        {/* Delete */}
-                        <button onClick={() => setLinks((p) => p.filter((_, x) => x !== i))} disabled={links.length <= 1}
-                            style={{ padding: 7, background: "none", border: "none", cursor: links.length <= 1 ? "not-allowed" : "pointer", color: links.length <= 1 ? "var(--text-faint)" : "#e05555", flexShrink: 0 }}>
-                            <Trash2 size={14} />
-                        </button>
-                    </div>
-                ))}
-            </Section>
-
-            {/* Live preview */}
-            <Section title="Preview">
-                <nav style={{ display: "flex", gap: 6, background: "var(--noir)", padding: "12px 18px", borderRadius: "var(--radius-sm)", flexWrap: "wrap", alignItems: "center" }}>
-                    {links.filter((l) => l.enabled !== false).map((l, i) => (
-                        <span key={i} style={{ fontSize: "0.80rem", fontWeight: 600, color: "rgba(255,255,255,0.65)", padding: "5px 14px", borderRadius: 4 }}>
-                            {l.label || "…"}
-                        </span>
-                    ))}
-                    {links.filter((l) => l.enabled === false).length > 0 && (
-                        <span style={{ marginLeft: "auto", fontSize: "0.70rem", color: "rgba(255,255,255,0.30)", fontStyle: "italic" }}>
-                            {links.filter((l) => l.enabled === false).length} hidden
-                        </span>
-                    )}
-                </nav>
-            </Section>
-
-            <SaveBtn loading={saving} onClick={save} />
-        </>
-    );
-};
 
 /* ── Footer ───────────────────────────────────────────────────── */
 const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
@@ -741,19 +637,6 @@ const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     const [form, setForm] = useState<FooterData>(() => readStore().footer);
     const [saving, setSaving] = useState(false);
     const set = (k: keyof FooterData, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
-    const setColumn = (ci: number, k: keyof FooterNavColumn, v: unknown) => {
-        const cols = [...form.navColumns]; cols[ci] = { ...cols[ci], [k]: v }; set("navColumns", cols);
-    };
-    const setColLink = (ci: number, li: number, f2: "label" | "href", v: string) => {
-        const cols = [...form.navColumns]; const lnks = [...cols[ci].links];
-        lnks[li] = { ...lnks[li], [f2]: v }; cols[ci] = { ...cols[ci], links: lnks }; set("navColumns", cols);
-    };
-    const addColLink = (ci: number) => {
-        const cols = [...form.navColumns]; cols[ci] = { ...cols[ci], links: [...cols[ci].links, { label: "", href: "#" }] }; set("navColumns", cols);
-    };
-    const removeColLink = (ci: number, li: number) => {
-        const cols = [...form.navColumns]; cols[ci] = { ...cols[ci], links: cols[ci].links.filter((_, i) => i !== li) }; set("navColumns", cols);
-    };
     const save = async () => {
         setSaving(true);
         const ok = await saveSection("footer", form, toast, "Footer saved!");
@@ -768,49 +651,15 @@ const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     <Field label="Credit Label"><Input value={form.credit.label} onChange={(e) => set("credit", { ...form.credit, label: e.target.value })} /></Field>
                     <Field label="Credit URL"><Input value={form.credit.href} onChange={(e) => set("credit", { ...form.credit, href: e.target.value })} /></Field>
                 </div>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: 4 }}>
+                    The footer’s link columns (Company / Support) and the top navigation
+                    point at fixed routes and are set in the code, not here.
+                </p>
             </Section>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(420px, 1fr))", gap: 24, marginBottom: 0 }}>
-                {form.navColumns.map((col, ci) => (
-                    <Section key={ci} title={`Column ${ci + 1}: ${col.heading || "Untitled"}`} action={
-                        form.navColumns.length > 1 ? (
-                            <button onClick={() => set("navColumns", form.navColumns.filter((_, i) => i !== ci))}
-                                style={{ fontSize: "0.75rem", color: "#e05555", background: "#fff0f0", border: "1px solid #f5c0c0", borderRadius: "var(--radius-sm)", padding: "4px 10px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600 }}>
-                                Remove
-                            </button>
-                        ) : undefined
-                    }>
-                        <Field label="Heading"><Input value={col.heading} onChange={(e) => setColumn(ci, "heading", e.target.value)} /></Field>
-                        <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--text-muted)", margin: "4px 0 10px" }}>Links</div>
-                        {col.links.map((lnk, li) => (
-                            <div key={li} style={{ display: "flex", gap: 10, alignItems: "flex-end", marginBottom: 8 }}>
-                                <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 10px" }}>
-                                    <Field label={li === 0 ? "Label" : ""}><Input value={lnk.label} onChange={(e) => setColLink(ci, li, "label", e.target.value)} /></Field>
-                                    <Field label={li === 0 ? "URL" : ""}><Input value={lnk.href} onChange={(e) => setColLink(ci, li, "href", e.target.value)} /></Field>
-                                </div>
-                                <button onClick={() => removeColLink(ci, li)} disabled={col.links.length <= 1}
-                                    style={{ marginBottom: 20, padding: 7, background: "none", border: "none", cursor: col.links.length <= 1 ? "not-allowed" : "pointer", color: col.links.length <= 1 ? "var(--text-faint)" : "#e05555" }}>
-                                    <Trash2 size={13} />
-                                </button>
-                            </div>
-                        ))}
-                        <button onClick={() => addColLink(ci)}
-                            style={{ fontSize: "0.76rem", color: "var(--accent-text)", background: "transparent", border: "1px solid var(--accent)", borderRadius: "var(--radius-sm)", padding: "4px 12px", cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
-                            <Plus size={11} /> Add Link
-                        </button>
-                    </Section>
-                ))}
-            </div>
-            <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
-                <button onClick={() => set("navColumns", [...form.navColumns, { heading: "", links: [{ label: "", href: "#" }] }])}
-                    style={{ padding: "9px 20px", background: "transparent", border: "1.5px solid var(--accent)", color: "var(--accent-text)", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.80rem", cursor: "pointer" }}>
-                    + Add Column
-                </button>
-                <SaveBtn loading={saving} onClick={save} />
-            </div>
+            <SaveBtn loading={saving} onClick={save} />
         </>
     );
 };
-
 /* ═══════════════════ MAIN PAGE ═══════════════════════════════ */
 const GlobalSettingsPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<TabId>("brand");
@@ -823,7 +672,6 @@ const GlobalSettingsPage: React.FC = () => {
         about: <AboutTab onSave={onSave} />,
         commitment: <CommitmentTab onSave={onSave} />,
         newsletter: <NewsletterTab onSave={onSave} />,
-        navigation: <NavigationTab onSave={onSave} />,
         footer: <FooterTab onSave={onSave} />,
     };
 

@@ -1,16 +1,40 @@
 import React, { useState } from "react";
 import { useSiteData } from "../data/SiteDataProvider";
 import { useReveal } from "../hooks/useReveal";
+import { supabase } from "../lib/supabase";
 
 const Newsletter: React.FC = () => {
   const { newsletter: NEWSLETTER, brand: BRAND } = useSiteData();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const ref = useReveal<HTMLDivElement>();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) { setSubmitted(true); setEmail(""); }
+    const value = email.trim();
+    if (!value || pending) return;
+
+    setPending(true);
+    setError(null);
+
+    const { error: insertError } = await supabase
+      .from("contacts")
+      .insert({ kind: "newsletter", email: value });
+
+    setPending(false);
+
+    // 23505 = unique violation, i.e. already subscribed. Reported as success:
+    // telling a stranger which addresses are on the list would leak it one
+    // guess at a time, and from the subscriber's point of view it worked.
+    if (insertError && insertError.code !== "23505") {
+      setError("Something went wrong. Please try again.");
+      return;
+    }
+
+    setSubmitted(true);
+    setEmail("");
   };
 
   return (
@@ -48,13 +72,19 @@ const Newsletter: React.FC = () => {
           <form onSubmit={handleSubmit} className="newsletter-form">
             <input
               type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder={NEWSLETTER.placeholder} required
+              placeholder={NEWSLETTER.placeholder} required disabled={pending}
               className="newsletter-input"
             />
-            <button type="submit" className="btn btn-accent newsletter-btn" style={{ borderRadius: 0, whiteSpace: "nowrap", padding: "18px 34px", fontSize: "0.82rem" }}>
-              {NEWSLETTER.cta}
+            <button type="submit" disabled={pending} className="btn btn-accent newsletter-btn" style={{ borderRadius: 0, whiteSpace: "nowrap", padding: "18px 34px", fontSize: "0.82rem" }}>
+              {pending ? "Subscribing…" : NEWSLETTER.cta}
             </button>
           </form>
+        )}
+
+        {error && (
+          <p role="alert" className="newsletter-sub" style={{ marginTop: 12, opacity: 0.95 }}>
+            {error}
+          </p>
         )}
       </div>
     </section>
