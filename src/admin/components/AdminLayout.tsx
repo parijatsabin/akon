@@ -7,9 +7,17 @@ import { Menu, ExternalLink, LogOut } from "lucide-react";
 /**
  * Grouped to mirror the data rather than the order things were built:
  * Company is the business, Homepage/Product/Pages are what visitors read,
- * SEO is how it is found, Inbox is what comes back.
+ * SEO is how it is found, Inbox is what comes back. Users and Account are
+ * about who does the editing, so they sit last.
  */
-const NAV_ITEMS = [
+interface NavItem {
+    label: string;
+    href: string;
+    /** Hidden from admins. AdminRoute and RLS are what actually restrict it. */
+    superadminOnly?: boolean;
+}
+
+const NAV_ITEMS: NavItem[] = [
     { label: "Dashboard", href: "/admin" },
     { label: "Company", href: "/admin/company" },
     { label: "Homepage", href: "/admin/homepage" },
@@ -17,12 +25,15 @@ const NAV_ITEMS = [
     { label: "Pages", href: "/admin/pages" },
     { label: "SEO", href: "/admin/seo" },
     { label: "Inbox", href: "/admin/inbox" },
+    // Hiding this is cosmetic — the route guard and RLS are what enforce it.
+    { label: "Users", href: "/admin/users", superadminOnly: true },
+    { label: "Account", href: "/admin/account" },
 ];
 
 interface Props { children: React.ReactNode; }
 
 const AdminLayout: React.FC<Props> = ({ children }) => {
-    const { username, logout } = useAuth();
+    const { username, logout, isSuperadmin } = useAuth();
     const { unread } = useContactAlerts();
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -43,7 +54,7 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
                 </div>
 
                 <nav className="adm-nav">
-                    {NAV_ITEMS.map((item) => (
+                    {NAV_ITEMS.filter((item) => !item.superadminOnly || isSuperadmin).map((item) => (
                         <NavLink
                             key={item.href}
                             to={item.href}

@@ -10,8 +10,11 @@
 >   so the normalisation was paying for flexibility that was never used.
 > - Navigation tables were dropped entirely; the navbar and footer links are
 >   constants in the components.
-> - `audit_log` and the `admin-create-user` edge function were deferred and
->   never built.
+> - `audit_log` was deferred and never built.
+> - The `admin-create-user` edge function was deferred, then built as specced
+>   in §4 — together with `/admin/users` and a self-service `/admin/account`
+>   password page, which §7.6 did not anticipate. It is needed because
+>   generated passwords have no reset email to escape through.
 >
 > **For how the system actually works, read [supabase/README.md](supabase/README.md).**
 > Kept only for the reasoning behind the decisions that survived — the media
