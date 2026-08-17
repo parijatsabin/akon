@@ -8,12 +8,14 @@ import React, { useState } from "react";
 import { readStore } from "../../data/siteRepository";
 import { saveSection } from "../lib/saveSection";
 import { Section } from "../components/ui/Section";
-import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
+import { Field, Input, Textarea, SaveBtn, IconButton } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
 import type {
     ProductItem, ProductHighlight, ProductSpec, UsageStep,
 } from "../../data/types";
-import { Star, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, ArrowUp, ArrowDown } from "lucide-react";
+import { PageHeader } from "../components/ui/Page";
+import { ImageField } from "../components/ui/ImageField";
 
 const listToString = (arr: string[]) => arr.join(", ");
 const stringToList = (s: string) => s.split(",").map((n) => n.trim()).filter(Boolean);
@@ -21,15 +23,6 @@ const stringToList = (s: string) => s.split(",").map((n) => n.trim()).filter(Boo
 const TIERS = ["top", "heart", "base"] as const;
 
 /** Small square button used for the reorder/remove controls in repeatable rows. */
-const iconBtn = (disabled = false): React.CSSProperties => ({
-    padding: "4px 8px",
-    background: "none",
-    border: "1px solid var(--border)",
-    borderRadius: "var(--radius-sm)",
-    cursor: disabled ? "not-allowed" : "pointer",
-    opacity: disabled ? 0.35 : 1,
-});
-
 const FeaturedProductPage: React.FC = () => {
     const { toast } = useToast();
     const store = readStore();
@@ -97,20 +90,10 @@ const FeaturedProductPage: React.FC = () => {
     return (
         <div>
             {/* Page header */}
-            <div style={{ marginBottom: 32 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: "var(--radius-sm)", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--on-accent)" }}>
-                        <Star size={20} />
-                    </div>
-                    <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.9rem", fontWeight: 700, color: "var(--text-main)" }}>
-                        Signature Product
-                    </h1>
-                </div>
-                <p style={{ fontSize: "0.88rem", color: "var(--text-muted)", marginLeft: 52 }}>
-                    The single fragrance the homepage is built around.
-                </p>
-            </div>
-
+            <PageHeader
+                title="Product"
+                description="The single fragrance the homepage is built around."
+            />
             {/* Current product preview */}
             <div style={{ background: "var(--noir)", borderRadius: "var(--radius)", padding: "20px 24px", marginBottom: 28, display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
                 {product.images[0] && (
@@ -136,7 +119,7 @@ const FeaturedProductPage: React.FC = () => {
 
             {/* ── Basics ── */}
             <Section title="Product Details">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                <div className="adm-grid-2">
                     <Field label="Product Name" required>
                         <Input value={product.name} onChange={(e) => set("name", e.target.value)} />
                     </Field>
@@ -169,30 +152,50 @@ const FeaturedProductPage: React.FC = () => {
             </Section>
 
             {/* ── Gallery ── */}
-            <Section title={`Gallery (${product.images.length})`} action={
-                <button onClick={() => set("images", [...product.images, ""])}
-                    style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "var(--noir)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", cursor: "pointer" }}>
-                    <Plus size={13} /> Add Image
-                </button>
-            }>
-                <p style={{ fontSize: "0.80rem", color: "var(--text-faint)", marginBottom: 14 }}>
-                    Full Supabase Storage URLs. The first image is shown by default. An address that does not match a stored asset is dropped on save.
+            <Section title={`Gallery (${product.images.length})`}>
+                <p className="adm-hint" style={{ marginBottom: 14 }}>
+                    The first image is the default view. Upload replaces the slot; the arrows reorder.
                 </p>
                 {product.images.map((src, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-                        <div style={{ width: 56, height: 68, flexShrink: 0, borderRadius: "var(--radius-sm)", border: "1px solid var(--border)", background: "var(--sunken-deep)", overflow: "hidden" }}>
-                            {src && <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                                onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }} />}
+                    <div key={i} className="adm-row" style={{ alignItems: "flex-start", marginBottom: 12 }}>
+                        <div className="adm-fill">
+                            <ImageField
+                                label={i === 0 ? "Main image" : `Image ${i + 1}`}
+                                value={src}
+                                prefix="product"
+                                onChange={(next) => setImage(i, next)}
+                            />
                         </div>
-                        <div style={{ flex: 1 }}>
-                            <Input value={src} onChange={(e) => setImage(i, e.target.value)} placeholder="https://…supabase.co/storage/v1/…" />
+                        <div className="adm-row" style={{ paddingTop: 26 }}>
+                            <IconButton label={`Move image ${i + 1} up`} onClick={() => moveImage(i, -1)} disabled={i === 0}>
+                                <ArrowUp size={15} aria-hidden="true" />
+                            </IconButton>
+                            <IconButton label={`Move image ${i + 1} down`} onClick={() => moveImage(i, 1)} disabled={i === product.images.length - 1}>
+                                <ArrowDown size={15} aria-hidden="true" />
+                            </IconButton>
+                            <IconButton
+                                label={`Remove image ${i + 1}`}
+                                onClick={() => {
+                                    if (!window.confirm(`Remove image ${i + 1} from the gallery?
+
+The image stays in your library.`)) return;
+                                    set("images", product.images.filter((_, x) => x !== i));
+                                }}
+                            >
+                                <Trash2 size={15} aria-hidden="true" />
+                            </IconButton>
                         </div>
-                        <button onClick={() => moveImage(i, -1)} disabled={i === 0} title="Move up" style={iconBtn(i === 0)}>↑</button>
-                        <button onClick={() => moveImage(i, 1)} disabled={i === product.images.length - 1} title="Move down" style={iconBtn(i === product.images.length - 1)}>↓</button>
-                        <button onClick={() => set("images", product.images.filter((_, x) => x !== i))} title="Remove"
-                            style={{ padding: 7, background: "none", border: "none", cursor: "pointer", color: "#e05555" }}><Trash2 size={14} /></button>
                     </div>
                 ))}
+
+                {/* Uploading here appends rather than replacing a slot. */}
+                <ImageField
+                    label="Add an image"
+                    value=""
+                    prefix="product"
+                    hint="Optimised and added to the end of the gallery."
+                    onChange={(src) => { if (src) set("images", [...product.images, src]); }}
+                />
             </Section>
 
             {/* ── Notes ── */}

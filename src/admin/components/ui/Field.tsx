@@ -1,128 +1,105 @@
+/**
+ * Form primitives.
+ *
+ * These used to carry their styling as inline objects, including focus colours
+ * applied through onFocus/onBlur handlers on every single input. All of it now
+ * lives in admin.css — see the component layer there. Keeping it in CSS is
+ * what makes :hover, :focus-visible and :disabled states possible at all,
+ * which inline styles cannot express.
+ */
+
 import React from "react";
 
+// ── Field wrapper ─────────────────────────────────────────────
 interface FieldProps {
     label: string;
     hint?: string;
     error?: string;
     required?: boolean;
+    /** Wire the label to the control so clicking it focuses the input. */
+    htmlFor?: string;
     children: React.ReactNode;
 }
 
-export const Field: React.FC<FieldProps> = ({ label, hint, error, required, children }) => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 20 }}>
-        <label
-            style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "0.78rem",
-                fontWeight: 700,
-                letterSpacing: "0.10em",
-                textTransform: "uppercase",
-                color: "var(--text-muted)",
-            }}
-        >
-            {label}
-            {required && <span style={{ color: "var(--accent-text)", marginLeft: 4 }}>*</span>}
-        </label>
+export const Field: React.FC<FieldProps> = ({ label, hint, error, required, htmlFor, children }) => (
+    <div className="adm-field">
+        {label && (
+            <label className="adm-label" htmlFor={htmlFor}>
+                {label}
+                {required && <span className="adm-req" aria-hidden="true">*</span>}
+            </label>
+        )}
         {children}
-        {hint && !error && (
-            <span style={{ fontSize: "0.75rem", color: "var(--text-faint)" }}>{hint}</span>
-        )}
-        {error && (
-            <span style={{ fontSize: "0.75rem", color: "#e05555" }}>{error}</span>
-        )}
+        {hint && !error && <span className="adm-hint">{hint}</span>}
+        {error && <span className="adm-err" role="alert">{error}</span>}
     </div>
 );
 
 // ── Input ─────────────────────────────────────────────────────
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    fullWidth?: boolean;
-}
-export const Input: React.FC<InputProps> = ({ fullWidth = true, style, ...props }) => (
+type InputProps = React.InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean };
+
+export const Input: React.FC<InputProps> = ({ className = "", invalid, ...props }) => (
     <input
         {...props}
-        style={{
-            width: fullWidth ? "100%" : undefined,
-            padding: "10px 14px",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-sm)",
-            fontFamily: "var(--font-body)",
-            fontSize: "0.92rem",
-            color: "var(--text-main)",
-            background: "var(--surface-raised)",
-            outline: "none",
-            transition: "border-color 0.2s",
-            ...style,
-        }}
-        onFocus={(e) => {
-            e.currentTarget.style.borderColor = "var(--accent)";
-            props.onFocus?.(e);
-        }}
-        onBlur={(e) => {
-            e.currentTarget.style.borderColor = "var(--border)";
-            props.onBlur?.(e);
-        }}
+        aria-invalid={invalid || undefined}
+        className={`adm-input ${className}`.trim()}
     />
 );
 
 // ── Textarea ──────────────────────────────────────────────────
-interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-    fullWidth?: boolean;
-}
-export const Textarea: React.FC<TextareaProps> = ({ fullWidth = true, style, ...props }) => (
+type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & { invalid?: boolean };
+
+export const Textarea: React.FC<TextareaProps> = ({ className = "", invalid, ...props }) => (
     <textarea
         {...props}
-        style={{
-            width: fullWidth ? "100%" : undefined,
-            padding: "10px 14px",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-sm)",
-            fontFamily: "var(--font-body)",
-            fontSize: "0.92rem",
-            color: "var(--text-main)",
-            background: "var(--surface-raised)",
-            outline: "none",
-            resize: "vertical",
-            minHeight: 90,
-            transition: "border-color 0.2s",
-            ...style,
-        }}
-        onFocus={(e) => {
-            e.currentTarget.style.borderColor = "var(--accent)";
-            props.onFocus?.(e);
-        }}
-        onBlur={(e) => {
-            e.currentTarget.style.borderColor = "var(--border)";
-            props.onBlur?.(e);
-        }}
+        aria-invalid={invalid || undefined}
+        className={`adm-textarea ${className}`.trim()}
     />
 );
 
 // ── Select ────────────────────────────────────────────────────
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     options: { value: string; label: string }[];
-    fullWidth?: boolean;
 }
-export const Select: React.FC<SelectProps> = ({ options, fullWidth = true, style, ...props }) => (
-    <select
-        {...props}
-        style={{
-            width: fullWidth ? "100%" : undefined,
-            padding: "10px 14px",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-sm)",
-            fontFamily: "var(--font-body)",
-            fontSize: "0.92rem",
-            color: "var(--text-main)",
-            background: "var(--surface-raised)",
-            outline: "none",
-            cursor: "pointer",
-            ...style,
-        }}
-    >
+
+export const Select: React.FC<SelectProps> = ({ options, className = "", ...props }) => (
+    <select {...props} className={`adm-select ${className}`.trim()}>
         {options.map((o) => (
             <option key={o.value} value={o.value}>{o.label}</option>
         ))}
     </select>
+);
+
+// ── Buttons ───────────────────────────────────────────────────
+type Variant = "primary" | "ghost" | "quiet" | "danger";
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    variant?: Variant;
+    small?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+    variant = "ghost", small, className = "", children, ...props
+}) => (
+    <button
+        type="button"
+        {...props}
+        className={`adm-btn adm-btn-${variant} ${small ? "adm-btn-sm" : ""} ${className}`.trim()}
+    >
+        {children}
+    </button>
+);
+
+/** Icon-only control. `label` is required — it becomes the accessible name. */
+interface IconButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "aria-label"> {
+    label: string;
+}
+
+export const IconButton: React.FC<IconButtonProps> = ({ label, className = "", children, ...props }) => (
+    <button type="button" aria-label={label} title={label} {...props}
+        className={`adm-icon-btn ${className}`.trim()}>
+        {children}
+    </button>
 );
 
 // ── Save button ───────────────────────────────────────────────
@@ -131,39 +108,22 @@ interface SaveBtnProps {
     onClick?: () => void;
     label?: string;
 }
+
 export const SaveBtn: React.FC<SaveBtnProps> = ({ loading, onClick, label = "Save Changes" }) => (
     <button
+        type="button"
         onClick={onClick}
         disabled={loading}
-        style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "11px 28px",
-            background: loading ? "var(--accent-soft)" : "var(--accent)",
-            color: "var(--on-accent)",
-            border: "none",
-            borderRadius: "var(--radius-sm)",
-            fontFamily: "var(--font-body)",
-            fontWeight: 700,
-            fontSize: "0.82rem",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            cursor: loading ? "not-allowed" : "pointer",
-            transition: "background 0.22s, transform 0.18s",
-            boxShadow: "0 4px 14px rgba(197,165,114,0.24)",
-        }}
-        onMouseEnter={(e) => { if (!loading) e.currentTarget.style.background = "var(--accent-soft)"; }}
-        onMouseLeave={(e) => { if (!loading) e.currentTarget.style.background = "var(--accent)"; }}
+        className="adm-btn adm-btn-primary"
     >
         {loading ? (
             <>
-                <span style={{ display: "inline-block", width: 14, height: 14, border: "2px solid rgba(20,18,14,0.30)", borderTopColor: "var(--on-accent)", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-                Saving…
+                <Spinner /> Saving…
             </>
         ) : (
             <>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
                     <polyline points="17 21 17 13 7 13 7 21" />
                     <polyline points="7 3 7 8 15 8" />
@@ -171,6 +131,16 @@ export const SaveBtn: React.FC<SaveBtnProps> = ({ loading, onClick, label = "Sav
                 {label}
             </>
         )}
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </button>
+);
+
+const Spinner: React.FC = () => (
+    <span
+        aria-hidden="true"
+        style={{
+            display: "inline-block", width: 14, height: 14,
+            border: "2px solid rgba(255,255,255,0.35)", borderTopColor: "currentColor",
+            borderRadius: "50%", animation: "adm-spin 0.7s linear infinite",
+        }}
+    />
 );

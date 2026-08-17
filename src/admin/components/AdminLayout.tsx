@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { useContactAlerts } from "../lib/ContactAlerts";
 import { Menu, ExternalLink, LogOut } from "lucide-react";
 
+/**
+ * Grouped to mirror the data rather than the order things were built:
+ * Company is the business, Homepage/Product/Pages are what visitors read,
+ * SEO is how it is found, Inbox is what comes back.
+ */
 const NAV_ITEMS = [
     { label: "Dashboard", href: "/admin" },
-    { label: "Settings", href: "/admin/settings" },
-    { label: "Signature Product", href: "/admin/featured" },
-    { label: "Testimonials", href: "/admin/testimonials" },
+    { label: "Company", href: "/admin/company" },
+    { label: "Homepage", href: "/admin/homepage" },
+    { label: "Product", href: "/admin/product" },
     { label: "Pages", href: "/admin/pages" },
     { label: "SEO", href: "/admin/seo" },
     { label: "Inbox", href: "/admin/inbox" },
@@ -17,6 +23,7 @@ interface Props { children: React.ReactNode; }
 
 const AdminLayout: React.FC<Props> = ({ children }) => {
     const { username, logout } = useAuth();
+    const { unread } = useContactAlerts();
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -45,6 +52,9 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
                             onClick={() => setMobileOpen(false)}
                         >
                             {item.label}
+                            {item.href === "/admin/inbox" && unread > 0 && (
+                                <span className="adm-nav-count" aria-label={`${unread} unread`}>{unread}</span>
+                            )}
                         </NavLink>
                     ))}
                 </nav>

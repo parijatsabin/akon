@@ -5,7 +5,8 @@ import { Section } from "../components/ui/Section";
 import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
 import type { SeoData } from "../../data/types";
-import { Search } from "lucide-react";
+import { PageHeader } from "../components/ui/Page";
+import { ImageField } from "../components/ui/ImageField";
 
 const SeoPage: React.FC = () => {
     const { toast } = useToast();
@@ -23,20 +24,10 @@ const SeoPage: React.FC = () => {
 
     return (
         <div>
-            <div style={{ marginBottom: 32 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: "var(--radius-sm)", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--on-accent)" }}>
-                        <Search size={20} />
-                    </div>
-                    <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.9rem", fontWeight: 700, color: "var(--text-main)" }}>
-                        SEO Settings
-                    </h1>
-                </div>
-                <p style={{ fontSize: "0.88rem", color: "var(--text-muted)", marginLeft: 52 }}>
-                    Control how your site appears in search engines and when shared on social media.
-                </p>
-            </div>
-
+            <PageHeader
+                title="SEO"
+                description="How the site appears in search results and when shared on social media."
+            />
             {/* Search Engine */}
             <Section title="Search Engine">
                 <Field label="Meta Title" required hint="Shown in browser tabs and search results. Ideal: 50–60 characters.">
@@ -83,20 +74,12 @@ const SeoPage: React.FC = () => {
                 <Field label="OG Description" hint="Description shown in link previews.">
                     <Textarea value={form.ogDescription} onChange={(e) => set("ogDescription", e.target.value)} style={{ minHeight: 72 }} />
                 </Field>
-                <Field label="OG Image URL" hint="Recommended: 1200×630px. Direct image URL or path from /public.">
-                    <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                        <div style={{ flex: 1 }}>
-                            <Input value={form.ogImage} onChange={(e) => set("ogImage", e.target.value)} placeholder="https://…supabase.co/storage/v1/…" />
-                        </div>
-                        {form.ogImage && (
-                            <img
-                                src={form.ogImage} alt="OG preview"
-                                style={{ width: 80, height: 42, objectFit: "cover", borderRadius: 4, border: "1px solid var(--border)", flexShrink: 0, marginTop: 2 }}
-                                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-                            />
-                        )}
-                    </div>
-                </Field>
+                <ImageField
+                    label="Social Sharing Image"
+                    hint="Shown when the site is shared on Facebook, LinkedIn or WhatsApp. 1200×630px works best."
+                    value={form.ogImage}
+                    onChange={(src) => set("ogImage", src)}
+                />
 
                 {/* Social card preview */}
                 {(form.ogTitle || form.ogDescription || form.ogImage) && (

@@ -4,6 +4,8 @@ import { saveSection } from "../lib/saveSection";
 import { Section } from "../components/ui/Section";
 import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
+import { SaveBar } from "../components/ui/Page";
+import type { EditorProps } from "./editors";
 import type { TestimonialItem } from "../../data/types";
 import { Plus, Trash2 } from "lucide-react";
 
@@ -33,7 +35,7 @@ const StarPicker: React.FC<{ value: number; onChange: (v: number) => void }> = (
     </div>
 );
 
-const TestimonialsPage: React.FC = () => {
+export const TestimonialsTab: React.FC<EditorProps> = ({ onSave }) => {
     const { toast } = useToast();
     const store = readStore();
     const [headline, setHeadline] = useState(store.testimonials.headline);
@@ -61,8 +63,9 @@ const TestimonialsPage: React.FC = () => {
         setSaving(true);
         // Preserve sectionTag — this page does not edit it, and dropping it
         // would strip the field from the saved document.
-        await saveSection("testimonials", { ...readStore().testimonials, headline, items }, toast, "Testimonials saved!");
+        const ok = await saveSection("testimonials", { ...readStore().testimonials, headline, items }, toast, "Testimonials saved!");
         setSaving(false);
+        if (ok) onSave();
     };
 
     return (
@@ -104,7 +107,7 @@ const TestimonialsPage: React.FC = () => {
                     <Field label="Quote" required>
                         <Textarea value={item.quote} onChange={(e) => setItem(item.id, "quote", e.target.value)} style={{ minHeight: 80 }} />
                     </Field>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                    <div className="adm-grid-2">
                         <Field label="Author Name" required>
                             <Input value={item.author} onChange={(e) => setItem(item.id, "author", e.target.value)} />
                         </Field>
@@ -142,9 +145,8 @@ const TestimonialsPage: React.FC = () => {
                 </Section>
             ))}
 
-            <SaveBtn loading={saving} onClick={handleSave} />
+            <SaveBar><SaveBtn loading={saving} onClick={handleSave} /></SaveBar>
         </div>
     );
 };
 
-export default TestimonialsPage;

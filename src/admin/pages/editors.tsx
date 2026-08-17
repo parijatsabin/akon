@@ -1,8 +1,21 @@
+/**
+ * Section editors.
+ *
+ * These were the six tab panels inside a single 726-line "Global Settings"
+ * page — brand identity sitting alongside homepage copy under one label that
+ * described neither. The editors themselves were fine; the grouping was not.
+ *
+ * They now live here as exports so CompanyPage and HomepagePage can each use
+ * the ones they need without either file duplicating a form.
+ */
+
 import React, { useState } from "react";
 import { readStore } from "../../data/siteRepository";
 import { saveSection } from "../lib/saveSection";
 import { Section } from "../components/ui/Section";
 import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
+import { SaveBar } from "../components/ui/Page";
+import { ImageField } from "../components/ui/ImageField";
 import { useToast } from "../components/ui/Toast";
 import type {
     BrandData, HeroData, AboutData,
@@ -10,37 +23,12 @@ import type {
 } from "../../data/types";
 import { Plus, Trash2 } from "lucide-react";
 
-/* ── Tab bar ──────────────────────────────────────────────────── */
-const TABS = [
-    { id: "brand", label: "Brand" },
-    { id: "hero", label: "Hero" },
-    { id: "about", label: "About" },
-    { id: "commitment", label: "Commitment" },
-    { id: "newsletter", label: "Newsletter" },
-    { id: "footer", label: "Footer" },
-] as const;
-type TabId = (typeof TABS)[number]["id"];
-
-/* ── Tab styles helper ────────────────────────────────────────── */
-const tabStyle = (active: boolean): React.CSSProperties => ({
-    padding: "10px 20px",
-    fontSize: "0.82rem",
-    fontWeight: 700,
-    letterSpacing: "0.06em",
-    border: "none",
-    borderBottom: active ? "2px solid var(--accent)" : "2px solid transparent",
-    background: "transparent",
-    color: active ? "var(--accent)" : "var(--text-muted)",
-    cursor: "pointer",
-    transition: "all 0.18s",
-    whiteSpace: "nowrap",
-    fontFamily: "var(--font-body)",
-});
+export interface EditorProps { onSave: () => void }
 
 /* ═══════════════════ TAB PANELS ══════════════════════════════ */
 
 /* ── Brand ────────────────────────────────────────────────────── */
-const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
+export const BrandTab: React.FC<EditorProps> = ({ onSave }) => {
     const { toast } = useToast();
     const [form, setForm] = useState<BrandData>(() => readStore().brand);
     const [saving, setSaving] = useState(false);
@@ -117,7 +105,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
         <>
             {/* ── Brand Identity ── */}
             <Section title="Brand Identity">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                <div className="adm-grid-2">
                     <Field label="Brand Name" required>
                         <Input value={form.name} onChange={(e) => set("name", e.target.value)} />
                     </Field>
@@ -133,7 +121,7 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
             {/* ── Contact + Social (side by side) ── */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 24 }}>
                 <Section title="Contact">
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                    <div className="adm-grid-2">
                         <Field label="Email"><Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
                         <Field label="Phone"><Input value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
                         <Field label="Phone Display"><Input value={form.phoneDisplay} onChange={(e) => set("phoneDisplay", e.target.value)} /></Field>
@@ -341,13 +329,13 @@ const BrandTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 </div>
             </Section>
 
-            <SaveBtn loading={saving} onClick={save} />
+            <SaveBar><SaveBtn loading={saving} onClick={save} /></SaveBar>
         </>
     );
 };
 
 /* ── Hero ─────────────────────────────────────────────────────── */
-const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
+export const HeroTab: React.FC<EditorProps> = ({ onSave }) => {
     const { toast } = useToast();
     const [form, setForm] = useState<HeroData>(() => readStore().hero);
     const [saving, setSaving] = useState(false);
@@ -363,7 +351,7 @@ const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     return (
         <>
             <Section title="Labels & Heading">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                <div className="adm-grid-2">
                     <Field label="Small Label"><Input value={form.smallLabel} onChange={(e) => set("smallLabel", e.target.value)} /></Field>
                     <Field label="Highlight Pill"><Input value={form.smallLabelHighlight} onChange={(e) => set("smallLabelHighlight", e.target.value)} /></Field>
                 </div>
@@ -378,24 +366,28 @@ const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 <Field label="Video URL" hint="Direct MP4 link. Takes priority — clear this field to use the image below instead.">
                     <Input value={form.videoUrl} onChange={(e) => set("videoUrl", e.target.value)} placeholder="https://..." />
                 </Field>
-                <Field label="Background Image" hint="Used only when the video URL is blank. Full Supabase Storage URL. Copy it from an existing image field or the Storage bucket — a /public path no longer resolves.">
-                    <Input value={form.backgroundImage} onChange={(e) => set("backgroundImage", e.target.value)} placeholder="https://…supabase.co/storage/v1/…" />
-                </Field>
+                <ImageField
+                    label="Background Image"
+                    hint="Shown only when the video URL is blank."
+                    prefix="hero"
+                    value={form.backgroundImage}
+                    onChange={(src) => set("backgroundImage", src)}
+                />
                 {!form.videoUrl && form.backgroundImage && (
                     <img src={form.backgroundImage} alt="" style={{ width: "100%", maxHeight: 160, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }} />
                 )}
             </Section>
             <Section title="CTA Buttons">
                 <div style={{ marginBottom: 20 }}>
-                    <div style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--accent-text)", marginBottom: 12 }}>Primary</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                    <div className="adm-item-title" style={{ marginBottom: 10 }}>Primary</div>
+                    <div className="adm-grid-2">
                         <Field label="Label"><Input value={form.ctaPrimary.label} onChange={(e) => setCta("ctaPrimary", "label", e.target.value)} /></Field>
                         <Field label="Link"><Input value={form.ctaPrimary.href} onChange={(e) => setCta("ctaPrimary", "href", e.target.value)} /></Field>
                     </div>
                 </div>
                 <div style={{ paddingTop: 20, borderTop: "1px solid var(--border)" }}>
                     <div style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 12 }}>Secondary</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                    <div className="adm-grid-2">
                         <Field label="Label"><Input value={form.ctaSecondary.label} onChange={(e) => setCta("ctaSecondary", "label", e.target.value)} /></Field>
                         <Field label="Link"><Input value={form.ctaSecondary.href} onChange={(e) => setCta("ctaSecondary", "href", e.target.value)} /></Field>
                     </div>
@@ -413,13 +405,13 @@ const HeroTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     <p style={{ fontSize: "0.88rem", color: "rgba(255,255,255,0.55)", maxWidth: 480 }}>{form.description}</p>
                 </div>
             </Section>
-            <SaveBtn loading={saving} onClick={save} />
+            <SaveBar><SaveBtn loading={saving} onClick={save} /></SaveBar>
         </>
     );
 };
 
 /* ── About ────────────────────────────────────────────────────── */
-const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
+export const AboutTab: React.FC<EditorProps> = ({ onSave }) => {
     const { toast } = useToast();
     const [form, setForm] = useState<AboutData>(() => readStore().about);
     const [saving, setSaving] = useState(false);
@@ -437,7 +429,7 @@ const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     return (
         <>
             <Section title="About Block">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                <div className="adm-grid-2">
                     <Field label="Section Label"><Input value={form.sectionLabel} onChange={(e) => set("sectionLabel", e.target.value)} /></Field>
                     <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
                 </div>
@@ -450,13 +442,13 @@ const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 <Field label="Brand Quote" hint="The italic pull-quote shown in the story card.">
                     <Textarea value={form.brandQuote ?? ""} onChange={(e) => set("brandQuote", e.target.value)} style={{ minHeight: 72 }} />
                 </Field>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                <div className="adm-grid-2">
                     <Field label="CTA Label"><Input value={form.cta.label} onChange={(e) => setCta("label", e.target.value)} /></Field>
                     <Field label="CTA Link"><Input value={form.cta.href} onChange={(e) => setCta("href", e.target.value)} /></Field>
                 </div>
             </Section>
             <Section title="Why Choose Us">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                <div className="adm-grid-2">
                     <Field label="Headline"><Input value={form.whyHeadline} onChange={(e) => set("whyHeadline", e.target.value)} /></Field>
                     <Field label="Tagline"><Input value={form.whyTagline} onChange={(e) => set("whyTagline", e.target.value)} /></Field>
                 </div>
@@ -484,24 +476,27 @@ const AboutTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 </div>
             </Section>
             <Section title="Closing CTA Strip">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                <div className="adm-grid-2">
                     <Field label="Tag"><Input value={form.ctaStripTag} onChange={(e) => set("ctaStripTag", e.target.value)} /></Field>
                     <Field label="Heading"><Input value={form.ctaStripHeading} onChange={(e) => set("ctaStripHeading", e.target.value)} /></Field>
                 </div>
-                <Field label="Background Image" hint="Full Supabase Storage URL. Copy it from an existing image field or the Storage bucket — a /public path no longer resolves. Leave blank for a plain background.">
-                    <Input value={form.ctaStripImage} onChange={(e) => set("ctaStripImage", e.target.value)} />
-                </Field>
+                <ImageField
+                    label="Background Image"
+                    hint="Remove it for a plain background."
+                    value={form.ctaStripImage}
+                    onChange={(src) => set("ctaStripImage", src)}
+                />
                 {form.ctaStripImage !== "" && (
                     <img src={form.ctaStripImage} alt="" style={{ width: "100%", maxHeight: 150, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }} />
                 )}
             </Section>
-            <SaveBtn loading={saving} onClick={save} />
+            <SaveBar><SaveBtn loading={saving} onClick={save} /></SaveBar>
         </>
     );
 };
 
 /* ── Commitment ───────────────────────────────────────────────── */
-const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
+export const CommitmentTab: React.FC<EditorProps> = ({ onSave }) => {
     const { toast } = useToast();
     const [form, setForm] = useState<CommitmentData>(() => readStore().commitment);
     const [saving, setSaving] = useState(false);
@@ -526,15 +521,18 @@ const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 <Field label="Tag" hint="Small uppercase label above the headline."><Input value={form.tag} onChange={(e) => set("tag", e.target.value)} /></Field>
                 <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
                 <Field label="Body"><Textarea value={form.body} onChange={(e) => set("body", e.target.value)} style={{ minHeight: 110 }} /></Field>
-                <Field label="Section Image" hint="Full Supabase Storage URL. Copy it from an existing image field or the Storage bucket — a /public path no longer resolves. Leave blank for a centred, text-only layout.">
-                    <Input value={form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} />
-                </Field>
+                <ImageField
+                    label="Section Image"
+                    hint="Remove it for the centred, text-only layout."
+                    value={form.imageUrl}
+                    onChange={(src) => set("imageUrl", src)}
+                />
                 {form.imageUrl !== "" && (
                     <img src={form.imageUrl} alt="" style={{ width: 160, aspectRatio: "4/5", objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }} />
                 )}
                 <div style={{ paddingTop: 16, borderTop: "1px solid var(--border)", marginTop: 4 }}>
-                    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent-text)", marginBottom: 14 }}>CTA Button</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                    <div className="adm-item-title" style={{ marginBottom: 10 }}>CTA Button</div>
+                    <div className="adm-grid-2">
                         <Field label="Label"><Input value={form.cta.label} onChange={(e) => setCta("label", e.target.value)} /></Field>
                         <Field label="Link"><Input value={form.cta.href} onChange={(e) => setCta("href", e.target.value)} /></Field>
                     </div>
@@ -568,13 +566,13 @@ const CommitmentTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                 ))}
             </Section>
 
-            <SaveBtn loading={saving} onClick={save} />
+            <SaveBar><SaveBtn loading={saving} onClick={save} /></SaveBar>
         </>
     );
 };
 
 /* ── Newsletter ───────────────────────────────────────────────── */
-const NewsletterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
+export const NewsletterTab: React.FC<EditorProps> = ({ onSave }) => {
     const { toast } = useToast();
     const [form, setForm] = useState<NewsletterData>(() => readStore().newsletter);
     const [saving, setSaving] = useState(false);
@@ -588,21 +586,24 @@ const NewsletterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
     return (
         <>
             <Section title="Copy & Form">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                <div className="adm-grid-2">
                     <Field label="Headline"><Input value={form.headline} onChange={(e) => set("headline", e.target.value)} /></Field>
                     <Field label="Brand Highlight"><Input value={form.brandHighlight} onChange={(e) => set("brandHighlight", e.target.value)} /></Field>
                 </div>
                 <Field label="Subtext"><Input value={form.subtext} onChange={(e) => set("subtext", e.target.value)} /></Field>
                 <div style={{ paddingTop: 16, borderTop: "1px solid var(--border)", marginTop: 4 }}>
-                    <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent-text)", marginBottom: 14 }}>Form</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                    <div className="adm-item-title" style={{ marginBottom: 10 }}>Form</div>
+                    <div className="adm-grid-2">
                         <Field label="Placeholder"><Input value={form.placeholder} onChange={(e) => set("placeholder", e.target.value)} /></Field>
                         <Field label="Button Label"><Input value={form.cta} onChange={(e) => set("cta", e.target.value)} /></Field>
                     </div>
                 </div>
-                <Field label="Background Image" hint="Full Supabase Storage URL. Copy it from an existing image field or the Storage bucket — a /public path no longer resolves. A dark scrim is applied automatically. Leave blank for a plain background.">
-                    <Input value={form.backgroundImage} onChange={(e) => set("backgroundImage", e.target.value)} />
-                </Field>
+                <ImageField
+                    label="Background Image"
+                    hint="A dark scrim is applied automatically. Remove it for a plain background."
+                    value={form.backgroundImage}
+                    onChange={(src) => set("backgroundImage", src)}
+                />
             </Section>
             <Section title="Preview">
                 <div style={{ background: "var(--noir)", borderRadius: "var(--radius-sm)", padding: "24px", textAlign: "center", position: "relative", overflow: "hidden" }}>
@@ -624,7 +625,7 @@ const NewsletterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     </div>
                 </div>
             </Section>
-            <SaveBtn loading={saving} onClick={save} />
+            <SaveBar><SaveBtn loading={saving} onClick={save} /></SaveBar>
         </>
     );
 };
@@ -632,7 +633,7 @@ const NewsletterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
 /* ── Navigation ───────────────────────────────────────────────── */
 
 /* ── Footer ───────────────────────────────────────────────────── */
-const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
+export const FooterTab: React.FC<EditorProps> = ({ onSave }) => {
     const { toast } = useToast();
     const [form, setForm] = useState<FooterData>(() => readStore().footer);
     const [saving, setSaving] = useState(false);
@@ -647,7 +648,7 @@ const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
         <>
             <Section title="Footer Info">
                 <Field label="Tagline"><Textarea value={form.tagline} onChange={(e) => set("tagline", e.target.value)} style={{ minHeight: 72 }} /></Field>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+                <div className="adm-grid-2">
                     <Field label="Credit Label"><Input value={form.credit.label} onChange={(e) => set("credit", { ...form.credit, label: e.target.value })} /></Field>
                     <Field label="Credit URL"><Input value={form.credit.href} onChange={(e) => set("credit", { ...form.credit, href: e.target.value })} /></Field>
                 </div>
@@ -656,71 +657,7 @@ const FooterTab: React.FC<{ onSave: () => void }> = ({ onSave }) => {
                     point at fixed routes and are set in the code, not here.
                 </p>
             </Section>
-            <SaveBtn loading={saving} onClick={save} />
+            <SaveBar><SaveBtn loading={saving} onClick={save} /></SaveBar>
         </>
     );
 };
-/* ═══════════════════ MAIN PAGE ═══════════════════════════════ */
-const GlobalSettingsPage: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<TabId>("brand");
-    const [lastSaved, setLastSaved] = useState<string | null>(null);
-    const onSave = () => setLastSaved(new Date().toLocaleTimeString());
-
-    const tabContent: Record<TabId, React.ReactNode> = {
-        brand: <BrandTab onSave={onSave} />,
-        hero: <HeroTab onSave={onSave} />,
-        about: <AboutTab onSave={onSave} />,
-        commitment: <CommitmentTab onSave={onSave} />,
-        newsletter: <NewsletterTab onSave={onSave} />,
-        footer: <FooterTab onSave={onSave} />,
-    };
-
-    return (
-        <div>
-            {/* Page header */}
-            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 24, gap: 16, flexWrap: "wrap" }}>
-                <div>
-                    <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.9rem", fontWeight: 700, color: "var(--text-main)", marginBottom: 4 }}>
-                        Global Settings
-                    </h1>
-                    <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-                        All website sections in one place.
-                    </p>
-                </div>
-                {lastSaved && (
-                    <span style={{ fontSize: "0.78rem", color: "var(--accent-text)", fontWeight: 600 }}>
-                        Last saved at {lastSaved}
-                    </span>
-                )}
-            </div>
-
-            {/* Tab bar */}
-            <div style={{
-                display: "flex",
-                background: "#fff",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--border)",
-                marginBottom: 28,
-                overflowX: "auto",
-                boxShadow: "var(--shadow)",
-            }}>
-                {TABS.map((t) => (
-                    <button
-                        key={t.id}
-                        onClick={() => setActiveTab(t.id)}
-                        style={tabStyle(activeTab === t.id)}
-                    >
-                        {t.label}
-                    </button>
-                ))}
-            </div>
-
-            {/* Active tab panel */}
-            <div key={activeTab}>
-                {tabContent[activeTab]}
-            </div>
-        </div>
-    );
-};
-
-export default GlobalSettingsPage;

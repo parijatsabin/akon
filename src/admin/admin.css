@@ -1,12 +1,43 @@
 /* ═══════════════════════════════════════════════════════════════
-   ANOK Admin — flat, quiet, document-like.
-   The CMS is a tool, not a showcase: no cards, no shadows, no tiles.
-   Inherits the light :root tokens; only the sidebar goes dark, via .on-noir.
+   ANOK Admin.
+
+   The CMS is a tool, not a showcase — quiet, dense, no decoration for its
+   own sake. But it is not flat: content sits on cards so that a page of
+   seven long-form sections reads as seven things rather than one wall.
+   Three surfaces, in depth order:
+
+     canvas   --surface        warm off-white, the page itself
+     card     --surface-raised white, a section
+     nested   --sunken         an item inside a section
+
+   Light :root tokens are inherited; the sidebar redefines its own because
+   .on-noir in index.css is broken (see .adm-sidebar).
    ═══════════════════════════════════════════════════════════════ */
 
 .adm {
   /* A hair off pure white so white inputs read as raised against it. */
   --surface: #fbfaf8;
+
+  /* Spacing scale — 4px base. Every gap/padding in the admin comes from
+     here, so density is tuned in one place rather than 261 inline objects. */
+  --adm-1: 4px;
+  --adm-2: 8px;
+  --adm-3: 12px;
+  --adm-4: 16px;
+  --adm-5: 20px;
+  --adm-6: 24px;
+  --adm-8: 32px;
+  --adm-10: 40px;
+
+  /* Type ramp. Dense end of the scale: this is a working tool, not a page. */
+  --adm-text-xs:   0.75rem;
+  --adm-text-sm:   0.82rem;
+  --adm-text-base: 0.92rem;
+  --adm-text-lg:   1.10rem;
+
+  /* Semantic states. #e05555 was hardcoded in six places. */
+  --danger: #b3261e;
+  --danger-bg: rgba(179, 38, 30, 0.07);
 
   min-height: 100vh;
   background: var(--surface);
@@ -20,7 +51,23 @@
 }
 
 .adm-sidebar {
-  /* Dark island inside the light admin — carries .on-noir in the markup. */
+  /* Warm espresso rather than the near-black --noir (#0e0d0c). Pure black
+     next to a warm cream canvas reads as a hole punched in the page; this
+     shares the content area's warmth and sits with the gold instead of
+     fighting it.
+
+     The tokens are redefined here rather than inherited: .on-noir in
+     index.css has lost its declaration block (its selector runs straight
+     into the reset), so the dark-context values never arrive. Without these
+     the nav rendered --text-muted #5c5852 on near-black — about 2.3:1, far
+     below the 4.5:1 minimum. */
+  --sb-surface: #262119;
+  --sb-raised: #2f2920;
+  --text-main: #f6f2ea;    /* 13.9:1 on --sb-surface */
+  --text-muted: #c3baa9;   /*  8.1:1 */
+  --text-faint: #9a917f;   /*  4.9:1 */
+  --border: rgba(246, 242, 234, 0.10);
+
   width: 212px;
   flex-shrink: 0;
   position: fixed;
@@ -30,7 +77,7 @@
   z-index: 200;
   display: flex;
   flex-direction: column;
-  background: var(--noir);
+  background: var(--sb-surface);
   color: var(--text-main);
 }
 
@@ -68,15 +115,20 @@
   font-weight: 500;
   color: var(--text-muted);
   border-left: 2px solid transparent;
-  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
 }
 
 .adm-nav-link:hover {
   color: var(--text-main);
+  background: rgba(246, 242, 234, 0.05);
 }
 
+/* A filled block as well as the rule — where you are should be visible
+   without reading the label colour. */
 .adm-nav-link.is-active {
   color: var(--accent-soft);
+  background: var(--sb-raised);
   border-left-color: var(--accent);
 }
 
@@ -159,7 +211,11 @@
 
 .adm-content {
   flex: 1;
-  padding: 34px 40px 60px;
+  padding: var(--adm-8) var(--adm-10) 72px;
+  /* Caps the measure. At 1900px the policy textareas ran the full width,
+     which is neither readable nor pleasant to edit. */
+  width: 100%;
+  max-width: 1180px;
 }
 
 @media (max-width: 880px) {
@@ -193,7 +249,7 @@
 
 /* ─── Page header ─────────────────────────────────────────────── */
 .adm-page-head {
-  margin-bottom: 32px;
+  margin-bottom: var(--adm-6);
 }
 
 .adm-page-title {
@@ -210,27 +266,47 @@
   margin-top: 4px;
 }
 
-/* ─── Flat section ────────────────────────────────────────────── */
+/* ─── Section card ────────────────────────────────────────────── */
+/* This was deliberately flat — "no cards, no shadows, no tiles". On a page
+   like Pages, with seven sections of long-form text, that left nothing but
+   hairlines to separate them and everything ran together. Each section is a
+   surface now: white against the warm canvas, with its own border. */
 .adm-section {
-  margin-bottom: 38px;
+  padding: var(--adm-6);
+  margin-bottom: var(--adm-5);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .adm-section-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+  gap: var(--adm-3);
+  /* Pulled to the card edges so the rule spans the full width. */
+  margin: calc(var(--adm-6) * -1) calc(var(--adm-6) * -1) var(--adm-5);
+  padding: var(--adm-4) var(--adm-6);
   border-bottom: 1px solid var(--border);
+  background: var(--sunken);
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .adm-section-title {
-  font-size: 0.72rem;
+  font-size: var(--adm-text-xs);
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-muted);
+}
+
+/* A section with nothing but fields needs no chrome; used for short forms. */
+.adm-section-plain {
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 
 /* ─── Stats ───────────────────────────────────────────────────── */
@@ -330,8 +406,412 @@
   color: var(--accent-strong);
 }
 
-/* ─── Forms ───────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENT LAYER
+   Everything below replaces inline style objects that were repeated
+   across the pages. If you find yourself writing style={{...}} in an
+   admin page, the pattern probably belongs here instead.
+   ═══════════════════════════════════════════════════════════════ */
 
+/* ─── Focus ───────────────────────────────────────────────────── */
+/* Nothing in the admin had a visible focus ring, which made the whole
+   CMS unusable by keyboard. One rule covers every control. */
+.adm :is(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ─── Layout utilities ────────────────────────────────────────── */
+.adm-stack   { display: flex; flex-direction: column; gap: var(--adm-4); }
+.adm-stack-s { display: flex; flex-direction: column; gap: var(--adm-2); }
+.adm-row     { display: flex; align-items: center; gap: var(--adm-3); }
+.adm-row-end { display: flex; align-items: flex-end; gap: var(--adm-3); }
+.adm-row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--adm-4); flex-wrap: wrap; }
+.adm-grid-2  { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--adm-6); }
+.adm-grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--adm-6); }
+.adm-fill    { flex: 1; min-width: 0; }
+
+@media (max-width: 720px) {
+  .adm-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ─── Fields ──────────────────────────────────────────────────── */
+.adm-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--adm-5); }
+
+.adm-label {
+  font-family: var(--font-body);
+  font-size: var(--adm-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.adm-req  { color: var(--accent-text); margin-left: 4px; }
+.adm-hint { font-size: var(--adm-text-xs); color: var(--text-faint); }
+.adm-err  { font-size: var(--adm-text-xs); color: var(--danger); }
+
+.adm-input,
+.adm-textarea,
+.adm-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--adm-text-base);
+  color: var(--text-main);
+  background: var(--surface-raised);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+/* Focus colour lived in JS onFocus/onBlur handlers on every input. */
+.adm-input:hover,
+.adm-textarea:hover,
+.adm-select:hover { border-color: var(--border-strong); }
+
+.adm-input:focus,
+.adm-textarea:focus,
+.adm-select:focus { border-color: var(--accent); }
+
+.adm-input[aria-invalid="true"],
+.adm-textarea[aria-invalid="true"] { border-color: var(--danger); }
+
+.adm-textarea { resize: vertical; min-height: 90px; line-height: 1.55; }
+.adm-select   { cursor: pointer; }
+
+.adm-input:disabled,
+.adm-textarea:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ─── Buttons ─────────────────────────────────────────────────── */
+.adm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--adm-text-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+.adm-btn:disabled { cursor: not-allowed; opacity: 0.65; }
+
+/* --accent-fill, not --accent: the brand gold under white text is 3.57:1,
+   which fails AA. The deeper gold is 5.02:1. See index.css. */
+.adm-btn-primary { background: var(--accent-fill); color: var(--on-accent); }
+.adm-btn-primary:hover:not(:disabled) { background: var(--accent-fill-hover); }
+
+.adm-btn-ghost { background: transparent; color: var(--text-main); border-color: var(--border-strong); }
+.adm-btn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-text); }
+
+.adm-btn-quiet { background: transparent; color: var(--text-muted); padding: 7px 12px; font-weight: 600; }
+.adm-btn-quiet:hover:not(:disabled) { color: var(--accent-text); }
+
+.adm-btn-danger { background: transparent; color: var(--danger); border-color: transparent; padding: 7px 12px; font-weight: 600; }
+.adm-btn-danger:hover:not(:disabled) { background: var(--danger-bg); }
+
+.adm-btn-sm { padding: 7px 14px; font-size: var(--adm-text-xs); }
+
+/* Icon-only controls need an accessible name in the markup (aria-label). */
+.adm-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+
+.adm-icon-btn:hover:not(:disabled) { color: var(--danger); background: var(--danger-bg); }
+.adm-icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ─── Repeatable item (testimonial, pillar, policy section…) ──── */
+/* Nested inside a section card, so it goes the other way — sunken rather
+   than raised. Two levels of container that read as different depths, not
+   as two identical boxes. */
+.adm-item {
+  padding: var(--adm-5);
+  margin-bottom: var(--adm-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--sunken);
+}
+
+.adm-item:last-child { margin-bottom: 0; }
+
+/* Sits directly on the page rather than inside a section card. */
+.adm-item-raised {
+  background: var(--surface-raised);
+  box-shadow: var(--shadow);
+}
+
+/* The row number on ordered lists (policy sections, usage steps). */
+.adm-item-index {
+  font-family: var(--font-display);
+  font-size: var(--adm-text-sm);
+  font-weight: 700;
+  color: var(--accent-text);
+  min-width: 22px;
+}
+
+.adm-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--adm-3);
+  margin-bottom: var(--adm-4);
+}
+
+.adm-item-title {
+  font-size: var(--adm-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* ─── Image field ─────────────────────────────────────────────── */
+.adm-imagefield {
+  display: flex;
+  gap: var(--adm-4);
+  align-items: flex-start;
+  padding: var(--adm-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--sunken);
+}
+
+/* Fixed box so the row does not jump when an image loads or is removed. */
+.adm-imagefield-preview {
+  flex-shrink: 0;
+  width: 108px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text-faint);
+}
+
+.adm-imagefield-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.adm-imagefield-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--adm-2);
+  min-width: 0;
+}
+
+.adm-imagefield-meta {
+  flex-basis: 100%;
+  font-size: var(--adm-text-xs);
+  color: var(--text-faint);
+}
+
+@media (max-width: 560px) {
+  .adm-imagefield { flex-direction: column; }
+  .adm-imagefield-preview { width: 100%; height: 120px; }
+}
+
+/* ─── Live enquiry alerts ─────────────────────────────────────── */
+.adm-alerts {
+  position: fixed;
+  right: var(--adm-5);
+  bottom: var(--adm-5);
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  gap: var(--adm-2);
+  width: min(360px, calc(100vw - 40px));
+}
+
+.adm-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--adm-3);
+  padding: var(--adm-4);
+  background: var(--surface-raised);
+  border: 1px solid var(--accent-rule);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  animation: adm-alert-in var(--dur) var(--ease-out);
+}
+
+.adm-alert-icon { color: var(--accent-text); flex-shrink: 0; margin-top: 2px; }
+
+.adm-alert-title {
+  font-size: var(--adm-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.adm-alert-body {
+  font-size: var(--adm-text-sm);
+  color: var(--text-main);
+  margin: 3px 0 6px;
+  overflow-wrap: anywhere;
+}
+
+.adm-alert-link {
+  font-size: var(--adm-text-xs);
+  font-weight: 700;
+  color: var(--accent-text);
+  text-decoration: underline;
+}
+
+@keyframes adm-alert-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ─── Sidebar count ───────────────────────────────────────────── */
+.adm-nav-count {
+  float: right;
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #1a1512;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ─── Tabs ────────────────────────────────────────────────────── */
+.adm-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--adm-2);
+  margin-bottom: var(--adm-6);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.adm-tabs::-webkit-scrollbar { display: none; }
+
+.adm-tab {
+  padding: 10px 16px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: var(--font-body);
+  font-size: var(--adm-text-sm);
+  color: var(--text-faint);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.adm-tab:hover { color: var(--text-main); }
+.adm-tab[aria-selected="true"] { color: var(--text-main); font-weight: 600; border-bottom-color: var(--accent); }
+
+/* ─── Sticky save bar ─────────────────────────────────────────── */
+/* Long editors put the only save button below the fold — Testimonials is
+   ~1700px tall. This keeps it reachable without scrolling back. */
+.adm-savebar {
+  position: sticky;
+  bottom: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--adm-4);
+  padding: var(--adm-4) 0;
+  margin-top: var(--adm-6);
+  background: linear-gradient(to top, var(--surface) 70%, transparent);
+  border-top: 1px solid var(--border);
+}
+
+.adm-savebar-note { margin-right: auto; font-size: var(--adm-text-xs); color: var(--text-faint); }
+
+/* ─── Badge ───────────────────────────────────────────────────── */
+.adm-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--accent-glow);
+  color: var(--accent-strong);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.adm-badge-quiet { background: var(--sunken-deep); color: var(--text-faint); }
+
+/* ─── Empty state ─────────────────────────────────────────────── */
+.adm-empty {
+  padding: var(--adm-8) var(--adm-5);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  color: var(--text-faint);
+  font-size: var(--adm-text-sm);
+}
+
+.adm-empty-title { font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+
+/* ─── Table ───────────────────────────────────────────────────── */
+.adm-table { width: 100%; border-collapse: collapse; font-size: var(--adm-text-sm); }
+.adm-table th {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--adm-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.adm-table td { padding: 13px 16px; border-bottom: 1px solid var(--border); }
+.adm-table tr:last-child td { border-bottom: none; }
+.adm-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-raised); }
+
+/* ─── Motion ──────────────────────────────────────────────────── */
+/* Was injected as a <style> tag inside the SaveBtn component, so it was
+   re-emitted for every button on the page. */
+@keyframes adm-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .adm *,
+  .adm *::before,
+  .adm *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 @media (max-width: 720px) {
 
