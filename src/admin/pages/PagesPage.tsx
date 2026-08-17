@@ -13,6 +13,7 @@ import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
 import type { PolicyPageData, PolicySection, FaqData, FaqItem } from "../../data/types";
 import { Plus, Trash2 } from "lucide-react";
+import { PageHeader } from "../components/ui/Page";
 
 const TABS = [
     { id: "privacy", label: "Privacy Policy" },
@@ -200,15 +201,11 @@ const PagesPage: React.FC = () => {
     return (
         <div>
             {/* Page header */}
-            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 24, gap: 16, flexWrap: "wrap" }}>
-                <div>
-                    <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.9rem", fontWeight: 700, color: "var(--text-main)", marginBottom: 4 }}>
-                        Pages
-                    </h1>
-                    <p style={{ fontSize: "0.88rem", color: "var(--text-muted)" }}>
-                        Privacy Policy, Terms of Use and the FAQ — linked from the footer under Support.
-                    </p>
-                </div>
+            <PageHeader
+                title="Pages"
+                description="Contact, FAQ, Privacy Policy and Terms of Use."
+            />
+            <div className="adm-row-between" style={{ marginBottom: 24 }}>
                 {lastSaved && (
                     <span style={{ fontSize: "0.78rem", color: "var(--accent-text)", fontWeight: 600 }}>
                         Last saved at {lastSaved}
