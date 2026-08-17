@@ -15,6 +15,8 @@ import FeaturedProductPage from "./pages/FeaturedProductPage";
 import PagesPage from "./pages/PagesPage";
 import SeoPage from "./pages/SeoPage";
 import InboxPage from "./pages/InboxPage";
+import UsersPage from "./pages/UsersPage";
+import AccountPage from "./pages/AccountPage";
 
 const AdminApp: React.FC = () => (
     <AuthProvider>
@@ -38,6 +40,17 @@ const AdminApp: React.FC = () => (
                                     <Route path="pages" element={<PagesPage />} />
                                     <Route path="seo" element={<SeoPage />} />
                                     <Route path="inbox" element={<InboxPage />} />
+                                    <Route path="account" element={<AccountPage />} />
+                                    {/* The nav item is hidden for admins and RLS rejects the
+                                        writes; this guard is the middle of the three layers. */}
+                                    <Route
+                                        path="users"
+                                        element={
+                                            <AdminRoute requireSuperadmin>
+                                                <UsersPage />
+                                            </AdminRoute>
+                                        }
+                                    />
                                     {/* Legacy routes — the nav was regrouped, the URLs still resolve */}
                                     <Route path="settings" element={<Navigate to="/admin/homepage" replace />} />
                                     <Route path="featured" element={<Navigate to="/admin/product" replace />} />
