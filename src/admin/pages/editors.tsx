@@ -141,7 +141,7 @@ It will disappear from the footer and contact page once you save.`)) return;
             </Section>
 
             {/* ── Contact + Social (side by side) ── */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 24 }}>
+            <div className="adm-company-cols">
                 <Section title="Contact">
                     <div className="adm-grid-2">
                         <Field label="Email"><Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
@@ -149,7 +149,6 @@ It will disappear from the footer and contact page once you save.`)) return;
                         <Field label="Phone Display"><Input value={form.phoneDisplay} onChange={(e) => set("phoneDisplay", e.target.value)} /></Field>
                         <Field label="Location"><Input value={form.location} onChange={(e) => set("location", e.target.value)} /></Field>
                     </div>
-                    <MapField value={form.mapEmbed} onChange={(url) => set("mapEmbed", url)} />
                 </Section>
 
                 <Section
@@ -170,6 +169,14 @@ It will disappear from the footer and contact page once you save.`)) return;
                         </p>
                     )}
 
+                    {form.socialLinks.length > 0 && (
+                        <div className="adm-social-row adm-social-head">
+                            <span className="adm-label">Platform</span>
+                            <span className="adm-label">Profile URL</span>
+                            <span />
+                        </div>
+                    )}
+
                     {form.socialLinks.map((link, i) => {
                         // A platform already in the list is not offered again,
                         // except on the row that currently holds it.
@@ -179,25 +186,19 @@ It will disappear from the footer and contact page once you save.`)) return;
                             .map((p) => ({ value: p.id, label: p.label }));
 
                         return (
-                            <div key={i} className="adm-row-end" style={{ marginBottom: 10 }}>
-                                <div style={{ width: 150, flexShrink: 0 }}>
-                                    <Field label={i === 0 ? "Platform" : ""}>
-                                        <Select
-                                            options={options}
-                                            value={link.platform}
-                                            onChange={(e) => setSocial(i, { platform: e.target.value as SocialPlatform })}
-                                        />
-                                    </Field>
-                                </div>
-                                <div className="adm-fill">
-                                    <Field label={i === 0 ? "Profile URL" : ""}>
-                                        <Input
-                                            value={link.url}
-                                            placeholder="https://instagram.com/yourhandle"
-                                            onChange={(e) => setSocial(i, { url: e.target.value })}
-                                        />
-                                    </Field>
-                                </div>
+                            <div key={i} className="adm-social-row">
+                                <Select
+                                    aria-label={`Platform for link ${i + 1}`}
+                                    options={options}
+                                    value={link.platform}
+                                    onChange={(e) => setSocial(i, { platform: e.target.value as SocialPlatform })}
+                                />
+                                <Input
+                                    aria-label={`${platformLabel(link.platform)} profile URL`}
+                                    value={link.url}
+                                    placeholder="https://instagram.com/yourhandle"
+                                    onChange={(e) => setSocial(i, { url: e.target.value })}
+                                />
                                 <IconButton label={`Remove ${platformLabel(link.platform)}`} onClick={() => removeSocial(i)}>
                                     <Trash2 size={15} aria-hidden="true" />
                                 </IconButton>
@@ -206,6 +207,10 @@ It will disappear from the footer and contact page once you save.`)) return;
                     })}
                 </Section>
             </div>
+
+            <Section title="Location Map">
+                <MapField value={form.mapEmbed} onChange={(url) => set("mapEmbed", url)} />
+            </Section>
 
             {/* ── Business Hours — full width ── */}
             <Section

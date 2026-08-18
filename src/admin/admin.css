@@ -629,6 +629,55 @@
   color: var(--text-faint);
 }
 
+/* ─── Company layout ──────────────────────────────────────────── */
+/* Contact beside Social Links. The second column was `auto`, which let its
+   content decide the width and squeezed the URL inputs; a bounded column keeps
+   both readable. The map sits in its own full-width section below, because a
+   map in a half-width column shows half a neighbourhood. */
+.adm-company-cols {
+  display: grid;
+  grid-template-columns: 1fr minmax(300px, 380px);
+  gap: var(--adm-6);
+  align-items: start;
+}
+
+@media (max-width: 1020px) {
+  .adm-company-cols { grid-template-columns: 1fr; }
+}
+
+/* ─── Social link rows ────────────────────────────────────────── */
+/* One grid so the select, the URL and the delete button share a baseline.
+   These were three <Field> wrappers per row, each carrying a bottom margin and
+   an empty label on every row after the first — which pushed the delete button
+   below the input and made row 1 sit differently from row 2. */
+.adm-social-row {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 34px;
+  gap: var(--adm-2);
+  align-items: center;
+  margin-bottom: var(--adm-2);
+}
+
+.adm-social-head {
+  margin-bottom: var(--adm-1);
+}
+
+.adm-social-head .adm-label {
+  margin: 0;
+}
+
+@media (max-width: 540px) {
+  .adm-social-row {
+    grid-template-columns: 1fr 34px;
+    gap: var(--adm-2);
+    padding-bottom: var(--adm-3);
+    border-bottom: 1px solid var(--border);
+  }
+  /* The URL spans the full row under the platform picker. */
+  .adm-social-row > :nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
+  .adm-social-head { display: none; }
+}
+
 /* ─── Image field ─────────────────────────────────────────────── */
 .adm-imagefield {
   display: flex;
