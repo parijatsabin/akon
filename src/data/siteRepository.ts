@@ -18,7 +18,7 @@
  * testimonials marked visible, while the CMS session sees everything.
  */
 
-import { supabase } from "../lib/supabase";
+import { supabase, isSupabaseConfigured, configurationError } from "../lib/supabase";
 import type { SiteData } from "./types";
 
 /** Top-level sections every valid document must contain. */
@@ -55,6 +55,11 @@ function assertValid(data: unknown): asserts data is SiteData {
 
 // ── Read ──────────────────────────────────────────────────────
 export async function fetchSiteData(): Promise<SiteData> {
+    // A build published without its configuration cannot reach any database.
+    // Say that plainly instead of letting a request fail against a
+    // placeholder host and reporting a confusing network error.
+    if (!isSupabaseConfigured) throw new SiteDataError(configurationError);
+
     const { data, error } = await supabase.rpc("get_site_data");
 
     if (error) {
