@@ -212,10 +212,14 @@
 .adm-content {
   flex: 1;
   padding: var(--adm-8) var(--adm-10) 72px;
-  /* Caps the measure. At 1900px the policy textareas ran the full width,
-     which is neither readable nor pleasant to edit. */
   width: 100%;
-  max-width: 1180px;
+  /* One number used to do two jobs: hold the layout in and hold the text
+     measure in. At 1180px, left-aligned, that left ~500px of dead canvas on
+     a 1900px screen -- the cap was paying for readable textareas with an
+     empty half-page. The two jobs are separated now: the shell is free to
+     use the width, and .adm-textarea carries its own measure cap below. */
+  max-width: 1600px;
+  margin-inline: auto;
 }
 
 @media (max-width: 880px) {
@@ -432,6 +436,44 @@
 .adm-grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--adm-6); }
 .adm-fill    { flex: 1; min-width: 0; }
 
+/* ─── Page columns ────────────────────────────────────────────── */
+/*
+ * Pairs whole sections side by side, to spend the width the shell just
+ * gained on shorter pages rather than wider cards.
+ *
+ * Deliberately NOT a way to split one form across two columns. That
+ * scrambles tab order and makes the eye zigzag between a label and the
+ * field beneath it. Every child here stays a complete, self-contained
+ * card, so tabbing through one still runs top to bottom.
+ *
+ * Row gap is left to .adm-section margin-bottom, which already exists and
+ * still applies once these collapse to a single column.
+ */
+.adm-cols {
+  display: grid;
+  gap: 0 var(--adm-5);
+  align-items: start;
+}
+
+.adm-cols-2 { grid-template-columns: 1fr 1fr; }
+.adm-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* Editor on the left, a narrower companion on the right -- a gallery or a
+   preview, something that is a list of small things rather than a form. */
+.adm-cols-rail { grid-template-columns: minmax(0, 1fr) 460px; }
+
+@media (max-width: 1400px) {
+  .adm-cols-rail { grid-template-columns: minmax(0, 1fr) 380px; }
+}
+
+/* Below this a column is narrower than the fields inside it, and two
+   cramped columns are worse than one comfortable one. */
+@media (max-width: 1180px) {
+  .adm-cols-2,
+  .adm-cols-3,
+  .adm-cols-rail { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 720px) {
   .adm-grid-2 { grid-template-columns: 1fr; }
 }
@@ -478,7 +520,10 @@
 .adm-input[aria-invalid="true"],
 .adm-textarea[aria-invalid="true"] { border-color: var(--danger); }
 
-.adm-textarea { resize: vertical; min-height: 90px; line-height: 1.55; }
+/* The measure cap the shell used to enforce. Prose is the only thing here
+   that genuinely suffers from width -- a 1500px line is unreadable and
+   unpleasant to edit -- so the limit belongs on the prose, not on the page. */
+.adm-textarea { resize: vertical; min-height: 90px; line-height: 1.55; max-width: 78ch; }
 .adm-select   { cursor: pointer; }
 
 .adm-input:disabled,

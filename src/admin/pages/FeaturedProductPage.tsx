@@ -117,7 +117,9 @@ const FeaturedProductPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* ── Basics ── */}
+            {/* Details and Gallery share a row: the gallery is a short list of
+                small rows, so at full width it was mostly empty. */}
+            <div className="adm-cols adm-cols-rail">
             <Section title="Product Details">
                 <div className="adm-grid-2">
                     <Field label="Product Name" required>
@@ -156,17 +158,18 @@ const FeaturedProductPage: React.FC = () => {
                 <p className="adm-hint" style={{ marginBottom: 14 }}>
                     The first image is the default view. Upload replaces the slot; the arrows reorder.
                 </p>
+                {/* Controls sit under the field rather than beside it. In the
+                    rail there is not enough width for both, and squeezing them
+                    onto one line wrapped the Replace/Remove buttons instead. */}
                 {product.images.map((src, i) => (
-                    <div key={i} className="adm-row" style={{ alignItems: "flex-start", marginBottom: 12 }}>
-                        <div className="adm-fill">
-                            <ImageField
-                                label={i === 0 ? "Main image" : `Image ${i + 1}`}
-                                value={src}
-                                prefix="product"
-                                onChange={(next) => setImage(i, next)}
-                            />
-                        </div>
-                        <div className="adm-row" style={{ paddingTop: 26 }}>
+                    <div key={i} style={{ marginBottom: 12 }}>
+                        <ImageField
+                            label={i === 0 ? "Main image" : `Image ${i + 1}`}
+                            value={src}
+                            prefix="product"
+                            onChange={(next) => setImage(i, next)}
+                        />
+                        <div className="adm-row" style={{ gap: 2, justifyContent: "flex-end", marginTop: 2 }}>
                             <IconButton label={`Move image ${i + 1} up`} onClick={() => moveImage(i, -1)} disabled={i === 0}>
                                 <ArrowUp size={15} aria-hidden="true" />
                             </IconButton>
@@ -198,14 +201,25 @@ The image stays in your library.`)) return;
                 />
             </Section>
 
+            </div>
+
             {/* ── Notes ── */}
+            {/* Top, heart and base are three readings of the same shape, so they
+                belong beside each other where they can be compared. Stacked, the
+                two short fields in each tier left most of the row empty. */}
             <Section title="The Olfactory Experience">
-                {TIERS.map((tier) => (
-                    <div key={tier} style={{ paddingBottom: 12, marginBottom: 12, borderBottom: tier !== "base" ? "1px solid var(--border)" : "none" }}>
-                        <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--accent-text)", marginBottom: 10 }}>
-                            {tier} notes
-                        </div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: "0 24px" }}>
+                <div className="adm-cols adm-cols-3">
+                    {TIERS.map((tier, ti) => (
+                        <div
+                            key={tier}
+                            style={{
+                                paddingLeft: ti === 0 ? 0 : 24,
+                                borderLeft: ti === 0 ? "none" : "1px solid var(--border)",
+                            }}
+                        >
+                            <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--accent-text)", marginBottom: 10 }}>
+                                {tier} notes
+                            </div>
                             <Field label="Ingredients" hint="Comma-separated">
                                 <Input value={listToString(product.notes[tier].ingredients)} onChange={(e) => setNoteField(tier, "ingredients", e.target.value)} />
                             </Field>
@@ -213,11 +227,13 @@ The image stays in your library.`)) return;
                                 <Input value={product.notes[tier].impression} onChange={(e) => setNoteField(tier, "impression", e.target.value)} />
                             </Field>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </Section>
 
-            {/* ── Highlights ── */}
+            {/* Both are lists of short label/body pairs -- the same shape twice,
+                each using about half the row on its own. */}
+            <div className="adm-cols adm-cols-2">
             <Section title={`Key Highlights (${product.highlights.length})`} action={
                 <button onClick={() => set("highlights", [...product.highlights, { id: `h${Date.now()}`, title: "", body: "" }])}
                     style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "var(--noir)", color: "#fff", border: "none", borderRadius: "var(--radius-sm)", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.78rem", cursor: "pointer" }}>
@@ -254,6 +270,8 @@ The image stays in your library.`)) return;
                     </div>
                 ))}
             </Section>
+
+            </div>
 
             {/* ── Usage ── */}
             <Section title={`How to Wear It (${product.usage.length})`} action={
