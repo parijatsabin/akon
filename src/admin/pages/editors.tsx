@@ -15,6 +15,7 @@ import { saveSection } from "../lib/saveSection";
 import { Section } from "../components/ui/Section";
 import { Field, Input, Textarea, Select, SaveBtn, Button, IconButton } from "../components/ui/Field";
 import { SaveBar } from "../components/ui/Page";
+import { MapField } from "../components/ui/MapField";
 import { ImageField } from "../components/ui/ImageField";
 import { useToast } from "../components/ui/Toast";
 import type {
@@ -148,7 +149,7 @@ It will disappear from the footer and contact page once you save.`)) return;
                         <Field label="Phone Display"><Input value={form.phoneDisplay} onChange={(e) => set("phoneDisplay", e.target.value)} /></Field>
                         <Field label="Location"><Input value={form.location} onChange={(e) => set("location", e.target.value)} /></Field>
                     </div>
-                    <Field label="Maps Embed URL"><Input value={form.mapEmbed} onChange={(e) => set("mapEmbed", e.target.value)} /></Field>
+                    <MapField value={form.mapEmbed} onChange={(url) => set("mapEmbed", url)} />
                 </Section>
 
                 <Section
