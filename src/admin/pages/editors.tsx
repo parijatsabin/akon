@@ -13,15 +13,17 @@ import React, { useState } from "react";
 import { readStore } from "../../data/siteRepository";
 import { saveSection } from "../lib/saveSection";
 import { Section } from "../components/ui/Section";
-import { Field, Input, Textarea, SaveBtn } from "../components/ui/Field";
+import { Field, Input, Textarea, Select, SaveBtn, Button, IconButton } from "../components/ui/Field";
 import { SaveBar } from "../components/ui/Page";
 import { ImageField } from "../components/ui/ImageField";
 import { useToast } from "../components/ui/Toast";
 import type {
     BrandData, HeroData, AboutData,
     CommitmentData, CommitmentPillar, NewsletterData, FooterData,
+    SocialLink, SocialPlatform,
 } from "../../data/types";
 import { Plus, Trash2 } from "lucide-react";
+import { SOCIAL_PLATFORMS, platformLabel } from "../../components/SocialLinks";
 
 export interface EditorProps { onSave: () => void }
 
@@ -54,8 +56,27 @@ export const BrandTab: React.FC<EditorProps> = ({ onSave }) => {
         setForm((f) => ({ ...f, hours: next }));
     };
 
-    const setSocial = (k: keyof typeof form.socialLinks, v: string) =>
-        set("socialLinks", { ...form.socialLinks, [k]: v });
+    // ── Social links ──
+    // A list, so platforms are added and removed here rather than in code.
+    const setSocial = (i: number, patch: Partial<SocialLink>) =>
+        set("socialLinks", form.socialLinks.map((l, x) => (x === i ? { ...l, ...patch } : l)));
+
+    const addSocial = () => {
+        // Offer the first platform not already in the list, so adding twice
+        // does not silently produce a duplicate the renderer would key on.
+        const used = new Set(form.socialLinks.map((l) => l.platform));
+        const next = SOCIAL_PLATFORMS.find((p) => !used.has(p.id));
+        if (!next) return;
+        set("socialLinks", [...form.socialLinks, { platform: next.id, url: "" }]);
+    };
+
+    const removeSocial = (i: number) => {
+        const label = platformLabel(form.socialLinks[i].platform);
+        if (!window.confirm(`Remove the ${label} link?
+
+It will disappear from the footer and contact page once you save.`)) return;
+        set("socialLinks", form.socialLinks.filter((_, x) => x !== i));
+    };
 
     const save = async () => {
         setSaving(true);
@@ -130,12 +151,58 @@ export const BrandTab: React.FC<EditorProps> = ({ onSave }) => {
                     <Field label="Maps Embed URL"><Input value={form.mapEmbed} onChange={(e) => set("mapEmbed", e.target.value)} /></Field>
                 </Section>
 
-                <Section title="Social Links">
-                    <div style={{ minWidth: 220 }}>
-                        <Field label="Instagram"><Input value={form.socialLinks.instagram} onChange={(e) => setSocial("instagram", e.target.value)} /></Field>
-                        <Field label="Facebook"><Input value={form.socialLinks.facebook} onChange={(e) => setSocial("facebook", e.target.value)} /></Field>
-                        <Field label="Pinterest"><Input value={form.socialLinks.pinterest} onChange={(e) => setSocial("pinterest", e.target.value)} /></Field>
-                    </div>
+                <Section
+                    title="Social Links"
+                    action={
+                        <Button
+                            small
+                            onClick={addSocial}
+                            disabled={form.socialLinks.length >= SOCIAL_PLATFORMS.length}
+                        >
+                            <Plus size={13} aria-hidden="true" /> Add
+                        </Button>
+                    }
+                >
+                    {form.socialLinks.length === 0 && (
+                        <p className="adm-hint" style={{ marginBottom: 12 }}>
+                            No social links. The icons are hidden on the site until you add one.
+                        </p>
+                    )}
+
+                    {form.socialLinks.map((link, i) => {
+                        // A platform already in the list is not offered again,
+                        // except on the row that currently holds it.
+                        const taken = new Set(form.socialLinks.map((l) => l.platform));
+                        const options = SOCIAL_PLATFORMS
+                            .filter((p) => p.id === link.platform || !taken.has(p.id))
+                            .map((p) => ({ value: p.id, label: p.label }));
+
+                        return (
+                            <div key={i} className="adm-row-end" style={{ marginBottom: 10 }}>
+                                <div style={{ width: 150, flexShrink: 0 }}>
+                                    <Field label={i === 0 ? "Platform" : ""}>
+                                        <Select
+                                            options={options}
+                                            value={link.platform}
+                                            onChange={(e) => setSocial(i, { platform: e.target.value as SocialPlatform })}
+                                        />
+                                    </Field>
+                                </div>
+                                <div className="adm-fill">
+                                    <Field label={i === 0 ? "Profile URL" : ""}>
+                                        <Input
+                                            value={link.url}
+                                            placeholder="https://instagram.com/yourhandle"
+                                            onChange={(e) => setSocial(i, { url: e.target.value })}
+                                        />
+                                    </Field>
+                                </div>
+                                <IconButton label={`Remove ${platformLabel(link.platform)}`} onClick={() => removeSocial(i)}>
+                                    <Trash2 size={15} aria-hidden="true" />
+                                </IconButton>
+                            </div>
+                        );
+                    })}
                 </Section>
             </div>
 

@@ -16,10 +16,18 @@ export interface BusinessHour {
     closeTime: string;
 }
 
-export interface SocialLinks {
-    instagram: string;
-    facebook: string;
-    pinterest: string;
+/** Platforms the CMS can offer; icons live in components/SocialLinks.tsx. */
+export type SocialPlatform =
+    | "instagram" | "facebook" | "pinterest" | "x"
+    | "linkedin" | "youtube" | "tiktok" | "whatsapp";
+
+/**
+ * A list rather than a fixed object, so platforms can be added and removed in
+ * the CMS instead of requiring a schema and code change for each one.
+ */
+export interface SocialLink {
+    platform: SocialPlatform;
+    url: string;
 }
 
 export interface BrandData {
@@ -32,7 +40,7 @@ export interface BrandData {
     email: string;
     useDefaultTime: boolean;
     hours: BusinessHour[];
-    socialLinks: SocialLinks;
+    socialLinks: SocialLink[];
     mapEmbed: string;
 }
 
