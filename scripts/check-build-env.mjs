@@ -29,9 +29,12 @@ if (missing.length > 0) {
   These are read at BUILD time and compiled into the bundle, so setting them
   after a deploy changes nothing — the site must be rebuilt.
 
-    Locally   put them in .env.local (see .env.example)
-    Cloudflare  Workers & Pages -> akon -> Settings -> Variables and Secrets,
-                add them for the *Build* environment, then redeploy
+  They are normally supplied by .env.production, which is committed precisely
+  so that no build environment has to be configured by hand. If you are seeing
+  this, that file is missing, empty, or was overridden by an empty .env.local.
+
+    Restore it   git checkout .env.production
+    Override it  set the values in .env.local (git-ignored) to point elsewhere
 
   Without them the build would succeed and publish a blank page.
 `);

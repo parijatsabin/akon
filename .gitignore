@@ -24,6 +24,8 @@ lerna-debug.log*
 !.dev.vars.example
 .env*
 !.env.example
+# Public build-time Supabase config; see the header in the file itself.
+!.env.production
 
 # Claude Code machine-local settings (.mcp.json IS shared and stays tracked)
 .claude/settings.local.json
