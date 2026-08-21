@@ -42,24 +42,37 @@ async function main() {
     check(missing.length === 0, "all 13 sections present", missing.join(", "));
 
     const p = site.featuredProduct as any;
-    const counts: [string, number, number][] = [
-        ["business hours", (site.brand as any).hours.length, 7],
-        ["about reasons", (site.about as any).reasons.length, 4],
-        ["product images", p.images.length, 3],
-        ["product sizes", p.sizes.length, 4],
-        ["highlights", p.highlights.length, 3],
-        ["specs", p.specs.length, 5],
-        ["usage steps", p.usage.length, 3],
-        ["testimonials", (site.testimonials as any).items.length, 3],
-        ["pillars", (site.commitment as any).pillars.length, 4],
-        ["contact subjects", (site.contact as any).subjects.length, 6],
-        ["privacy sections", (site.privacy as any).sections.length, 7],
-        ["terms sections", (site.terms as any).sections.length, 8],
-        ["faq items", (site.faq as any).items.length, 9],
+
+    // Content is edited in the CMS, so asserting exact counts means every
+    // legitimate edit reports a failure. It did: changing the product from
+    // four sizes to one tripped a check that had frozen the original seed.
+    // What is worth asserting is that nothing required has been emptied.
+    const nonEmpty: [string, unknown[]][] = [
+        ["about reasons", (site.about as any).reasons],
+        ["product images", p.images],
+        ["product sizes", p.sizes],
+        ["highlights", p.highlights],
+        ["specs", p.specs],
+        ["usage steps", p.usage],
+        ["ingredients", p.ingredients],
+        ["testimonials", (site.testimonials as any).items],
+        ["pillars", (site.commitment as any).pillars],
+        ["contact subjects", (site.contact as any).subjects],
+        ["privacy sections", (site.privacy as any).sections],
+        ["terms sections", (site.terms as any).sections],
+        ["faq items", (site.faq as any).items],
     ];
-    for (const [label, actual, expected] of counts) {
-        check(actual === expected, label.padEnd(18), `${actual} (expected ${expected})`);
+    for (const [label, list] of nonEmpty) {
+        check(Array.isArray(list) && list.length > 0, label.padEnd(18), `${list?.length ?? 0} item(s)`);
     }
+
+    // A week has seven days whoever is editing.
+    const hours = (site.brand as any).hours as unknown[];
+    check(hours.length === 7, "business hours".padEnd(18), `${hours.length} (expected 7)`);
+
+    // Safety text is the one piece of copy that must never be blank.
+    check(Boolean(p.safetyWarning?.trim()), "safety warning present");
+    check(Boolean(p.allergenNote?.trim()), "allergen guidance present");
 
     // Every image field must resolve to something renderable.
     const images: [string, string][] = [

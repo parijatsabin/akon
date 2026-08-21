@@ -23,6 +23,7 @@ const FOOTER_NAV_COLUMNS = [
     heading: "Support",
     links: [
       { label: "FAQs", href: "/faq" },
+      { label: "Ingredients & Safety", href: "/#composition" },
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms of Use", href: "/terms" },
     ],

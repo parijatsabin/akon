@@ -207,6 +207,45 @@ The image stays in your library.`)) return;
             {/* Top, heart and base are three readings of the same shape, so they
                 belong beside each other where they can be compared. Stacked, the
                 two short fields in each tier left most of the row empty. */}
+            {/* Reference information rather than selling copy: the list an
+                allergy sufferer reads, and the guidance that goes with it. */}
+            <Section title="Composition & Safety">
+                <Field
+                    label="Ingredients"
+                    hint="Comma-separated, in the order printed on the bottle. Declarable allergens (limonene, linalool, geraniol and the rest) belong in this list, exactly as on the label."
+                >
+                    <Textarea
+                        value={listToString(product.ingredients)}
+                        onChange={(e) => set("ingredients", stringToList(e.target.value))}
+                        placeholder="Alcohol Denat., Parfum (Fragrance), Aqua, …"
+                        style={{ minHeight: 84 }}
+                    />
+                </Field>
+
+                <Field
+                    label="Safety Warning"
+                    hint="Handling only — flammability, external use, eye contact. Shown with an accent rule so it stands out when scanning. Leave blank to hide it."
+                >
+                    <Textarea
+                        value={product.safetyWarning}
+                        onChange={(e) => set("safetyWarning", e.target.value)}
+                        placeholder="Flammable. For external use only. Avoid contact with eyes."
+                        style={{ minHeight: 64 }}
+                    />
+                </Field>
+
+                <Field
+                    label="Sensitive Skin Guidance"
+                    hint="The patch-test advice shown beneath the ingredients. Also summarised in the FAQ and as the first step of How to Wear It."
+                >
+                    <Textarea
+                        value={product.allergenNote}
+                        onChange={(e) => set("allergenNote", e.target.value)}
+                        style={{ minHeight: 120 }}
+                    />
+                </Field>
+            </Section>
+
             <Section title="The Olfactory Experience">
                 <div className="adm-cols adm-cols-3">
                     {TIERS.map((tier, ti) => (

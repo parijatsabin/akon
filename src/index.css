@@ -1832,3 +1832,92 @@ ul {
   z-index: 0;
   animation: heroFadeIn 1.4s ease-in-out;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Composition & care — the back of the bottle, on screen.
+
+   Deliberately quieter than the selling copy above it and set apart by a
+   surface change, so it reads as reference material rather than marketing.
+   The warning carries an accent rule and an uppercase tag: unmissable when
+   scanning, without the red-alert styling that would fight the brand.
+   ═══════════════════════════════════════════════════════════════ */
+.sig-label {
+  margin-top: 56px;
+  padding: 34px clamp(20px, 4vw, 44px);
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.sig-label-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sig-label-note {
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.sig-label-block { margin-bottom: 22px; }
+.sig-label-block:last-child { margin-bottom: 0; }
+
+.sig-label-key {
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  margin-bottom: 8px;
+}
+
+/* The INCI list is reference text: even, unhurried, easy to scan for a single
+   word. Not justified — justification opens rivers in a long comma list. */
+.sig-ingredients {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: var(--text-main);
+  max-width: 68ch;
+}
+
+.sig-allergen {
+  font-size: 0.90rem;
+  line-height: 1.75;
+  color: var(--text-muted);
+  max-width: 68ch;
+}
+
+.sig-warning {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  padding: 14px 18px;
+  border-left: 2px solid var(--accent);
+  background: var(--accent-glow);
+  font-size: 0.90rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.sig-warning-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .sig-label { margin-top: 40px; padding: 26px 20px; }
+}

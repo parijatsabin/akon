@@ -140,6 +140,18 @@ export interface ProductItem {
     usage: UsageStep[];
     /** Informational ordering/returns note. Empty string hides the block. */
     orderingNote: string;
+
+    /**
+     * INCI list as printed on the bottle, in label order. Includes the
+     * declarable fragrance allergens (limonene, linalool, geraniol and the
+     * rest) rather than separating them out, which is how they appear on the
+     * physical label.
+     */
+    ingredients: string[];
+    /** Handling warning: flammability, external use, eye contact. */
+    safetyWarning: string;
+    /** Sensitive-skin and patch-test guidance shown beside the ingredients. */
+    allergenNote: string;
 }
 
 export interface TestimonialItem {

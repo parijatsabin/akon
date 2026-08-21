@@ -183,6 +183,42 @@ const SignatureProduct: React.FC = () => {
                         )}
                     </div>
                 </div>
+
+                {/* ── Composition & care ──
+                    Laid out as the back of the bottle: ingredients, then the
+                    handling warning, then the guidance for reactive skin. The
+                    ingredient list is the part an allergy sufferer actually
+                    reads, so it sits with the product rather than in a policy
+                    page nobody opens. */}
+                {(product.ingredients.length > 0 || product.safetyWarning || product.allergenNote) && (
+                    <div id="composition" className="sig-label reveal">
+                        <div className="sig-label-head">
+                            <h3 className="sig-detail-heading">Composition &amp; Care</h3>
+                            <span className="sig-label-note">As printed on the bottle</span>
+                        </div>
+
+                        {product.ingredients.length > 0 && (
+                            <div className="sig-label-block">
+                                <h4 className="sig-label-key">Ingredients</h4>
+                                <p className="sig-ingredients">{product.ingredients.join(", ")}.</p>
+                            </div>
+                        )}
+
+                        {product.safetyWarning && (
+                            <p className="sig-warning">
+                                <span className="sig-warning-tag">Warning</span>
+                                {product.safetyWarning}
+                            </p>
+                        )}
+
+                        {product.allergenNote && (
+                            <div className="sig-label-block">
+                                <h4 className="sig-label-key">Sensitive skin</h4>
+                                <p className="sig-allergen">{product.allergenNote}</p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </section>
     );

@@ -88,6 +88,9 @@ export async function saveSiteSection<K extends keyof SiteData>(
             highlights: p.highlights,
             specs: p.specs,
             usage: p.usage,
+            ingredients: p.ingredients,
+            safety_warning: p.safetyWarning,
+            allergen_note: p.allergenNote,
         }).eq("is_featured", true)).error, "the product");
     } else {
         throw new SiteDataError(`No writer is defined for section "${key}".`);
