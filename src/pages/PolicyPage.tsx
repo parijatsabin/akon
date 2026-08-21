@@ -4,10 +4,9 @@
  * Both pages have identical structure (title, intro, dated sections), so they
  * share one component and differ only in which CMS section they read.
  */
-import React, { useEffect } from "react";
+import React from "react";
 import { useSiteData } from "../data/SiteDataProvider";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import PageShell from "../components/PageShell";
 
 interface Props {
     /** Which top-level CMS section to render. */
@@ -17,13 +16,9 @@ interface Props {
 const PolicyPage: React.FC<Props> = ({ section }) => {
     const data = useSiteData()[section];
 
-    useEffect(() => { window.scrollTo({ top: 0 }); }, [section]);
-
     return (
-        <div style={{ minHeight: "100vh", background: "var(--white)" }}>
-            <Navbar />
-
-            <section className="section" style={{ paddingTop: 130 }}>
+        <PageShell resetKey={section}>
+            <section className="section-page">
                 <div className="container policy-container">
                     <header className="policy-header">
                         <h1 className="policy-title">{data.title}</h1>
@@ -48,9 +43,7 @@ const PolicyPage: React.FC<Props> = ({ section }) => {
                     ))}
                 </div>
             </section>
-
-            <Footer />
-        </div>
+        </PageShell>
     );
 };
 

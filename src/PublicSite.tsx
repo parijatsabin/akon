@@ -4,16 +4,19 @@
  * Site data is provided by <SiteDataProvider> in App.tsx; every component
  * in the tree reads it via useSiteData(). Live updates arrive automatically
  * through the "cms:update" event handled by the provider.
+ *
+ * PageShell supplies the navbar, footer and scroll handling — the homepage was
+ * the one page still assembling those itself, which meant arriving at
+ * /#signature from another route did not scroll to the product.
  */
 import React from "react";
 import { useSiteData } from "./data/SiteDataProvider";
 import { useSeoHead } from "./hooks/useSeoHead";
-import Navbar from "./components/Navbar";
+import PageShell from "./components/PageShell";
 import Hero from "./components/Hero";
 import SignatureProduct from "./components/SignatureProduct";
 import Commitment from "./components/Commitment";
 import Newsletter from "./components/Newsletter";
-import Footer from "./components/Footer";
 
 // ── SEO wrapper for homepage ──────────────────────────────────
 const HomeSeo: React.FC = () => {
@@ -24,15 +27,13 @@ const HomeSeo: React.FC = () => {
 
 // ── Homepage ──────────────────────────────────────────────────
 const PublicSite: React.FC = () => (
-    <>
+    <PageShell>
         <HomeSeo />
-        <Navbar />
         <Hero />
         <SignatureProduct />
         <Commitment />
         <Newsletter />
-        <Footer />
-    </>
+    </PageShell>
 );
 
 export default PublicSite;

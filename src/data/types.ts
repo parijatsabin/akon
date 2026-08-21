@@ -207,7 +207,25 @@ export interface NewsletterData {
 export interface FooterData {
     tagline: string;
     hoursHeading: string;
-    credit: { label: string; href: string };
+}
+
+/**
+ * Headings on the product section and /fragrance.
+ *
+ * Editable because several of them introduce safety information — the wording
+ * above an ingredient list or a hazard warning may have to change for a market
+ * or a regulator, and that should not require a deploy.
+ */
+export interface ProductLabels {
+    notesTitle: string;
+    sizeLabel: string;
+    specsTitle: string;
+    usageTitle: string;
+    compositionTitle: string;
+    compositionNote: string;
+    ingredientsLabel: string;
+    warningLabel: string;
+    sensitiveSkinLabel: string;
 }
 
 // ── SEO ───────────────────────────────────────────────────────
@@ -267,6 +285,7 @@ export interface SiteData {
     commitment: CommitmentData;
     newsletter: NewsletterData;
     footer: FooterData;
+    productLabels: ProductLabels;
     contact: ContactData;
     privacy: PolicyPageData;
     terms: PolicyPageData;

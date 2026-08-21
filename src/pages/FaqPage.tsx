@@ -4,22 +4,17 @@
  * Uses <details>/<summary> so it works without JavaScript, is keyboard
  * accessible and is announced correctly by screen readers for free.
  */
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useSiteData } from "../data/SiteDataProvider";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import PageShell from "../components/PageShell";
 
 const FaqPage: React.FC = () => {
     const { faq: FAQ } = useSiteData();
 
-    useEffect(() => { window.scrollTo({ top: 0 }); }, []);
-
     return (
-        <div style={{ minHeight: "100vh", background: "var(--white)" }}>
-            <Navbar />
-
-            <section className="section" style={{ paddingTop: 130 }}>
+        <PageShell>
+            <section className="section-page">
                 <div className="container policy-container">
                     <header className="policy-header">
                         <h1 className="policy-title">{FAQ.title}</h1>
@@ -50,9 +45,7 @@ const FaqPage: React.FC = () => {
                     </div>
                 </div>
             </section>
-
-            <Footer />
-        </div>
+        </PageShell>
     );
 };
 

@@ -24,6 +24,7 @@ import type { SiteData } from "./types";
 const CONTENT_KEYS = [
     "hero", "about", "testimonials", "commitment", "newsletter",
     "footer", "contact", "seo", "faq", "privacy", "terms",
+    "productLabels",
 ] as const;
 
 type ContentKey = typeof CONTENT_KEYS[number];

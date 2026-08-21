@@ -22,7 +22,7 @@ const Commitment: React.FC = () => {
   );
 
   return (
-    <section className="section bg-sunken">
+    <section className="section commit-section bg-sunken">
       <div className="container">
         {/* Without a photo this falls back to the original centred, text-only block. */}
         <div ref={ref} className={`reveal reveal-stagger ${hasImage ? "commit-split" : "commit-block"}`}>

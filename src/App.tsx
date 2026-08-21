@@ -4,6 +4,7 @@ import { SiteDataProvider } from "./data/SiteDataProvider";
 import AdminApp from "./admin/AdminApp";
 import PublicSite from "./PublicSite";
 import AboutPage from "./pages/AboutPage";
+import FragrancePage from "./pages/FragrancePage";
 import ContactPage from "./pages/ContactPage";
 import PolicyPage from "./pages/PolicyPage";
 import FaqPage from "./pages/FaqPage";
@@ -21,6 +22,7 @@ const App: React.FC = () => (
         <Route path="/admin/*" element={<AdminApp />} />
 
         {/* ── Public multi-page routes ── */}
+        <Route path="/fragrance" element={<FragrancePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/faq" element={<FaqPage />} />

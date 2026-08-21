@@ -11,10 +11,10 @@ import { Section } from "../components/ui/Section";
 import { Field, Input, Textarea, SaveBtn, IconButton } from "../components/ui/Field";
 import { useToast } from "../components/ui/Toast";
 import type {
-    ProductItem, ProductHighlight, ProductSpec, UsageStep,
+    ProductItem, ProductHighlight, ProductSpec, UsageStep, ProductLabels,
 } from "../../data/types";
 import { Plus, Trash2, ArrowUp, ArrowDown } from "lucide-react";
-import { PageHeader } from "../components/ui/Page";
+import { PageHeader, SaveBar } from "../components/ui/Page";
 import { ImageField } from "../components/ui/ImageField";
 
 const listToString = (arr: string[]) => arr.join(", ");
@@ -29,6 +29,18 @@ const FeaturedProductPage: React.FC = () => {
 
     const [product, setProduct] = useState<ProductItem>(store.featuredProduct);
     const [saving, setSaving] = useState(false);
+
+    // Headings are a separate CMS section, so they save separately — editing a
+    // heading should not require re-saving the whole product, and vice versa.
+    const [labels, setLabels] = useState<ProductLabels>(store.productLabels);
+    const [savingLabels, setSavingLabels] = useState(false);
+    const setLabel = (k: keyof ProductLabels, v: string) =>
+        setLabels((l) => ({ ...l, [k]: v }));
+    const saveLabels = async () => {
+        setSavingLabels(true);
+        await saveSection("productLabels", labels, toast, "Headings saved!");
+        setSavingLabels(false);
+    };
 
     const set = <K extends keyof ProductItem>(key: K, value: ProductItem[K]) =>
         setProduct((prev) => ({ ...prev, [key]: value }));
@@ -207,6 +219,30 @@ The image stays in your library.`)) return;
             {/* Top, heart and base are three readings of the same shape, so they
                 belong beside each other where they can be compared. Stacked, the
                 two short fields in each tier left most of the row empty. */}
+            {/* The headings above each block. Editable mainly because several
+                of them introduce safety information, and that wording may have
+                to change for a market or a regulator. */}
+            <Section title="Section Headings">
+                <p className="adm-hint" style={{ marginBottom: 14 }}>
+                    Shown on the homepage product section and on the Fragrance page.
+                    Leave them as they are unless you have a reason to change them.
+                </p>
+                <div className="adm-grid-2">
+                    <Field label="Notes Heading"><Input value={labels.notesTitle} onChange={(e) => setLabel("notesTitle", e.target.value)} /></Field>
+                    <Field label="Size Picker Label"><Input value={labels.sizeLabel} onChange={(e) => setLabel("sizeLabel", e.target.value)} /></Field>
+                    <Field label="Specifications Heading"><Input value={labels.specsTitle} onChange={(e) => setLabel("specsTitle", e.target.value)} /></Field>
+                    <Field label="How to Wear Heading"><Input value={labels.usageTitle} onChange={(e) => setLabel("usageTitle", e.target.value)} /></Field>
+                    <Field label="Composition Heading"><Input value={labels.compositionTitle} onChange={(e) => setLabel("compositionTitle", e.target.value)} /></Field>
+                    <Field label="Composition Sub-label"><Input value={labels.compositionNote} onChange={(e) => setLabel("compositionNote", e.target.value)} /></Field>
+                    <Field label="Ingredients Label"><Input value={labels.ingredientsLabel} onChange={(e) => setLabel("ingredientsLabel", e.target.value)} /></Field>
+                    <Field label="Warning Label"><Input value={labels.warningLabel} onChange={(e) => setLabel("warningLabel", e.target.value)} /></Field>
+                    <Field label="Sensitive Skin Label"><Input value={labels.sensitiveSkinLabel} onChange={(e) => setLabel("sensitiveSkinLabel", e.target.value)} /></Field>
+                </div>
+                <SaveBar>
+                    <SaveBtn loading={savingLabels} onClick={saveLabels} label="Save Headings" />
+                </SaveBar>
+            </Section>
+
             {/* Reference information rather than selling copy: the list an
                 allergy sufferer reads, and the guidance that goes with it. */}
             <Section title="Composition & Safety">

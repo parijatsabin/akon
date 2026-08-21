@@ -10,6 +10,15 @@ import { SocialLinkList } from "./SocialLinks";
  * changing a label is a code change, which is the trade accepted when the
  * navigation tables were dropped.
  */
+/**
+ * Who built the site. Not content the owner maintains — leaving it editable
+ * invited it being changed by accident — so it lives with the build.
+ */
+const BUILD_CREDIT = {
+  label: "Sabin Ghimire",
+  href: "https://ghimiresabin.com.np",
+} as const;
+
 const FOOTER_NAV_COLUMNS = [
   {
     heading: "Company",
@@ -23,7 +32,7 @@ const FOOTER_NAV_COLUMNS = [
     heading: "Support",
     links: [
       { label: "FAQs", href: "/faq" },
-      { label: "Ingredients & Safety", href: "/#composition" },
+      { label: "Ingredients & Safety", href: "/fragrance#composition" },
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms of Use", href: "/terms" },
     ],
@@ -93,7 +102,15 @@ const Footer: React.FC = () => {
         <div className="footer-bottom">
           <p className="footer-copy">© {year} {BRAND.name}. All Rights Reserved.</p>
           <p className="footer-copy">
-            Designed by <a href={FOOTER.credit.href} className="footer-credit">{FOOTER.credit.label}</a>
+            Designed by{" "}
+            <a
+              href={BUILD_CREDIT.href}
+              className="footer-credit"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {BUILD_CREDIT.label}
+            </a>
           </p>
         </div>
       </div>

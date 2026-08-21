@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSiteData } from "../data/SiteDataProvider";
 import { useVisibleCount } from "../hooks/useVisibleCount";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import PageShell from "../components/PageShell";
 
 // ── Helpers ───────────────────────────────────────────────────
 const StarIcon: React.FC<{ filled: boolean }> = ({ filled }) => (
@@ -49,7 +48,6 @@ const AboutPage: React.FC = () => {
 
     useEffect(() => { setIndex(0); startAuto(); return clearTimers; }, [startAuto, visibleCount]);
     useEffect(() => { setIndex((i) => Math.min(i, maxStart)); }, [maxStart]);
-    useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, []);
 
     const go = (n: number) => {
         clearTimers();
@@ -58,11 +56,9 @@ const AboutPage: React.FC = () => {
     };
 
     return (
-        <div style={{ minHeight: "100vh", background: "var(--white)" }}>
-            <Navbar />
-
+        <PageShell>
             {/* ── Brand Story ── */}
-            <section className="section" style={{ background: "var(--surface)", paddingTop: 120 }}>
+            <section className="section-page" style={{ background: "var(--surface)" }}>
                 <div className="container">
                     <div className="ab-story-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
                         {/* Text */}
@@ -159,7 +155,7 @@ const AboutPage: React.FC = () => {
                             </p>
                             {/* Plain <a>: a cross-page hash needs a real navigation so the
                                 browser scrolls to #signature. <Link> would not scroll. */}
-                            <a href="/#signature" className="btn btn-solid">Explore Our Signature Scent</a>
+                            <Link to="/fragrance" className="btn btn-solid">Explore Our Signature Scent</Link>
                         </div>
                     </div>
                 </div>
@@ -248,13 +244,12 @@ const AboutPage: React.FC = () => {
                     <h2 className="about-cta-heading">{about.ctaStripHeading}</h2>
                     <p className="about-cta-body">{about.body}</p>
                     <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-                        <a href="/#signature" className="btn btn-accent">View Our Signature Scent</a>
+                        <Link to="/fragrance" className="btn btn-accent">View Our Signature Scent</Link>
                         <Link to="/contact" className="btn btn-solid">Contact Us</Link>
                     </div>
                 </div>
             </div>
 
-            <Footer />
 
             <style>{`
         @media (max-width: 900px) {
@@ -268,7 +263,7 @@ const AboutPage: React.FC = () => {
           .ab-reasons { grid-template-columns: 1fr !important; }
         }
       `}</style>
-        </div>
+        </PageShell>
     );
 };
 

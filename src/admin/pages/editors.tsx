@@ -721,13 +721,9 @@ export const FooterTab: React.FC<EditorProps> = ({ onSave }) => {
         <>
             <Section title="Footer Info">
                 <Field label="Tagline"><Textarea value={form.tagline} onChange={(e) => set("tagline", e.target.value)} style={{ minHeight: 72 }} /></Field>
-                <div className="adm-grid-2">
-                    <Field label="Credit Label"><Input value={form.credit.label} onChange={(e) => set("credit", { ...form.credit, label: e.target.value })} /></Field>
-                    <Field label="Credit URL"><Input value={form.credit.href} onChange={(e) => set("credit", { ...form.credit, href: e.target.value })} /></Field>
-                </div>
-                <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: 4 }}>
-                    The footer’s link columns (Company / Support) and the top navigation
-                    point at fixed routes and are set in the code, not here.
+                <p className="adm-hint" style={{ marginTop: 4 }}>
+                    The footer’s link columns (Company / Support), the top navigation and
+                    the build credit are fixed and set in the code, not here.
                 </p>
             </Section>
             <SaveBar><SaveBtn loading={saving} onClick={save} /></SaveBar>

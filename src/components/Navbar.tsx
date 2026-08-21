@@ -24,6 +24,7 @@ const NavItem: React.FC<{ href: string; label: string; onClick?: () => void }> =
  */
 const NAV_LINKS = [
     { label: "Home", href: "/" },
+    { label: "Fragrance", href: "/fragrance" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
 ] as const;

@@ -14,7 +14,8 @@ import { anonClient, serviceClient, formatBytes } from "./lib/env.js";
 
 const REQUIRED_SECTIONS = [
     "brand", "hero", "about", "featuredProduct", "testimonials",
-    "commitment", "newsletter", "footer", "contact", "privacy", "terms", "faq", "seo",
+    "commitment", "newsletter", "footer", "productLabels", "contact",
+    "privacy", "terms", "faq", "seo",
 ];
 
 const PAYLOAD_BUDGET = 60_000;
@@ -39,7 +40,7 @@ async function main() {
 
     const site = doc as Record<string, unknown>;
     const missing = REQUIRED_SECTIONS.filter((k) => !(k in site));
-    check(missing.length === 0, "all 13 sections present", missing.join(", "));
+    check(missing.length === 0, `all ${REQUIRED_SECTIONS.length} sections present`, missing.join(", "));
 
     const p = site.featuredProduct as any;
 
@@ -74,16 +75,25 @@ async function main() {
     check(Boolean(p.safetyWarning?.trim()), "safety warning present");
     check(Boolean(p.allergenNote?.trim()), "allergen guidance present");
 
-    // Every image field must resolve to something renderable.
-    const images: [string, string][] = [
-        ["commitment.imageUrl", (site.commitment as any).imageUrl],
+    // Optional image fields are blank on purpose — an empty commitment.imageUrl
+    // selects the centred text-only layout, and the CMS says so. Requiring them
+    // to be set reported a failure for an ordinary editorial choice. What must
+    // hold is that whatever IS set is renderable, and that the product gallery
+    // is never empty.
+    const optional: [string, string][] = [
+        ["hero.backgroundImage", (site.hero as any).backgroundImage],
         ["about.ctaStripImage", (site.about as any).ctaStripImage],
+        ["commitment.imageUrl", (site.commitment as any).imageUrl],
         ["newsletter.backgroundImage", (site.newsletter as any).backgroundImage],
         ["seo.ogImage", (site.seo as any).ogImage],
-        ...p.images.map((s: string, i: number) => [`featuredProduct.images[${i}]`, s] as [string, string]),
     ];
-    const broken = images.filter(([, src]) => !src || !/^(https?:|data:)/.test(src));
-    check(broken.length === 0, "every image resolves", broken.map(([f]) => f).join(", "));
+    const malformed = optional.filter(([, src]) => src && !/^(https?:|data:)/.test(src));
+    check(malformed.length === 0, "set images are renderable", malformed.map(([f]) => f).join(", "));
+
+    const gallery = p.images as string[];
+    const badGallery = gallery.filter((src) => !src || !/^(https?:|data:)/.test(src));
+    check(gallery.length > 0 && badGallery.length === 0,
+        "product gallery renders", `${gallery.length} image(s)`);
 
     // ── Security boundary ─────────────────────────────────────
     console.log("\n  Anonymous access");

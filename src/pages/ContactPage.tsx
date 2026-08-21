@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSiteData } from "../data/SiteDataProvider";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import PageShell from "../components/PageShell";
 import { SocialLinkList } from "../components/SocialLinks";
 import { supabase } from "../lib/supabase";
 
@@ -28,8 +27,6 @@ const ContactPage: React.FC = () => {
     const [errors, setErrors] = useState<Partial<FormState>>({});
     const [pending, setPending] = useState(false);
     const [sendError, setSendError] = useState<string | null>(null);
-
-    useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, []);
 
     const set = (k: keyof FormState, v: string) => { setForm((f) => ({ ...f, [k]: v })); setErrors((e) => ({ ...e, [k]: undefined })); };
     const validate = () => {
@@ -71,11 +68,9 @@ const ContactPage: React.FC = () => {
     };
 
     return (
-        <div style={{ minHeight: "100vh", background: "var(--white)" }}>
-            <Navbar />
-
+        <PageShell>
             {/* Page header */}
-            <section style={{ padding: "120px 0 40px" }}>
+            <section className="section-page">
                 <div className="container">
                     {/* Inline heading */}
                     <div style={{ marginTop: 20, marginBottom: 16, paddingBottom: 20, textAlign: "center" }}>
@@ -186,9 +181,7 @@ const ContactPage: React.FC = () => {
                     </div>
                 </div>
             )}
-
-            <Footer />
-        </div>
+        </PageShell>
     );
 };
 
