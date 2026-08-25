@@ -31,12 +31,15 @@ const WhatsAppIcon = () => (
 export const WhatsAppButton: React.FC<Props> = ({ name, size, price, qty, className, style }) => {
     const href = useWhatsApp({ name, size, price, qty });
 
+    // .btn-phrase: "Order on WhatsApp" is a phrase, not a two-word label, and
+    // .btn's uppercase turns it into a 17-character run of caps. Short labels
+    // elsewhere keep the family transform.
     return (
         <a
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`btn btn-accent ${className ?? ""}`}
+            className={`btn btn-accent btn-phrase ${className ?? ""}`}
             style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, textDecoration: "none", ...style }}
             aria-label={`Order ${name} on WhatsApp`}
         >

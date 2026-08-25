@@ -33,26 +33,22 @@ const Hero: React.FC = () => {
           <div className="hero-rule" />
           <p className="hero-desc">{HERO.description}</p>
           <div className="hero-ctas">
-            <a href={HERO.ctaPrimary.href} className="btn btn-accent" style={{ padding: "0.95rem 2.6rem", minWidth: 175, justifyContent: "center" }}>
+            {/* Fixed anchor, not HERO.ctaPrimary.href. The signature product
+                is the next section of this same page, so the primary CTA
+                scrolls to it rather than routing away to /fragrance — which
+                sent the visitor past the buy column to the reference material.
+                html carries scroll-behavior: smooth and scroll-padding-top, so
+                a plain anchor lands correctly under the fixed navbar and stays
+                keyboard- and right-click-friendly. The label remains editable. */}
+            <a href="#signature" className="btn btn-accent" style={{ padding: "0.95rem 2.6rem", minWidth: 175, justifyContent: "center" }}>
               {HERO.ctaPrimary.label}
             </a>
+            {/* No trailing arrow. The two hero buttons are siblings in one
+                group; an arrow on only the secondary one made the weaker
+                action look like the one that leads somewhere. Weight and fill
+                already carry the primary/secondary distinction. */}
             <Link to={HERO.ctaSecondary.href} className="btn-hero-ghost">
               {HERO.ctaSecondary.label}
-              <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
-                <path
-                  d="M3.5 9H14.5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M10 4.5L14.5 9L10 13.5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
             </Link>
           </div>
         </div>

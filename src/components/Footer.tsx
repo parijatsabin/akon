@@ -49,6 +49,29 @@ const Footer: React.FC = () => {
     return `${String(h % 12 || 12).padStart(2, "0")}:${String(m).padStart(2, "0")} ${ap}`;
   };
 
+  /**
+   * Seven rows that all say "09:00 AM – 05:00 PM" is seven rows of noise; a
+   * reader has to compare every one to learn the single fact that the hours
+   * never change. Consecutive days sharing a schedule collapse into one range,
+   * so identical weeks render as "Monday – Sunday" while a shop that closes on
+   * Saturdays still shows that day on its own. Order is preserved — the ranges
+   * are built by walking BRAND.hours, never by sorting it.
+   */
+  const hourGroups = BRAND.hours.reduce<
+    { from: string; to: string; isClosed: boolean; open: string; close: string }[]
+  >((groups, hour) => {
+    const open = BRAND.useDefaultTime ? "09:00" : hour.openTime;
+    const close = BRAND.useDefaultTime ? "17:00" : hour.closeTime;
+    const last = groups[groups.length - 1];
+
+    if (last && last.isClosed === hour.isClosed && last.open === open && last.close === close) {
+      last.to = hour.day;
+      return groups;
+    }
+    groups.push({ from: hour.day, to: hour.day, isClosed: hour.isClosed, open, close });
+    return groups;
+  }, []);
+
   return (
     <footer className="footer-root on-noir">
       <div className="container">
@@ -64,7 +87,7 @@ const Footer: React.FC = () => {
           <div className="footer-nav">
             {FOOTER_NAV_COLUMNS.map((col) => (
               <div key={col.heading}>
-                <h4 className="footer-col-heading">{col.heading}</h4>
+                <h3 className="footer-col-heading">{col.heading}</h3>
                 <ul style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {col.links.map((link) => (
                     <li key={link.label}>
@@ -79,22 +102,22 @@ const Footer: React.FC = () => {
 
             {/* Opening Hours */}
             <div>
-              <h4 className="footer-col-heading">Opening Hours</h4>
-              <ul style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-                {BRAND.hours.map((hour) => {
-                  const open = BRAND.useDefaultTime ? "09:00" : hour.openTime;
-                  const close = BRAND.useDefaultTime ? "17:00" : hour.closeTime;
-                  return (
-                    <li key={hour.day} className="footer-hours-row">
-                      <span style={{ fontWeight: 600, color: hour.isClosed ? "var(--text-faint)" : "var(--text-main)" }}>{hour.day}</span>
-                      {hour.isClosed
-                        ? <span className="footer-closed">Closed</span>
-                        : <span style={{ color: "var(--text-muted)", whiteSpace: "nowrap", fontSize: "0.80rem" }}>{fmt(open)} – {fmt(close)}</span>
-                      }
-                    </li>
-                  );
-                })}
-              </ul>
+              <h3 className="footer-col-heading">Opening Hours</h3>
+              <dl className="footer-hours">
+                {hourGroups.map((g) => (
+                  <div
+                    key={g.from}
+                    className={`footer-hours-row${g.isClosed ? " footer-hours-row--closed" : ""}`}
+                  >
+                    <dt className="footer-hours-day">
+                      {g.from === g.to ? g.from : `${g.from} – ${g.to}`}
+                    </dt>
+                    <dd className={g.isClosed ? "footer-closed" : "footer-hours-time"}>
+                      {g.isClosed ? "Closed" : `${fmt(g.open)} – ${fmt(g.close)}`}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           </div>
         </div>

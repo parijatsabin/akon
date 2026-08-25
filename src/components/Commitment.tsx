@@ -14,7 +14,13 @@ const Commitment: React.FC = () => {
       <h2 className="commit-headline">{COMMITMENT.headline}</h2>
       <p className="commit-body">{COMMITMENT.body}</p>
       <div>
-        <SmartLink href={COMMITMENT.cta.href} className="btn btn-solid">
+        {/* .btn-outline, not .btn-solid. This is a secondary, read-more action
+            in a light section; .btn-solid fills with var(--text-main), which
+            resolves to near-black here and put the page's heaviest button on
+            its least important call to action. The outline variant is the
+            established secondary treatment and picks up the brand gold on
+            hover, so the section reads as part of the same system. */}
+        <SmartLink href={COMMITMENT.cta.href} className="btn btn-outline">
           {COMMITMENT.cta.label}
         </SmartLink>
       </div>

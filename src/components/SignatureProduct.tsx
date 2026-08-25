@@ -50,22 +50,23 @@ const SignatureProduct: React.FC = () => {
                             />
                         </div>
 
+                        {/* Directly under the order button, not in a full-width
+                            band below the grid. The band was written to pair
+                            this link with a paragraph of ordering prose; that
+                            paragraph is commented out, so the link was left
+                            alone in a space-between row — pinned to the left
+                            edge, aligned to the gallery column it has nothing
+                            to do with, and separated from the description and
+                            CTA it belongs to. It is the last step of the buy
+                            column: read the full spec before ordering. */}
+                        <p className="sig-footnote-link">
+                            <Link to="/fragrance" className="sig-detail-link">
+                                Specifications, how to wear it &amp; full ingredients →
+                            </Link>
+                        </p>
+
                     </Reveal>
                 </div>
-
-                {/* Below the grid rather than inside the buy column: the
-                    ordering note is a paragraph of prose, and setting it in a
-                    half-width column left it cramped against the button. */}
-                <Reveal className="sig-footnote">
-                    {/* {product.orderingNote && (
-                        <p className="sig-ordering-note">{product.orderingNote}</p>
-                    )} */}
-                    <p className="sig-footnote-link">
-                        <Link to="/fragrance" className="sig-detail-link">
-                            Specifications, how to wear it &amp; full ingredients →
-                        </Link>
-                    </p>
-                </Reveal>
             </div>
         </section>
     );

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSiteData } from "../data/SiteDataProvider";
+import { unshout } from "../lib/textCase";
 import { useReveal } from "../hooks/useReveal";
 import { supabase } from "../lib/supabase";
 
@@ -55,7 +56,11 @@ const Newsletter: React.FC = () => {
       <div ref={ref} className="container newsletter-inner reveal reveal-stagger">
         <div className="section-label" style={{ justifyContent: "center", marginBottom: 20 }}>
           <span className="section-label-line" />
-          <span className="eyebrow">{NEWSLETTER.eyebrow}</span>
+          {/* Caps are fine for a short label and wrong for a long one, so the
+              threshold decides rather than the editor. */}
+          <span className={`eyebrow${NEWSLETTER.eyebrow.length > 12 ? " eyebrow-long" : ""}`}>
+            {unshout(NEWSLETTER.eyebrow)}
+          </span>
           <span className="section-label-line" />
         </div>
 
@@ -75,7 +80,7 @@ const Newsletter: React.FC = () => {
               placeholder={NEWSLETTER.placeholder} required disabled={pending}
               className="newsletter-input"
             />
-            <button type="submit" disabled={pending} className="btn btn-accent newsletter-btn" style={{ borderRadius: 0, whiteSpace: "nowrap", padding: "18px 34px", fontSize: "0.82rem" }}>
+            <button type="submit" disabled={pending} className="btn btn-accent newsletter-btn" style={{ borderRadius: 0, whiteSpace: "nowrap", padding: "18px 34px", fontSize: "var(--fs-xs)" }}>
               {pending ? "Subscribing…" : NEWSLETTER.cta}
             </button>
           </form>

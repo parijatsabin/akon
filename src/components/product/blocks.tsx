@@ -16,6 +16,7 @@
 import React, { useState } from "react";
 import Reveal from "../Reveal";
 import { useSiteData } from "../../data/SiteDataProvider";
+import { unshout } from "../../lib/textCase";
 import type { ProductItem } from "../../data/types";
 
 const TIERS = ["top", "heart", "base"] as const;
@@ -73,8 +74,11 @@ export const ProductHeader: React.FC<{ product: ProductItem; as?: "h1" | "h2" }>
                 <div className="sig-eyebrow-line" />
             </div>
             <Heading className="section-title-lg">{product.name}</Heading>
+            {/* Sentence case, not caps: this is a 45-character spec line, and
+                uppercase at that length is measurably slower to read. unshout()
+                covers CMS values an editor stored in caps. */}
             <p className="sig-concentration">
-                {product.concentration} · {product.headlineSize}
+                {unshout(product.concentration)} · {product.headlineSize}
             </p>
             <div className="sig-price-row">
                 <div className="sig-stars" aria-hidden="true">

@@ -59,6 +59,24 @@
   --font-display: "Playfair Display", Georgia, serif;
   --font-body: "Jost", system-ui, sans-serif;
 
+  /* ── Type scale ─────────────────────────────────────────────
+     One ladder, ten steps. Sizes were previously set ad hoc at every
+     call site — 23 distinct values between 0.65rem and 1.6rem, most of
+     them a hundredth of a rem apart and none of them decidable. Root is
+     15px, so --fs-xs is 12px: the floor for anything that is real copy,
+     including the eyebrows, which used to render at 10px.
+     Nothing below should set a raw font-size; pick the nearest step. */
+  --fs-xs: 0.80rem;    /* 12.0px — eyebrows, tags, chips, button labels */
+  --fs-sm: 0.88rem;    /* 13.2px — meta, captions, dense lists */
+  --fs-base: 0.95rem;  /* 14.3px — body copy */
+  --fs-md: 1.05rem;    /* 15.8px — lead paragraphs, card titles */
+  --fs-lg: 1.20rem;    /* 18.0px — price, standout figures */
+  --fs-xl: 1.60rem;    /* 24.0px — wordmark */
+  --fs-display-sm: clamp(1.6rem, 2.8vw, 2.2rem);
+  --fs-display: clamp(1.9rem, 3.4vw, 2.9rem);
+  --fs-display-lg: clamp(2.2rem, 4vw, 3.6rem);
+  --fs-hero: clamp(2.8rem, 5.5vw, 5rem);
+
   /* ── Geometry ───────────────────────────────────────────── */
   --radius-sm: 4px;
   --radius: 10px;
@@ -178,19 +196,19 @@ ul {
 
 .site-status-title {
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-size: var(--fs-display-sm);
   font-weight: 700;
   color: var(--text-main);
 }
 
 .site-status-text {
-  font-size: 0.92rem;
+  font-size: var(--fs-base);
   color: var(--text-muted);
   max-width: 46ch;
 }
 
 .site-status-detail {
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   max-width: 60ch;
   word-break: break-word;
@@ -299,7 +317,7 @@ ul {
   padding: 13px 32px;
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: 0.80rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.10em;
   text-transform: uppercase;
@@ -310,6 +328,15 @@ ul {
 
 /* Primary — gold fill. The fill and label tokens flip per context so the
    label always clears WCAG AA (5.02:1 on white, 5.23:1 on noir). */
+/* Uppercase suits a two-word button label; it does not suit a phrase.
+   "ORDER ON WHATSAPP" is 17 characters of caps. This opts a single button
+   out of the family transform without forking the rest of .btn. */
+.btn-phrase {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: var(--fs-sm);
+}
+
 .btn-accent {
   background: var(--accent-fill);
   color: var(--on-accent);
@@ -353,7 +380,7 @@ ul {
   gap: 0.65rem;
   font-family: var(--font-body);
   font-weight: 600;
-  font-size: 0.86rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
@@ -376,7 +403,7 @@ ul {
 /* ─── Typography utilities ────────────────────────────────────── */
 .tag {
   display: inline-block;
-  font-size: 0.70rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -403,7 +430,7 @@ ul {
 
 .section-title-lg {
   font-family: var(--font-display);
-  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  font-size: var(--fs-display-lg);
   font-weight: 700;
   font-style: italic;
   color: var(--text-main);
@@ -429,18 +456,29 @@ ul {
   border-radius: 2px;
 }
 
+/* Eyebrows are labels, so caps are right at label length. Past ~12
+   characters they stop being labels: "EXCLUSIVE ACCESS" is 16, and caps
+   plus 0.18em tracking spreads it far enough that the word shapes are
+   gone. .eyebrow-long drops the transform and tightens the tracking;
+   Newsletter applies it automatically once the copy runs long, so an
+   editor lengthening the CMS string cannot reintroduce the problem. */
 .eyebrow {
-  font-size: 0.68rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent-text);
 }
 
+.eyebrow-long {
+  letter-spacing: 0.10em;
+  text-transform: none;
+}
+
 /* Size chip */
 .size-chip {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.06em;
   padding: 5px 10px;
@@ -483,7 +521,7 @@ ul {
 /* Note chip (fragrance notes) */
 .note-chip {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.06em;
   padding: 5px 13px;
@@ -615,7 +653,7 @@ ul {
 }
 
 .nav-link {
-  font-size: 0.80rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -682,7 +720,7 @@ ul {
   justify-content: space-between;
   padding: 16px 4px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--fs-base);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--ink);
@@ -704,10 +742,17 @@ ul {
   overflow: hidden;
 }
 
+/* Three stacked scrims were multiplying: a flat 60% wash, a radial that
+   added up to 40% more, and a bottom gradient at 85%. Together they took the
+   bottle — the one thing the hero exists to show — down to near-black.
+   The flat wash is now light enough to leave the product visible, and the
+   contrast the white copy needs is bought where the copy actually sits: the
+   radial darkens the frame while staying clear at the centre, and the bottom
+   gradient still anchors the headline block. */
 .hero-overlay-dark {
   position: absolute;
   inset: 0;
-  background: rgba(10, 9, 8, 0.60);
+  background: rgba(10, 9, 8, 0.34);
   z-index: 1;
 }
 
@@ -715,7 +760,7 @@ ul {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: radial-gradient(ellipse 70% 60% at 50% 46%, rgba(0, 0, 0, 0) 0%, rgba(10, 9, 8, 0.40) 100%);
+  background: radial-gradient(ellipse 70% 60% at 50% 46%, rgba(0, 0, 0, 0) 0%, rgba(10, 9, 8, 0.48) 100%);
 }
 
 .hero-overlay-bottom {
@@ -759,7 +804,7 @@ ul {
 .hero-eyebrow {
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.68);
@@ -768,7 +813,7 @@ ul {
 .hero-badge {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 0.76rem;
+  font-size: var(--fs-xs);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #fff;
@@ -780,7 +825,7 @@ ul {
 
 .hero-title {
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 5.5vw, 5rem);
+  font-size: var(--fs-hero);
   font-weight: 700;
   line-height: 1.08;
   color: #fff;
@@ -799,7 +844,7 @@ ul {
 }
 
 .hero-desc {
-  font-size: 1rem;
+  font-size: var(--fs-base);
   line-height: 1.9;
   color: rgba(255, 255, 255, 0.68);
   max-width: 520px;
@@ -834,10 +879,15 @@ ul {
   opacity: 0.7;
 }
 
+/* Not a label — it is a 45-character phrase ("Extrait de Parfum (EDP) ·
+   40 mL / 1.35 fl. oz."), and uppercase at that length strips the word
+   shapes a reader scans by. Small caps-adjacent weight carries the same
+   quiet-spec tone without the read cost. Component-side normalisation in
+   product/blocks.tsx also un-shouts values an editor typed in caps. */
 .sig-concentration {
-  font-size: 0.80rem;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.04em;
+  text-transform: none;
   color: var(--text-faint);
   margin: 10px 0 18px;
 }
@@ -863,7 +913,7 @@ ul {
 .sig-price {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: var(--fs-lg);
   color: var(--accent-strong);
   letter-spacing: 0.03em;
 }
@@ -955,14 +1005,14 @@ ul {
 
 .sig-tagline {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: var(--fs-md);
   font-style: italic;
   line-height: 1.75;
   color: var(--text-main);
 }
 
 .sig-desc {
-  font-size: 0.94rem;
+  font-size: var(--fs-base);
   line-height: 1.85;
   color: var(--text-muted);
 }
@@ -992,7 +1042,7 @@ ul {
 }
 
 .sig-note-tier {
-  font-size: 0.68rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.10em;
   text-transform: uppercase;
@@ -1015,13 +1065,13 @@ ul {
 }
 
 .sig-note-impression {
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
   line-height: 1.65;
   color: var(--text-muted);
 }
 
 .sig-size-label {
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.10em;
   text-transform: uppercase;
@@ -1043,7 +1093,7 @@ ul {
 }
 
 .sig-ordering-note {
-  font-size: 0.80rem;
+  font-size: var(--fs-xs);
   line-height: 1.75;
   color: var(--text-faint);
   padding-left: 14px;
@@ -1073,14 +1123,14 @@ ul {
 
 .sig-highlight-title {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   color: var(--text-main);
   margin-bottom: 8px;
 }
 
 .sig-highlight-body {
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   line-height: 1.75;
   color: var(--text-muted);
 }
@@ -1093,7 +1143,7 @@ ul {
 
 .sig-detail-heading {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: var(--fs-md);
   font-weight: 700;
   color: var(--text-main);
   margin-bottom: 20px;
@@ -1112,7 +1162,7 @@ ul {
 }
 
 .sig-spec-row dt {
-  font-size: 0.74rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1120,7 +1170,7 @@ ul {
 }
 
 .sig-spec-row dd {
-  font-size: 0.88rem;
+  font-size: var(--fs-sm);
   color: var(--text-main);
   line-height: 1.6;
 }
@@ -1141,7 +1191,7 @@ ul {
 }
 
 .sig-usage-num {
-  font-size: 0.74rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--accent-text);
   padding-top: 3px;
@@ -1151,13 +1201,13 @@ ul {
 .sig-usage-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.94rem;
+  font-size: var(--fs-base);
   color: var(--text-main);
   margin-bottom: 4px;
 }
 
 .sig-usage-body {
-  font-size: 0.84rem;
+  font-size: var(--fs-sm);
   line-height: 1.75;
   color: var(--text-muted);
 }
@@ -1179,7 +1229,7 @@ ul {
 
 .commit-headline {
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  font-size: var(--fs-display-sm);
   font-weight: 700;
   line-height: 1.18;
   color: var(--text-main);
@@ -1187,7 +1237,7 @@ ul {
 }
 
 .commit-body {
-  font-size: 0.94rem;
+  font-size: var(--fs-base);
   color: var(--text-muted);
   line-height: 1.8;
   margin-bottom: 28px;
@@ -1268,7 +1318,7 @@ ul {
 
 .about-cta-tag {
   display: block;
-  font-size: 0.70rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.20em;
   text-transform: uppercase;
@@ -1278,7 +1328,7 @@ ul {
 
 .about-cta-heading {
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-size: var(--fs-display);
   font-weight: 700;
   color: var(--text-main);
   margin-bottom: 20px;
@@ -1286,7 +1336,7 @@ ul {
 }
 
 .about-cta-body {
-  font-size: 0.96rem;
+  font-size: var(--fs-base);
   color: var(--text-muted);
   max-width: 440px;
   margin: 0 auto 32px;
@@ -1349,7 +1399,7 @@ ul {
 
 .newsletter-title {
   font-family: var(--font-display);
-  font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+  font-size: var(--fs-display);
   font-weight: 700;
   color: #fff;
   margin-bottom: 16px;
@@ -1364,7 +1414,7 @@ ul {
   color: rgba(255, 255, 255, 0.58);
   margin-bottom: 40px;
   line-height: 1.8;
-  font-size: 1rem;
+  font-size: var(--fs-base);
   max-width: 520px;
   margin-left: auto;
   margin-right: auto;
@@ -1385,7 +1435,7 @@ ul {
   border: none;
   outline: none;
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: var(--fs-base);
   background: rgba(255, 255, 255, 0.07);
   color: #fff;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
@@ -1398,7 +1448,7 @@ ul {
   padding: 26px 44px;
   color: var(--accent-soft);
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: var(--fs-md);
 }
 
 /* ─── Footer ──────────────────────────────────────────────────── */
@@ -1419,7 +1469,7 @@ ul {
 .footer-brand-name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.6rem;
+  font-size: var(--fs-xl);
   letter-spacing: 0.18em;
   color: var(--accent);
   text-transform: uppercase;
@@ -1427,23 +1477,28 @@ ul {
 }
 
 .footer-tagline {
-  font-size: 0.86rem;
+  font-size: var(--fs-sm);
   color: var(--text-muted);
   line-height: 1.8;
   max-width: 260px;
   margin-bottom: 24px;
 }
 
+/* Three columns, three tracks. This declared four — repeat(3, 1fr) plus a
+   200px track with nothing in it — so 200px of the row sat empty on the right
+   while the three real columns divided what was left. Opening Hours, the
+   widest content of the three, was the one that got squeezed, which is why
+   "Monday – Saturday" broke across lines. */
 .footer-nav {
   display: grid;
-  grid-template-columns: repeat(3, 1fr) 200px;
+  grid-template-columns: 1fr 1fr minmax(210px, 1.35fr);
   gap: 32px;
 }
 
 .footer-col-heading {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 0.70rem;
+  font-size: var(--fs-xs);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-main);
@@ -1451,7 +1506,7 @@ ul {
 }
 
 .footer-link {
-  font-size: 0.88rem;
+  font-size: var(--fs-sm);
   color: var(--text-muted);
   transition: color 0.18s;
   display: inline-block;
@@ -1461,19 +1516,44 @@ ul {
   color: var(--text-main);
 }
 
-.footer-hours-row {
+/* Hours are a description list: the day range is the term, the times are the
+   definition. They were a space-between flex row, which pushed the two apart
+   to opposite edges of the column and left the reader to work out which time
+   belonged to which range — and once a range was long enough to wrap, the
+   day and its hours no longer even shared a line. Stacked, each entry reads
+   top to bottom as one unit and nothing wraps mid-range. */
+.footer-hours {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.82rem;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-hours-row {
+  display: grid;
+  gap: 2px;
+  font-size: var(--fs-sm);
+}
+
+.footer-hours-day {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.footer-hours-row--closed .footer-hours-day {
+  color: var(--text-faint);
+}
+
+.footer-hours-time {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 /* "Closed" is information, not an error — red read as alarming. */
 .footer-closed {
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--text-faint);
 }
 
@@ -1488,7 +1568,7 @@ ul {
 }
 
 .footer-copy {
-  font-size: 0.80rem;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
 }
 
@@ -1523,7 +1603,7 @@ ul {
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: var(--fs-sm);
   color: var(--text-main);
   background: var(--surface);
   outline: none;
@@ -1536,7 +1616,7 @@ ul {
 
 .contact-label {
   display: block;
-  font-size: 0.70rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1545,7 +1625,7 @@ ul {
 }
 
 .contact-error {
-  font-size: 0.74rem;
+  font-size: var(--fs-xs);
   color: #e05555;
   margin-top: 4px;
 }
@@ -1711,7 +1791,7 @@ ul {
 
 .policy-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--fs-display);
   font-weight: 700;
   line-height: 1.1;
   color: var(--text-main);
@@ -1719,7 +1799,7 @@ ul {
 }
 
 .policy-updated {
-  font-size: 0.74rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1727,7 +1807,7 @@ ul {
 }
 
 .policy-intro {
-  font-size: 1rem;
+  font-size: var(--fs-base);
   line-height: 1.9;
   color: var(--text-muted);
   margin-top: 24px;
@@ -1742,14 +1822,14 @@ ul {
   align-items: baseline;
   gap: 14px;
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: var(--fs-md);
   font-weight: 700;
   color: var(--text-main);
   margin-bottom: 14px;
 }
 
 .policy-num {
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--accent-text);
@@ -1757,7 +1837,7 @@ ul {
 }
 
 .policy-body {
-  font-size: 0.94rem;
+  font-size: var(--fs-base);
   line-height: 1.9;
   color: var(--text-muted);
   margin-bottom: 14px;
@@ -1785,7 +1865,7 @@ ul {
   cursor: pointer;
   list-style: none;
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: var(--fs-base);
   font-weight: 700;
   color: var(--text-main);
   transition: color 0.22s;
@@ -1817,7 +1897,7 @@ ul {
 .faq-answer {
   padding: 0 4px 24px;
   margin: 0;
-  font-size: 0.94rem;
+  font-size: var(--fs-base);
   line-height: 1.9;
   color: var(--text-muted);
   max-width: 62ch;
@@ -1869,7 +1949,7 @@ ul {
 }
 
 .sig-label-note {
-  font-size: 0.74rem;
+  font-size: var(--fs-xs);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-faint);
@@ -1879,7 +1959,7 @@ ul {
 .sig-label-block:last-child { margin-bottom: 0; }
 
 .sig-label-key {
-  font-size: 0.70rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -1890,14 +1970,14 @@ ul {
 /* The INCI list is reference text: even, unhurried, easy to scan for a single
    word. Not justified — justification opens rivers in a long comma list. */
 .sig-ingredients {
-  font-size: 0.92rem;
+  font-size: var(--fs-base);
   line-height: 1.85;
   color: var(--text-main);
   max-width: 68ch;
 }
 
 .sig-allergen {
-  font-size: 0.90rem;
+  font-size: var(--fs-base);
   line-height: 1.75;
   color: var(--text-muted);
   max-width: 68ch;
@@ -1912,13 +1992,13 @@ ul {
   padding: 14px 18px;
   border-left: 2px solid var(--accent);
   background: var(--accent-glow);
-  font-size: 0.90rem;
+  font-size: var(--fs-base);
   line-height: 1.6;
   color: var(--text-main);
 }
 
 .sig-warning-tag {
-  font-size: 0.68rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -1940,33 +2020,16 @@ ul {
   background: var(--white);
 }
 
-/* Ordering note and the route to the reference detail, spanning the full
-   width beneath the gallery and buy column. Neither is part of the purchase
-   decision, so both sit apart from it rather than crowding the button. */
-.sig-footnote {
-  margin-top: 40px;
-  padding-top: 26px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 32px;
-  flex-wrap: wrap;
-}
-
-.sig-footnote .sig-ordering-note {
-  flex: 1 1 460px;
-  margin: 0;
-  max-width: 74ch;
-}
-
+/* The route to the reference detail, now the closing line of the buy column
+   rather than a full-width band under the grid. It sits under the order
+   button because that is where the question it answers gets asked — "what is
+   actually in this before I send the message" — and a link about the product
+   belongs beside the product, not aligned to the gallery. */
 .sig-footnote-link {
-  flex: 0 0 auto;
-  font-size: 0.84rem;
-}
-
-@media (max-width: 760px) {
-  .sig-footnote { gap: 18px; }
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-sm);
 }
 
 .sig-detail-link {

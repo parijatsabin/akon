@@ -453,10 +453,13 @@ export const HeroTab: React.FC<EditorProps> = ({ onSave }) => {
             <Section title="CTA Buttons">
                 <div style={{ marginBottom: 20 }}>
                     <div className="adm-item-title" style={{ marginBottom: 10 }}>Primary</div>
-                    <div className="adm-grid-2">
-                        <Field label="Label"><Input value={form.ctaPrimary.label} onChange={(e) => setCta("ctaPrimary", "label", e.target.value)} /></Field>
-                        <Field label="Link"><Input value={form.ctaPrimary.href} onChange={(e) => setCta("ctaPrimary", "href", e.target.value)} /></Field>
-                    </div>
+                    {/* No Link field. This button scrolls to the signature
+                        product further down the homepage — a fixed destination
+                        set in Hero.tsx — so an editable href here would accept
+                        a value and then be ignored. Only the label is content. */}
+                    <Field label="Label" hint="Scrolls to the signature product below. Destination is fixed.">
+                        <Input value={form.ctaPrimary.label} onChange={(e) => setCta("ctaPrimary", "label", e.target.value)} />
+                    </Field>
                 </div>
                 <div style={{ paddingTop: 20, borderTop: "1px solid var(--border)" }}>
                     <div style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 12 }}>Secondary</div>
