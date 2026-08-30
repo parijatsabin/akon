@@ -11,6 +11,10 @@
 > - Navigation tables were dropped entirely; the navbar and footer links are
 >   constants in the components.
 > - `audit_log` was deferred and never built.
+> - The hosting moved to a different Cloudflare account and the Worker was
+>   renamed `akon` -> `anok`, so §1.1's deployment details and any
+>   `*.workers.dev` URL from that era are stale. [wrangler.jsonc](wrangler.jsonc)
+>   is authoritative for hosting.
 > - The `admin-create-user` edge function was deferred, then built as specced
 >   in §4 — together with `/admin/users` and a self-service `/admin/account`
 >   password page, which §7.6 did not anticipate. It is needed because
@@ -32,7 +36,7 @@
 
 ## 0. Role and objective
 
-You are a senior full-stack engineer working in this repository (`d:\.abion\akon`, project `akon` / package `odore-perla`).
+You are a senior full-stack engineer working in this repository (`d:\.abion\akon`, Worker `anok` / package `odore-perla`).
 
 **Objective:** make **Supabase the exclusive source of every piece of website content, media, and identity**. After this migration:
 

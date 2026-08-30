@@ -1,6 +1,17 @@
 ﻿{
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "akon",
+  // Worker script name. Lowercase is a platform rule, not a preference:
+  // Cloudflare rejects anything else with "Expected name to be ... alphanumeric
+  // and lowercase with dashes only". Renaming is create-new + delete-old, never
+  // in place -- the previous script was "akon".
+  "name": "anok",
+
+  // Pinned deliberately. Without it wrangler deploys to whichever account the
+  // current `wrangler login` happens to hold, which is how a deploy silently
+  // lands somewhere new after an account switch. Pinning turns that into a
+  // loud failure instead. Change it only alongside a real account move, and
+  // confirm with `wrangler whoami`.
+  "account_id": "7243055b095af954817389aad90c5c96",
   "compatibility_date": "2026-06-19",
   "observability": {
     "enabled": true
@@ -12,4 +23,13 @@
   "compatibility_flags": [
     "nodejs_compat"
   ]
+
+  // NO ROUTE IS CONFIGURED YET. This account has never registered a
+  // *.workers.dev subdomain, so `wrangler deploy` uploads the Worker and then
+  // exits with "You need to register a workers.dev subdomain before publishing
+  // to workers.dev" -- the script is live but nothing addresses it. Fix by
+  // either registering the subdomain once in the dashboard, or adding the
+  // custom domain here once its zone is in this account:
+  //
+  //   "routes": [{ "pattern": "example.com", "custom_domain": true }]
 }

@@ -2,7 +2,13 @@
 # `npx supabase start` reads this. Hosted-project settings live in the
 # dashboard; keep the auth section here in sync with it.
 
-project_id = "akon"
+# Local-only identifier: it prefixes the Docker container/volume names for
+# `supabase start`. It is NOT the hosted project ref -- that is
+# `cilrqtdwkfytjhltluln`, recorded in supabase/.temp/project-ref by
+# `supabase link` and referenced by VITE_SUPABASE_URL in .env.production.
+# Renaming this orphans any containers created under the old name; run
+# `supabase stop` before changing it, or `docker rm` the stragglers after.
+project_id = "anok"
 
 [api]
 enabled = true
