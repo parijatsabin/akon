@@ -85,7 +85,13 @@ function website({ brand }: SiteData): JsonLd {
     };
 }
 
-function product({ brand, featuredProduct: p }: SiteData): JsonLd | null {
+/**
+ * `withOffer` tracks whether the price is actually rendered on the page being
+ * described. Google requires a marked-up price to be visible to the reader, so
+ * /fragrance -- which shows the product but deliberately no pricing -- gets the
+ * Product entity without an Offer rather than a claim the page does not back up.
+ */
+function product({ brand, featuredProduct: p }: SiteData, withOffer: boolean): JsonLd | null {
     if (!p?.name) return null;
 
     const image = p.images.map(absoluteAsset).filter((u): u is string => Boolean(u));
@@ -101,7 +107,7 @@ function product({ brand, featuredProduct: p }: SiteData): JsonLd | null {
         ...(p.collection ? { category: p.collection } : {}),
         // Only claim an offer when there is a real number behind it. An Offer
         // with a missing price is an invalid entity, not a partial one.
-        ...(priced
+        ...(priced && withOffer
             ? {
                   offers: {
                       "@type": "Offer",
@@ -142,7 +148,8 @@ export function buildJsonLd(path: string, site: SiteData): JsonLd | null {
     // The product is presented and bought on the homepage, and /fragrance is
     // its detail page. Those are the only two pages that are *about* it.
     if (path === "/" || path === "/fragrance") {
-        const p = product(site);
+        // Only the homepage renders the price, and only it may claim an Offer.
+        const p = product(site, path === "/");
         if (p) nodes.push(p);
     }
 

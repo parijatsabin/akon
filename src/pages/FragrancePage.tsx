@@ -36,7 +36,7 @@ const FragrancePage: React.FC = () => {
                         one heading a search engine weighs most, on the page
                         that targets the product's own name. Both are the same
                         block, so both are fixed here. */}
-                    <ProductHeader product={product} as="h1" />
+                    <ProductHeader product={product} as="h1" showPricing={false} />
 
                     <div className="frag-gallery">
                         <ProductGallery product={product} />
