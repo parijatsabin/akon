@@ -1043,6 +1043,17 @@ ul {
   }
 }
 
+/* Shown when a product has no images at all. Holds the frame's 4/5 aspect so
+   an empty gallery does not collapse the layout around it. */
+.sig-img-empty {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 0 32px;
+}
+
 .sig-thumbs {
   display: flex;
   gap: 12px;
@@ -2442,6 +2453,21 @@ ul {
   margin-top: 0;
   padding-top: 0;
   border-top: none;
+}
+
+/* /fragrance is a single reading column, not the homepage's two-column buy
+   grid, so the gallery is centred and capped rather than filling half the
+   width — at full container width the bottle became the page. */
+.frag-gallery {
+  max-width: 440px;
+  margin: 0 auto 64px;
+}
+
+/* The sticky offset earns its keep beside a tall scrolling buy panel. Here
+   there is no second column to scroll past, so it would only detach the image
+   from the text it belongs to. */
+.frag-gallery .sig-gallery {
+  position: static;
 }
 
 .frag-back {

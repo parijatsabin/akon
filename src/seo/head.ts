@@ -42,17 +42,39 @@ const meta = (name: string, content: string): string =>
 const property = (name: string, content: string): string =>
     `<meta property="${name}" content="${escapeAttr(content)}">`;
 
+/** Absolute, because a relative og:image resolves against the crawler's own
+ *  host rather than the site's and the preview silently shows nothing. */
+function absolutise(url: string): string {
+    if (!url) return "";
+    if (/^https?:\/\//i.test(url)) return url;
+    return `${SITE_ORIGIN}${url.startsWith("/") ? "" : "/"}${url}`;
+}
+
+/**
+ * Picks the image a shared link previews with.
+ *
+ * seo.ogImage is the brand's logo, so every link shared of this site — and in
+ * this market that mostly means WhatsApp and Facebook — previewed as a logo
+ * tile. On the pages that are about the product, the product's own photograph
+ * is the one that gives someone a reason to tap. The CMS field stays the
+ * fallback and still owns every other page.
+ *
+ * Written against a product passed in rather than a hardcoded field, so a
+ * second product needs a route entry here and nothing else.
+ */
+function socialImage(path: string, site: SiteData): string {
+    const isProductPage = path === "/" || path === "/fragrance";
+    const productShot = site.featuredProduct?.images?.[0] ?? "";
+
+    if (isProductPage && productShot) return absolutise(productShot);
+    return absolutise(site.seo.ogImage);
+}
+
 export function renderHead(path: string, routeMeta: RouteMeta, site: SiteData): string {
     const canonical = absoluteUrl(path);
     const { seo, brand } = site;
 
-    // og:image must be absolute — a relative path resolves against the
-    // crawler's own host, not the site's, and the preview silently shows nothing.
-    const ogImage = seo.ogImage
-        ? /^https?:\/\//i.test(seo.ogImage)
-            ? seo.ogImage
-            : `${SITE_ORIGIN}${seo.ogImage.startsWith("/") ? "" : "/"}${seo.ogImage}`
-        : "";
+    const ogImage = socialImage(path, site);
 
     const isHome = path === "/";
 

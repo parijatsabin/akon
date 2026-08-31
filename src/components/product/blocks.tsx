@@ -25,8 +25,23 @@ const TIERS = ["top", "heart", "base"] as const;
 export const ProductGallery: React.FC<{ product: ProductItem }> = ({ product }) => {
     const [active, setActive] = useState(0);
 
-    // Guards against an editor emptying the gallery in the CMS.
-    const images = product.images.length > 0 ? product.images : [""];
+    const images = product.images;
+
+    // An editor who empties the gallery in the CMS used to get a one-element
+    // array holding an empty string, which the browser renders as a broken
+    // image icon — the worst of both worlds, since it looks like a bug rather
+    // than missing content. A named frame reads as deliberate and keeps the
+    // page's proportions while a photograph is being prepared.
+    if (images.length === 0) {
+        return (
+            <Reveal className="sig-gallery">
+                <div className="sig-img-wrap">
+                    <p className="sig-img-empty">{product.name}</p>
+                </div>
+            </Reveal>
+        );
+    }
+
     const current = images[Math.min(active, images.length - 1)];
 
     return (
