@@ -1,16 +1,22 @@
 /* ═══════════════════════════════════════════════════════════════
-   ANOK — Design Tokens
-   Palette: White & Gold. Light-led, taking the accent straight from the
-   logo wordmark. Dark sections (hero, newsletter, footer) are anchors,
-   opted into with .on-noir.
+   ANOK - Design Tokens
+   Palette: warm ivory, beige and gold. Light-led. Dark sections (hero,
+   newsletter, footer) are warm-espresso anchors, opted into with .on-noir.
 
-   GOLD ON WHITE IS A CONTRAST TRAP — the brand gold #a8813f scores only
-   3.57:1 on white, which fails AA for small text, and white text on it
-   fails too. Hence two tiers:
-     --accent         brand gold. Rules, icons, borders, large display type.
-     --accent-strong  deeper gold (5.02:1 on white). Any SMALL gold text on
-                      white, and any fill that carries a white label.
-   Never set small text in --accent on a light surface; use --accent-strong.
+   THE CANVAS IS IVORY, NOT WHITE. Every contrast figure below is measured
+   against #f6f1e8, which is darker than white - so ratios that passed on
+   white do not automatically pass here. The brand gold #8a6a32 scores
+   4.46:1 on ivory: fine for large type, rules and icons, but it MISSES the
+   4.5:1 minimum for small text. Hence two tiers, as before:
+     --accent         brand gold. Rules, icons, borders, large display type,
+                      and button fills (a cream label on it is 4.93:1).
+     --accent-strong  deeper gold, 5.82:1 on ivory and >=4.75:1 on every
+                      other light surface. Any SMALL gold text.
+   Never set small text in --accent on a light surface; use --accent-text.
+
+   On the dark anchors gold inverts: #8a6a32 on espresso is 2.22:1, which
+   is unreadable. --accent-soft is the dark-context tier (6.00:1), and is
+   what --accent-text resolves to inside .on-noir.
 
    Semantic tokens (--text-main, --text-muted, --border, --surface) are
    declared here for the LIGHT context and re-declared inside .on-noir.
@@ -18,42 +24,57 @@
    var(--text-main) resolves correctly in both contexts unchanged.
    ═══════════════════════════════════════════════════════════════ */
 :root {
-  /* ── Light canvas ───────────────────────────────────────── */
+  /* ── Light canvas ───────────────────────────────────────────── */
+  --canvas: #f6f1e8;
+  /* ivory - the page itself */
+  --sunken: #eae1d2;
+  /* beige - a tonal step down */
+  --sunken-deep: #e5daca;
+  /* card / nested surface */
+  --cream: #fffdf8;
+  /* raised above the canvas, and the label on fills */
   --white: #ffffff;
-  --sunken: #faf8f4;
-  --sunken-deep: #f2eee7;
+  /* true white. Deliberately NOT the canvas. */
 
-  /* ── Dark anchors ───────────────────────────────────────── */
-  --noir: #0e0d0c;
-  --noir-raised: #1a1816;
+  /* ── Dark anchors ───────────────────────────────────────────── */
+  /* Warm espresso, not the old near-black #0e0d0c: a cool black beside a
+     warm ivory canvas reads as a hole punched in the page. */
+  --noir: #302b26;
+  --noir-raised: #4a3828;
 
-  /* ── Gold, from the logo ────────────────────────────────── */
-  --accent: #a8813f;
-  --accent-strong: #8a6a2f;
+  /* ── Gold ───────────────────────────────────────────────────── */
+  --accent: #8a6a32;
+  /* 4.46:1 on ivory - large text and non-text only */
+  --accent-strong: #75591f;
+  /* 5.82:1 on ivory - small text */
   --accent-soft: #c5a572;
+  /* 6.00:1 on noir - the dark-context tier */
   --accent-pale: #e8dcc4;
-  --accent-glow: rgba(168, 129, 63, 0.08);
-  --accent-rule: rgba(168, 129, 63, 0.26);
+  --accent-glow: rgba(138, 106, 50, 0.08);
+  --accent-rule: rgba(138, 106, 50, 0.26);
 
-  /* ── Ink ────────────────────────────────────────────────── */
-  --ink: #1a1815;
-  --ink-muted: #5c5852;
+  /* ── Ink ────────────────────────────────────────────────────── */
+  --ink: #302b26;
+  /* 12.45:1 on ivory */
+  --ink-muted: #665f57;
+  /*  5.59:1 */
   --ink-faint: #6e6a63;
+  /*  4.78:1 */
 
-  /* ── Semantic: LIGHT context (default) ──────────────────── */
-  --surface: var(--white);
-  --surface-raised: var(--white);
+  /* ── Semantic: LIGHT context (default) ──────────────────────── */
+  --surface: var(--canvas);
+  --surface-raised: var(--cream);
   --text-main: var(--ink);
   --text-muted: var(--ink-muted);
   --text-faint: var(--ink-faint);
   --accent-text: var(--accent-strong);
-  --border: #e7e3da;
-  --border-strong: #cfc9bc;
-  /* Button fill must carry a legible label. On white that means the deeper
-     gold with a white label (5.02:1); the brand gold would fail at 3.57:1. */
-  --accent-fill: var(--accent-strong);
-  --accent-fill-hover: #75591f;
-  --on-accent: #ffffff;
+  --border: #d7ccbc;
+  --border-strong: #c0b09a;
+  /* The fill carries a cream label at 4.93:1, so the brand gold itself
+     works here - on the old white canvas it would not have. */
+  --accent-fill: var(--accent);
+  --accent-fill-hover: var(--accent-strong);
+  --on-accent: var(--cream);
 
   /* ── Type ───────────────────────────────────────────────── */
   --font-display: "Playfair Display", Georgia, serif;
@@ -66,12 +87,18 @@
      15px, so --fs-xs is 12px: the floor for anything that is real copy,
      including the eyebrows, which used to render at 10px.
      Nothing below should set a raw font-size; pick the nearest step. */
-  --fs-xs: 0.80rem;    /* 12.0px — eyebrows, tags, chips, button labels */
-  --fs-sm: 0.88rem;    /* 13.2px — meta, captions, dense lists */
-  --fs-base: 0.95rem;  /* 14.3px — body copy */
-  --fs-md: 1.05rem;    /* 15.8px — lead paragraphs, card titles */
-  --fs-lg: 1.20rem;    /* 18.0px — price, standout figures */
-  --fs-xl: 1.60rem;    /* 24.0px — wordmark */
+  --fs-xs: 0.80rem;
+  /* 12.0px — eyebrows, tags, chips, button labels */
+  --fs-sm: 0.88rem;
+  /* 13.2px — meta, captions, dense lists */
+  --fs-base: 0.95rem;
+  /* 14.3px — body copy */
+  --fs-md: 1.05rem;
+  /* 15.8px — lead paragraphs, card titles */
+  --fs-lg: 1.20rem;
+  /* 18.0px — price, standout figures */
+  --fs-xl: 1.60rem;
+  /* 24.0px — wordmark */
   --fs-display-sm: clamp(1.6rem, 2.8vw, 2.2rem);
   --fs-display: clamp(1.9rem, 3.4vw, 2.9rem);
   --fs-display-lg: clamp(2.2rem, 4vw, 3.6rem);
@@ -83,9 +110,9 @@
   --radius-lg: 18px;
 
   /* ── Elevation ──────────────────────────────────────────── */
-  --shadow: 0 2px 16px rgba(26, 24, 21, 0.06);
-  --shadow-lg: 0 14px 50px rgba(26, 24, 21, 0.11);
-  --shadow-accent: 0 6px 26px rgba(168, 129, 63, 0.18);
+  --shadow: 0 2px 16px rgba(48, 43, 38, 0.07);
+  --shadow-lg: 0 14px 50px rgba(48, 43, 38, 0.12);
+  --shadow-accent: 0 6px 26px rgba(138, 106, 50, 0.18);
 
   /* ── Motion ─────────────────────────────────────────────── */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -96,8 +123,34 @@
 }
 
 /* ── Semantic: DARK context ────────────────────────────────── */
-/* On noir the soft gold reads best and needs no deeper tier. */
-.on-noir,
+/* On noir the soft gold reads best and needs no deeper tier.
+
+   This block previously had no body: the selector ran straight into the
+   reset below, so `.on-noir` was silently parsed as part of the reset's
+   selector list and NONE of these tokens ever applied. Dark sections
+   inherited the light values instead - which is why admin.css redefines
+   its own sidebar tokens by hand. Restored here. --accent-fill and
+   --on-accent are deliberately left inherited: a gold fill with a cream
+   label is 4.93:1 and reads correctly in either context. */
+.on-noir {
+  --surface: var(--noir);
+  --surface-raised: var(--noir-raised);
+  /* Ratios on --noir: cream 13.78:1, muted 7.28:1, faint 5.67:1. */
+  --text-main: var(--cream);
+  --text-muted: #c3baa9;
+  --text-faint: #ada492;
+  --accent-text: var(--accent-soft);
+  --border: rgba(255, 253, 248, 0.12);
+  --border-strong: rgba(255, 253, 248, 0.24);
+
+  /* The background belongs here too, not only the tokens: .footer-root sets
+     no background of its own and relies on this class for it. Without it the
+     footer kept the ivory canvas while its text switched to cream — invisible
+     headings. The other users (.newsletter-section, .login-left, .adm-sidebar)
+     each set the same value themselves, so this is a no-op for them. */
+  background: var(--surface);
+  color: var(--text-main);
+}
 
 /* ─── Reset ───────────────────────────────────────────────────── */
 *,
@@ -116,7 +169,7 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--white);
+  background: var(--surface);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   line-height: 1.65;
@@ -233,7 +286,7 @@ ul {
 }
 
 /* Children cascade in rather than arriving as one block. */
-.reveal-stagger > * {
+.reveal-stagger>* {
   opacity: 0;
   transform: translate3d(0, 18px, 0);
   transition:
@@ -243,17 +296,34 @@ ul {
 
 /* Reveals when .is-revealed lands on the stagger element itself OR on any
    ancestor — so the hook can sit on a wrapper without silently doing nothing. */
-:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger) > * {
+:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger)>* {
   opacity: 1;
   transform: translate3d(0, 0, 0);
 }
 
-:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger) > *:nth-child(1) { transition-delay: 60ms; }
-:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger) > *:nth-child(2) { transition-delay: 140ms; }
-:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger) > *:nth-child(3) { transition-delay: 220ms; }
-:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger) > *:nth-child(4) { transition-delay: 300ms; }
-:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger) > *:nth-child(5) { transition-delay: 380ms; }
-:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger) > *:nth-child(n + 6) { transition-delay: 460ms; }
+:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger)>*:nth-child(1) {
+  transition-delay: 60ms;
+}
+
+:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger)>*:nth-child(2) {
+  transition-delay: 140ms;
+}
+
+:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger)>*:nth-child(3) {
+  transition-delay: 220ms;
+}
+
+:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger)>*:nth-child(4) {
+  transition-delay: 300ms;
+}
+
+:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger)>*:nth-child(5) {
+  transition-delay: 380ms;
+}
+
+:is(.reveal-stagger.is-revealed, .is-revealed .reveal-stagger)>*:nth-child(n + 6) {
+  transition-delay: 460ms;
+}
 
 /* Underline that grows from the left on hover. */
 .link-underline {
@@ -280,6 +350,7 @@ ul {
 
 /* One global off-switch. Anything animated must degrade through here. */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -290,7 +361,7 @@ ul {
   }
 
   .reveal,
-  .reveal-stagger > * {
+  .reveal-stagger>* {
     opacity: 1;
     transform: none;
   }
@@ -301,8 +372,9 @@ ul {
 /* Light sections inherit the :root tokens and need no class; use
    `.bg-sunken` for a subtle tonal step. Dark anchors opt in with
    `.on-noir`, which carries both the tokens and the background. */
+/* Name kept for the call sites; the canvas is ivory now, not white. */
 .bg-white {
-  background: var(--white);
+  background: var(--canvas);
 }
 
 .bg-sunken {
@@ -397,7 +469,7 @@ ul {
 .btn-hero-ghost:hover {
   color: #fff;
   border-color: var(--accent);
-  background: rgba(197,165,114, 0.15);
+  background: rgba(197, 165, 114, 0.15);
 }
 
 /* ─── Typography utilities ────────────────────────────────────── */
@@ -613,7 +685,9 @@ ul {
   --text-main: var(--ink);
   --accent-text: var(--accent-strong);
 
-  background: rgba(255, 255, 255, 0.88);
+  /* Ivory-tinted, not white: a translucent white bar over the ivory canvas
+     reads as a cold strip laid across a warm page. */
+  background: rgba(246, 241, 232, 0.88);
   backdrop-filter: blur(20px) saturate(1.4);
   border-bottom-color: var(--border);
   box-shadow: 0 1px 20px rgba(26, 24, 21, 0.05);
@@ -699,7 +773,7 @@ ul {
 .mobile-menu {
   max-height: 0;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(246, 241, 232, 0.97);
   backdrop-filter: blur(20px);
   transition: max-height var(--dur-slow) var(--ease-out);
 }
@@ -820,7 +894,7 @@ ul {
   background: var(--accent);
   padding: 6px 18px;
   border-radius: 4px;
-  box-shadow: 0 2px 16px rgba(197,165,114, 0.45);
+  box-shadow: 0 2px 16px rgba(197, 165, 114, 0.45);
 }
 
 .hero-title {
@@ -941,7 +1015,7 @@ ul {
   overflow: hidden;
   aspect-ratio: 4 / 5;
   background:
-    radial-gradient(120% 90% at 50% 15%, #ffffff 0%, var(--sunken) 55%, var(--sunken-deep) 100%);
+    radial-gradient(120% 90% at 50% 15%, var(--cream) 0%, var(--sunken) 55%, var(--sunken-deep) 100%);
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -958,8 +1032,15 @@ ul {
 }
 
 @keyframes sigImgIn {
-  from { opacity: 0; transform: scale(0.985); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .sig-thumbs {
@@ -1273,6 +1354,288 @@ ul {
 }
 
 /* ─── About page CTA strip ────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   About page
+
+   The page body used to be ~200 inline style objects across five
+   sections, three of which were bordered-card grids in a row. That is
+   why it read as bulky: every block of content carried the same visual
+   weight, so nothing led. These rules replace the boxes with hairlines
+   and typography, and alternate the section grounds canvas/tint so the
+   sections separate without each one needing a border.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Alternating grounds. Previously ivory -> #eae1d2 -> #e5daca ran two
+   near-identical tinted bands together with no readable seam. */
+.ab-band--canvas { background: var(--surface); }
+.ab-band--tint { background: var(--sunken); }
+
+.ab-h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-display-lg);
+  font-weight: 700;
+  line-height: 1.08;
+  color: var(--text-main);
+  margin-bottom: 24px;
+}
+
+.ab-h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 1.12;
+  color: var(--text-main);
+}
+
+.ab-lede {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  line-height: 1.85;
+  margin-bottom: 18px;
+}
+
+.ab-body {
+  font-size: var(--fs-base);
+  color: var(--text-muted);
+  line-height: 1.85;
+  margin-bottom: 32px;
+}
+
+.ab-head { margin-bottom: 56px; }
+.ab-head--center { text-align: center; max-width: 620px; margin-inline: auto; }
+.ab-head .ab-h2 { margin-bottom: 12px; }
+
+.ab-head-note {
+  font-size: var(--fs-base);
+  color: var(--accent-text);
+  font-style: italic;
+}
+
+/* ─── Brand story ─────────────────────────────────────────────── */
+/* Heading and copy split across the row. A single 720px column left the
+   right half of the section empty; splitting fills the width without
+   pushing body copy past a readable measure — the copy column is still
+   only ~600px, so line length is unchanged. */
+.ab-story {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 72px;
+  align-items: start;
+}
+
+.ab-story-head .ab-h1 { margin-bottom: 0; }
+
+.ab-body--last { margin-bottom: 0; }
+
+/* ─── Why choose us ───────────────────────────────────────────── */
+.ab-reasons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 44px 40px;
+  list-style: none;
+}
+
+.ab-reason { border-top: 1px solid var(--border-strong); padding-top: 22px; }
+
+/* Large enough to qualify as large text, so the brand gold's 3.87:1 on
+   the tinted ground clears AA. The old 0.70rem numerals were set in
+   --accent-soft at roughly 2:1 and were effectively invisible. */
+.ab-reason-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.ab-reason-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.ab-reason-body {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: 1.75;
+}
+
+/* ─── Commitment ──────────────────────────────────────────────── */
+/* Top-aligned, not centred: the pillar list is much taller than the copy,
+   so centring pushed the heading down the page and opened a band of dead
+   space above it. */
+.ab-commit {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 72px;
+  align-items: start;
+}
+
+.ab-commit-copy .ab-h2 { margin-bottom: 20px; }
+
+.ab-pillars { list-style: none; }
+
+.ab-pillar {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 22px 0;
+  border-top: 1px solid var(--border-strong);
+}
+
+.ab-pillar:last-child { border-bottom: 1px solid var(--border-strong); }
+
+.ab-pillar-icon {
+  color: var(--accent-text);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ab-pillar-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 5px;
+}
+
+.ab-pillar-body {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* ─── Customer reviews ────────────────────────────────────────── */
+.ab-voices-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 44px;
+}
+
+.ab-arrows { display: flex; gap: 10px; align-self: center; }
+
+.ab-arrow {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: all 0.22s var(--ease);
+}
+
+.ab-arrow:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.ab-arrow:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.ab-voices-frame {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* The track translates by whole slides of 100/visibleCount, so the slots
+   must stay flex-basis driven with no gap — a gap would desynchronise the
+   transform from the slide width. */
+.ab-voices-track {
+  display: flex;
+  transition: transform 0.58s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.ab-voice-slot { flex-grow: 0; flex-shrink: 0; min-width: 0; }
+
+.ab-voice {
+  background: var(--surface-raised);
+  padding: 34px 30px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  border-left: 1px solid var(--border);
+}
+
+.ab-voice-slot:first-child .ab-voice { border-left: none; }
+
+.ab-stars { display: flex; gap: 3px; margin-bottom: 18px; }
+
+.ab-voice-quote {
+  font-size: var(--fs-base);
+  line-height: 1.8;
+  color: var(--text-main);
+  font-style: italic;
+  margin: 0 0 26px;
+  flex-grow: 1;
+}
+
+.ab-voice-by { display: grid; gap: 3px; }
+
+.ab-voice-name {
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  color: var(--text-main);
+}
+
+.ab-voice-role {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.ab-dots {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ab-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: var(--border-strong);
+  cursor: pointer;
+  transition: all 0.38s var(--ease);
+}
+
+.ab-dot.is-active { width: 32px; background: var(--accent); }
+
+.about-cta-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .ab-story,
+  .ab-commit { grid-template-columns: 1fr; gap: 28px; }
+  /* Heading before pillars on narrow screens too — the source order already
+     leads with the copy, so nothing needs reordering here. */
+  .ab-reasons { grid-template-columns: repeat(2, 1fr); gap: 36px 32px; }
+}
+
+@media (max-width: 520px) {
+  .ab-reasons { grid-template-columns: 1fr; }
+}
+
 .about-cta-strip {
   position: relative;
   overflow: hidden;
@@ -1303,12 +1666,10 @@ ul {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(
-    to bottom,
-    rgba(20, 16, 13, 0.80) 0%,
-    rgba(20, 16, 13, 0.66) 50%,
-    rgba(20, 16, 13, 0.80) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(20, 16, 13, 0.80) 0%,
+      rgba(20, 16, 13, 0.66) 50%,
+      rgba(20, 16, 13, 0.80) 100%);
 }
 
 .about-cta-inner {
@@ -1343,9 +1704,17 @@ ul {
 }
 
 /* Over a photo the palette flips to light-on-dark */
-.about-cta-strip.has-image .about-cta-tag { color: var(--accent-soft); }
-.about-cta-strip.has-image .about-cta-heading { color: #fff; }
-.about-cta-strip.has-image .about-cta-body { color: rgba(255, 255, 255, 0.78); }
+.about-cta-strip.has-image .about-cta-tag {
+  color: var(--accent-soft);
+}
+
+.about-cta-strip.has-image .about-cta-heading {
+  color: #fff;
+}
+
+.about-cta-strip.has-image .about-cta-body {
+  color: rgba(255, 255, 255, 0.78);
+}
 
 /* ─── Newsletter ──────────────────────────────────────────────── */
 .newsletter-section {
@@ -1373,12 +1742,10 @@ ul {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(
-    to right,
-    rgba(20, 16, 13, 0.92) 0%,
-    rgba(20, 16, 13, 0.78) 55%,
-    rgba(20, 16, 13, 0.62) 100%
-  );
+  background: linear-gradient(to right,
+      rgba(20, 16, 13, 0.92) 0%,
+      rgba(20, 16, 13, 0.78) 55%,
+      rgba(20, 16, 13, 0.62) 100%);
 }
 
 .newsletter-ring {
@@ -1471,7 +1838,10 @@ ul {
   font-weight: 700;
   font-size: var(--fs-xl);
   letter-spacing: 0.18em;
-  color: var(--accent);
+  /* --accent-text, not --accent: the footer is a dark anchor, and the brand
+     gold is 2.22:1 on espresso. --accent-text resolves to --accent-soft
+     here (6.00:1) and to the deeper gold on light surfaces. */
+  color: var(--accent-text);
   text-transform: uppercase;
   margin-bottom: 16px;
 }
@@ -1573,7 +1943,8 @@ ul {
 }
 
 .footer-credit {
-  color: var(--accent);
+  /* Small gold text on a dark surface — see .footer-brand-name. */
+  color: var(--accent-text);
   font-weight: 600;
   transition: opacity 0.18s;
 }
@@ -1780,6 +2151,7 @@ ul {
     padding: 56px 0;
   }
 }
+
 /* ─── Policy & FAQ pages ──────────────────────────────────────── */
 .policy-container {
   max-width: 760px;
@@ -1955,8 +2327,13 @@ ul {
   color: var(--text-faint);
 }
 
-.sig-label-block { margin-bottom: 22px; }
-.sig-label-block:last-child { margin-bottom: 0; }
+.sig-label-block {
+  margin-bottom: 22px;
+}
+
+.sig-label-block:last-child {
+  margin-bottom: 0;
+}
 
 .sig-label-key {
   font-size: var(--fs-xs);
@@ -2007,7 +2384,10 @@ ul {
 }
 
 @media (max-width: 640px) {
-  .sig-label { margin-top: 40px; padding: 26px 20px; }
+  .sig-label {
+    margin-top: 40px;
+    padding: 26px 20px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2017,7 +2397,7 @@ ul {
 /* Was repeated as an inline style on four pages. */
 .page-shell {
   min-height: 100vh;
-  background: var(--white);
+  background: var(--surface);
 }
 
 /* The route to the reference detail, now the closing line of the buy column
@@ -2039,7 +2419,9 @@ ul {
   transition: border-color var(--dur-fast) var(--ease);
 }
 
-.sig-detail-link:hover { border-bottom-color: var(--accent); }
+.sig-detail-link:hover {
+  border-bottom-color: var(--accent);
+}
 
 /* ─── /fragrance ──────────────────────────────────────────────── */
 /* .sig-detail carries a top rule and 136px of space to separate it from the

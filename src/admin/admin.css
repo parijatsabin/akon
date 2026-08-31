@@ -6,17 +6,20 @@
    seven long-form sections reads as seven things rather than one wall.
    Three surfaces, in depth order:
 
-     canvas   --surface        warm off-white, the page itself
-     card     --surface-raised white, a section
-     nested   --sunken         an item inside a section
+     canvas   --surface        warm ivory, the page itself
+     card     --surface-raised cream, a section
+     nested   --sunken         beige, an item inside a section
 
-   Light :root tokens are inherited; the sidebar redefines its own because
-   .on-noir in index.css is broken (see .adm-sidebar).
+   Light :root tokens are inherited. The sidebar carries .on-noir for the
+   dark-context tokens and pins its own two surfaces on top (see
+   .adm-sidebar).
    ═══════════════════════════════════════════════════════════════ */
 
 .adm {
-  /* A hair off pure white so white inputs read as raised against it. */
-  --surface: #fbfaf8;
+  /* The canvas is the site ivory; cards sit on --surface-raised (cream),
+     so a section still reads as raised without a border doing the work.
+     Same tonal step as before, warmed to match the public palette. */
+  --surface: var(--canvas);
 
   /* Spacing scale — 4px base. Every gap/padding in the admin comes from
      here, so density is tuned in one place rather than 261 inline objects. */
@@ -51,22 +54,24 @@
 }
 
 .adm-sidebar {
-  /* Warm espresso rather than the near-black --noir (#0e0d0c). Pure black
-     next to a warm cream canvas reads as a hole punched in the page; this
-     shares the content area's warmth and sits with the gold instead of
-     fighting it.
+  /* Warm espresso. Pure black next to a warm ivory canvas reads as a hole
+     punched in the page; this shares the content area's warmth and sits
+     with the gold instead of fighting it. --noir is itself espresso now,
+     so these two surfaces simply name it and its raised tone.
 
-     The tokens are redefined here rather than inherited: .on-noir in
-     index.css has lost its declaration block (its selector runs straight
-     into the reset), so the dark-context values never arrive. Without these
-     the nav rendered --text-muted #5c5852 on near-black — about 2.3:1, far
-     below the 4.5:1 minimum. */
-  --sb-surface: #262119;
-  --sb-raised: #2f2920;
-  --text-main: #f6f2ea;    /* 13.9:1 on --sb-surface */
-  --text-muted: #c3baa9;   /*  8.1:1 */
-  --text-faint: #9a917f;   /*  4.9:1 */
-  --border: rgba(246, 242, 234, 0.10);
+     The dark-context tokens now arrive from .on-noir in index.css, whose
+     declaration block was restored (it had been absorbed into the reset,
+     so the nav was rendering --text-muted #5c5852 on near-black — about
+     2.3:1, far below the 4.5:1 minimum). They are still spelled out here
+     because the sidebar needs the two --sb-* surfaces by name, and keeping
+     the text tiers alongside them makes the ratios checkable in one place.
+     The values are identical to .on-noir; they are not an override. */
+  --sb-surface: var(--noir);
+  --sb-raised: var(--noir-raised);
+  --text-main: var(--cream);   /* 13.78:1 on --sb-surface */
+  --text-muted: #c3baa9;       /*  7.28:1 */
+  --text-faint: #ada492;       /*  5.67:1 */
+  --border: rgba(255, 253, 248, 0.12);
 
   width: 212px;
   flex-shrink: 0;
@@ -91,7 +96,9 @@
   font-size: 1.3rem;
   font-weight: 700;
   letter-spacing: 0.22em;
-  color: var(--accent);
+  /* Sits in the dark sidebar: --accent is 2.22:1 there, --accent-text
+     resolves to --accent-soft (6.00:1). */
+  color: var(--accent-text);
   line-height: 1;
 }
 

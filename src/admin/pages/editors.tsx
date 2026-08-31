@@ -18,6 +18,7 @@ import { SaveBar } from "../components/ui/Page";
 import { MapField } from "../components/ui/MapField";
 import { ImageField } from "../components/ui/ImageField";
 import { useToast } from "../components/ui/Toast";
+import { PILLAR_ICON_OPTIONS, DEFAULT_PILLAR_ICON, resolvePillarIcon } from "../../data/pillarIcons";
 import type {
     BrandData, HeroData, AboutData,
     CommitmentData, CommitmentPillar, NewsletterData, FooterData,
@@ -492,7 +493,6 @@ export const AboutTab: React.FC<EditorProps> = ({ onSave }) => {
     const [form, setForm] = useState<AboutData>(() => readStore().about);
     const [saving, setSaving] = useState(false);
     const set = (k: keyof AboutData, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
-    const setCta = (f2: "label" | "href", v: string) => setForm((f) => ({ ...f, cta: { ...f.cta, [f2]: v } }));
     const setReason = (i: number, f2: "title" | "body", v: string) => {
         const r = [...form.reasons]; r[i] = { ...r[i], [f2]: v }; set("reasons", r);
     };
@@ -515,13 +515,12 @@ export const AboutTab: React.FC<EditorProps> = ({ onSave }) => {
                 <Field label="Body Extended" hint="Optional second paragraph shown on the About page.">
                     <Textarea value={form.bodyExtended ?? ""} onChange={(e) => set("bodyExtended", e.target.value)} style={{ minHeight: 90 }} />
                 </Field>
-                <Field label="Brand Quote" hint="The italic pull-quote shown in the story card.">
-                    <Textarea value={form.brandQuote ?? ""} onChange={(e) => set("brandQuote", e.target.value)} style={{ minHeight: 72 }} />
-                </Field>
-                <div className="adm-grid-2">
-                    <Field label="CTA Label"><Input value={form.cta.label} onChange={(e) => setCta("label", e.target.value)} /></Field>
-                    <Field label="CTA Link"><Input value={form.cta.href} onChange={(e) => setCta("href", e.target.value)} /></Field>
-                </div>
+                {/* Brand Quote and the CTA Label/Link pair used to sit here. The
+                    About page no longer renders either, and nothing else on the
+                    site reads about.brandQuote or about.cta — so the inputs were
+                    editing copy that could never appear. The fields are still in
+                    AboutData and still round-trip through save(), so no migration
+                    is needed and no stored content was destroyed. */}
             </Section>
             <Section title="Why Choose Us">
                 <div className="adm-grid-2">
@@ -582,7 +581,7 @@ export const CommitmentTab: React.FC<EditorProps> = ({ onSave }) => {
     const setPillar = (i: number, k: keyof CommitmentPillar, v: string) => {
         const next = [...form.pillars]; next[i] = { ...next[i], [k]: v }; set("pillars", next);
     };
-    const addPillar = () => set("pillars", [...form.pillars, { id: `p${Date.now()}`, icon: "✦", title: "", body: "" }]);
+    const addPillar = () => set("pillars", [...form.pillars, { id: `p${Date.now()}`, icon: DEFAULT_PILLAR_ICON, title: "", body: "" }]);
     const removePillar = (i: number) => set("pillars", form.pillars.filter((_, x) => x !== i));
 
     const save = async () => {
@@ -622,9 +621,18 @@ export const CommitmentTab: React.FC<EditorProps> = ({ onSave }) => {
                 </button>
             }>
                 {form.pillars.map((p, i) => (
-                    <div key={p.id} style={{ display: "grid", gridTemplateColumns: "52px 1fr 1fr auto", gap: "0 12px", alignItems: "end", marginBottom: 12, padding: "12px 0", borderBottom: i < form.pillars.length - 1 ? "1px solid var(--border)" : "none" }}>
-                        <Field label={i === 0 ? "Icon" : ""} hint="Emoji">
-                            <Input value={p.icon} onChange={(e) => setPillar(i, "icon", e.target.value)} style={{ textAlign: "center", fontSize: "1.2rem" }} />
+                    <div key={p.id} style={{ display: "grid", gridTemplateColumns: "170px 1fr 1fr auto", gap: "0 12px", alignItems: "end", marginBottom: 12, padding: "12px 0", borderBottom: i < form.pillars.length - 1 ? "1px solid var(--border)" : "none" }}>
+                        {/* A picker, not a free-text emoji box. The value stored is a
+                            key from data/pillarIcons, which the About page resolves to a
+                            lucide component — the same registry feeds both, so the list
+                            here cannot drift from what the site can draw. Pillars saved
+                            before this change still hold an emoji; the preview shows what
+                            the site will actually render for them. */}
+                        <Field label={i === 0 ? "Icon" : ""}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                {(() => { const Preview = resolvePillarIcon(p.icon, i); return <Preview size={17} strokeWidth={1.7} style={{ color: "var(--accent-text)", flexShrink: 0 }} />; })()}
+                                <Select value={p.icon} onChange={(e) => setPillar(i, "icon", e.target.value)} options={PILLAR_ICON_OPTIONS} />
+                            </div>
                         </Field>
                         <Field label={i === 0 ? "Title" : ""}>
                             <Input value={p.title} onChange={(e) => setPillar(i, "title", e.target.value)} placeholder="Responsibly Sourced" />
