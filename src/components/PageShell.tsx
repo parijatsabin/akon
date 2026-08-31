@@ -11,6 +11,7 @@
 
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useRouteSeo } from "../hooks/useRouteSeo";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -26,6 +27,10 @@ interface PageShellProps {
 
 const PageShell: React.FC<PageShellProps> = ({ children, resetKey }) => {
     const { hash } = useLocation();
+
+    // Every public page sits in this frame, so the SEO tags are applied
+    // here once rather than repeated in each page component.
+    useRouteSeo();
 
     useEffect(() => {
         // A link with an anchor asked for a specific place on the page, and

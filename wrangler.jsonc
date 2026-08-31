@@ -16,9 +16,35 @@
   "observability": {
     "enabled": true
   },
+  // Entry point. Until SEO needed server-rendered meta tags this was an
+  // assets-only project with no script at all -- which is worth remembering,
+  // because a Worker in front of static assets is a thing that can break a
+  // site that previously could not. worker/index.ts falls back to serving the
+  // raw asset on any error for exactly that reason.
+  "main": "worker/index.ts",
+
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    // The Worker reaches the built files through this binding. Without it
+    // env.ASSETS is undefined and every request 500s.
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // Assets normally win before the Worker runs, which would serve index.html
+    // untouched for "/" -- the one request the meta injection exists for. This
+    // inverts that; the Worker hands non-document requests straight back to
+    // ASSETS.
+    "run_worker_first": true
+  },
+
+  // Public Supabase configuration, mirroring .env.production. The Worker needs
+  // its own copy: .env values are inlined into the browser bundle at build
+  // time and do not exist in the Worker runtime. Both values are publishable
+  // and already served to every visitor inside the JS bundle -- the anon key's
+  // blast radius is the RLS policy matrix in supabase/migrations/. A service
+  // role key would NOT belong here; use `wrangler secret put` for those.
+  "vars": {
+    "SUPABASE_URL": "https://cilrqtdwkfytjhltluln.supabase.co",
+    "SUPABASE_ANON_KEY": "sb_publishable_mDMkojBed4TsEpeaINceqg_bxzZiCSw"
   },
   "compatibility_flags": [
     "nodejs_compat"

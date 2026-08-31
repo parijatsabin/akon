@@ -10,25 +10,15 @@
  * /#signature from another route did not scroll to the product.
  */
 import React from "react";
-import { useSiteData } from "./data/SiteDataProvider";
-import { useSeoHead } from "./hooks/useSeoHead";
 import PageShell from "./components/PageShell";
 import Hero from "./components/Hero";
 import SignatureProduct from "./components/SignatureProduct";
 import Commitment from "./components/Commitment";
 import Newsletter from "./components/Newsletter";
 
-// ── SEO wrapper for homepage ──────────────────────────────────
-const HomeSeo: React.FC = () => {
-    const { seo, brand } = useSiteData();
-    useSeoHead(seo, brand.name);
-    return null;
-};
-
 // ── Homepage ──────────────────────────────────────────────────
 const PublicSite: React.FC = () => (
     <PageShell>
-        <HomeSeo />
         <Hero />
         <SignatureProduct />
         <Commitment />

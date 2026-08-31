@@ -13,7 +13,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSiteData } from "../data/SiteDataProvider";
-import { useSeoHead } from "../hooks/useSeoHead";
 import PageShell from "../components/PageShell";
 import Reveal from "../components/Reveal";
 import {
@@ -21,21 +20,7 @@ import {
 } from "../components/product/blocks";
 
 const FragrancePage: React.FC = () => {
-    const { featuredProduct: product, seo, brand } = useSiteData();
-
-    // The page covers one fragrance's detail, so its title says so rather than
-    // repeating the homepage's. The tab gets the brand-first short form so it
-    // stays readable when tabs are narrow; the long form is for search.
-    useSeoHead(
-        {
-            ...seo,
-            metaTitle: `${product.name} — Details & Care — ${brand.name}`,
-            metaDescription:
-                `Specifications, wearing guidance and the full ingredient list for ${product.name}.`,
-        },
-        brand.name,
-        `${brand.name} · ${product.name}`
-    );
+    const { featuredProduct: product } = useSiteData();
 
     return (
         <PageShell>
