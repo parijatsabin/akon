@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "node_modules/wrangler/config-schema.json",
   // Worker script name. Lowercase is a platform rule, not a preference:
   // Cloudflare rejects anything else with "Expected name to be ... alphanumeric
@@ -22,14 +22,16 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
-  ]
+  ],
 
-  // NO ROUTE IS CONFIGURED YET. This account has never registered a
-  // *.workers.dev subdomain, so `wrangler deploy` uploads the Worker and then
-  // exits with "You need to register a workers.dev subdomain before publishing
-  // to workers.dev" -- the script is live but nothing addresses it. Fix by
-  // either registering the subdomain once in the dashboard, or adding the
-  // custom domain here once its zone is in this account:
-  //
-  //   "routes": [{ "pattern": "example.com", "custom_domain": true }]
+  // Custom domains, not workers.dev: this account never registered a
+  // *.workers.dev subdomain, so without these the Worker deploys but nothing
+  // addresses it. custom_domain:true makes Cloudflare own the DNS record for
+  // the hostname -- it replaces the stale proxied A records the zone transfer
+  // left behind, which were pointing at Cloudflare's own anycast IPs and
+  // serving Error 1000 ("DNS points to prohibited IP").
+  "routes": [
+    { "pattern": "anokperfumes.com.np", "custom_domain": true },
+    { "pattern": "www.anokperfumes.com.np", "custom_domain": true }
+  ]
 }
