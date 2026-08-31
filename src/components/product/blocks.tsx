@@ -77,21 +77,9 @@ export const ProductGallery: React.FC<{ product: ProductItem }> = ({ product }) 
 };
 
 // ── Name, concentration, price ────────────────────────────────
-export const ProductHeader: React.FC<{
-    product: ProductItem;
-    as?: "h1" | "h2";
-    /**
-     * The rating and price row. On by default because the homepage header sits
-     * directly above the order button, where both are part of the decision.
-     * /fragrance turns it off: that page is reference material read *before*
-     * deciding, and repeating the price there pulls a buy signal onto a page
-     * with nothing to buy with.
-     */
-    showPricing?: boolean;
-}> = ({
+export const ProductHeader: React.FC<{ product: ProductItem; as?: "h1" | "h2" }> = ({
     product,
     as: Heading = "h2",
-    showPricing = true,
 }) => {
     return (
         <Reveal className="sig-header">
@@ -107,19 +95,17 @@ export const ProductHeader: React.FC<{
             <p className="sig-concentration">
                 {unshout(product.concentration)} · {product.headlineSize}
             </p>
-            {showPricing && (
-                <div className="sig-price-row">
-                    <div className="sig-stars" aria-hidden="true">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                            <svg key={s} width="18" height="18" viewBox="0 0 24 24" fill="var(--accent)" stroke="none">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                            </svg>
-                        ))}
-                    </div>
-                    <div className="sig-price-sep" />
-                    <span className="sig-price">{product.price}</span>
+            <div className="sig-price-row">
+                <div className="sig-stars" aria-hidden="true">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                        <svg key={s} width="18" height="18" viewBox="0 0 24 24" fill="var(--accent)" stroke="none">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                    ))}
                 </div>
-            )}
+                <div className="sig-price-sep" />
+                <span className="sig-price">{product.price}</span>
+            </div>
         </Reveal>
     );
 };

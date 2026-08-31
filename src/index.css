@@ -2455,21 +2455,6 @@ ul {
   border-top: none;
 }
 
-/* /fragrance is a single reading column, not the homepage's two-column buy
-   grid, so the gallery is centred and capped rather than filling half the
-   width — at full container width the bottle became the page. */
-.frag-gallery {
-  max-width: 440px;
-  margin: 0 auto 64px;
-}
-
-/* The sticky offset earns its keep beside a tall scrolling buy panel. Here
-   there is no second column to scroll past, so it would only detach the image
-   from the text it belongs to. */
-.frag-gallery .sig-gallery {
-  position: static;
-}
-
 .frag-back {
   margin-top: 56px;
   padding-top: 32px;
