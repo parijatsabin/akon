@@ -1199,9 +1199,13 @@ ul {
   border-top: 1px solid var(--border);
 }
 
+/* auto-fit, not a fixed 3 columns. The CMS decides how many highlights there
+   are, and at two cards a three-track grid left them stranded across the left
+   two thirds with a hole where the third would have been. auto-fit divides
+   whatever exists across the full width. */
 .sig-highlights {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 24px;
   margin-bottom: 64px;
 }
@@ -1231,6 +1235,10 @@ ul {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 64px;
+  /* The two columns hold different numbers of rows. Stretching the shorter one
+     to match pushed its bottom rule down into empty space, which read as a
+     misaligned table rather than as a column that had simply ended. */
+  align-items: start;
 }
 
 .sig-detail-heading {
@@ -1249,7 +1257,10 @@ ul {
   display: grid;
   grid-template-columns: 40% 1fr;
   gap: 16px;
-  padding: 13px 0;
+  /* Matches .sig-usage-step. The two sit side by side, and a one-pixel
+     difference in row padding drifted their horizontal rules apart down the
+     page for no reason anyone could name. */
+  padding: 14px 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -2313,7 +2324,9 @@ ul {
    scanning, without the red-alert styling that would fight the brand.
    ═══════════════════════════════════════════════════════════════ */
 .sig-label {
-  margin-top: 56px;
+  /* 64px, matching the gap under .sig-highlights, so the page's three blocks
+     are separated by one distance rather than two similar ones. */
+  margin-top: 64px;
   padding: 34px clamp(20px, 4vw, 44px);
   background: var(--sunken);
   border: 1px solid var(--border);

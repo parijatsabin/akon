@@ -7,10 +7,11 @@
  * made of, what is in it, how it is worn — and it is where the footer's
  * "Ingredients & Safety" link points.
  *
- * A gallery and an <h1> were tried here and removed again: the page reads as
- * a specification sheet, and repeating the product's identity above it made
- * it look like a second, weaker version of the homepage section. The SEO cost
- * is real and noted -- this page has no <h1>.
+ * A gallery and a display-type product header were tried here and removed
+ * again: the page reads as a specification sheet, and repeating the product's
+ * identity above it made it look like a second, weaker version of the homepage
+ * section. What it does carry is the same plain header every other inner page
+ * uses, which restores the <h1> without bringing the product block back.
  *
  * The blocks are shared with the homepage section; see components/product.
  */
@@ -31,6 +32,21 @@ const FragrancePage: React.FC = () => {
         <PageShell>
             <section className="section-page bg-white">
                 <div className="container">
+                    {/* The same header every inner page uses -- About, FAQ and
+                        the policy pages all share .policy-header. The page
+                        previously opened straight onto two highlight cards,
+                        with nothing saying what it was, and no <h1> at all.
+                        This is page context, not the product identity block:
+                        no name in display type, no price, no photograph. */}
+                    <header className="policy-header">
+                        <h1 className="policy-title">Details, Care &amp; Ingredients</h1>
+                        <div className="gold-divider" />
+                        <p className="policy-intro">
+                            Specifications, wearing guidance and the full ingredient
+                            list for {product.name}.
+                        </p>
+                    </header>
+
                     <Reveal className="sig-detail sig-detail--lead">
                         <ProductHighlights product={product} />
 
