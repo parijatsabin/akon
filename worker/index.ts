@@ -101,6 +101,12 @@ function robotsTxt(): Response {
  * Generated from ROUTES rather than written by hand, so a new route cannot be
  * added and then quietly left out of the sitemap.
  */
+/** Common near-misses, redirected to the address that exists. */
+const ALIASES: Record<string, string> = {
+    "/reviews": "/review",
+    "/write-a-review": "/review",
+};
+
 function sitemapXml(): Response {
     const urls = ROUTES.filter((r) => !r.noindex)
         .map((r) =>
@@ -146,6 +152,13 @@ async function handle(request: Request, env: Env): Promise<Response> {
     if (url.hostname.startsWith("www.")) {
         return Response.redirect(`${SITE_ORIGIN}${url.pathname}${url.search}`, 301);
     }
+
+    // Addresses people type for a page that exists under one name. The SPA
+    // fallback answers anything with the homepage at status 200, so without a
+    // redirect the plural looks like a broken link — and a link shared with
+    // the wrong one would preview as the homepage.
+    const alias = ALIASES[url.pathname.replace(/\/+$/, "") || "/"];
+    if (alias) return Response.redirect(`${SITE_ORIGIN}${alias}${url.search}`, 301);
 
     if (url.pathname === "/robots.txt") return robotsTxt();
     if (url.pathname === "/sitemap.xml") return sitemapXml();

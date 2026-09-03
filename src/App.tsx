@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SiteDataProvider } from "./data/SiteDataProvider";
 import AdminApp from "./admin/AdminApp";
 import PublicSite from "./PublicSite";
@@ -29,6 +29,10 @@ const App: React.FC = () => (
         <Route path="/faq" element={<FaqPage />} />
         {/* The shareable review link. See pages/ReviewPage. */}
         <Route path="/review" element={<ReviewPage />} />
+        {/* The plural is the form half the people who are told this address
+            will type. Without it the catch-all below answers with the
+            homepage, which looks like the link is broken. */}
+        <Route path="/reviews" element={<Navigate to="/review" replace />} />
         <Route path="/privacy" element={<PolicyPage section="privacy" />} />
         <Route path="/terms" element={<PolicyPage section="terms" />} />
 
