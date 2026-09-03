@@ -22,6 +22,9 @@ const NAV_ITEMS: NavItem[] = [
     { label: "Company", href: "/admin/company" },
     { label: "Homepage", href: "/admin/homepage" },
     { label: "Product", href: "/admin/product" },
+    // Its own entry rather than a tab under Homepage: the public can submit
+    // reviews now, so this is a queue to work through, not a section to edit.
+    { label: "Testimonials", href: "/admin/testimonials" },
     { label: "Pages", href: "/admin/pages" },
     { label: "SEO", href: "/admin/seo" },
     { label: "Inbox", href: "/admin/inbox" },

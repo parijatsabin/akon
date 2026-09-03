@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import { useSiteData } from "../data/SiteDataProvider";
 import PageShell from "../components/PageShell";
 import Reveal from "../components/Reveal";
+import Testimonials from "../components/Testimonials";
 import {
     ProductHighlights, ProductSpecs, ProductUsage, ProductComposition,
 } from "../components/product/blocks";
@@ -65,6 +66,11 @@ const FragrancePage: React.FC = () => {
                     </Reveal>
                 </div>
             </section>
+
+            {/* This page is the product's detail page and carries the Product
+                structured data with it, reviews included. Google requires the
+                reviews it reads to be visible here, not only on /about. */}
+            <Testimonials tint={false} />
         </PageShell>
     );
 };

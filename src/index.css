@@ -707,17 +707,24 @@ ul {
 }
 
 .navbar-logo img {
-  height: 92px;
+  /* Small, and left of the menu. The mark used to fill almost the whole 96px
+     bar, which made the header read as a logo with some links attached rather
+     than as navigation. At this size it identifies the site and the menu does
+     the work. */
+  height: 48px;
   width: auto;
   transition: height var(--dur) var(--ease), filter var(--dur) var(--ease);
   /* Over the dark hero: knock the mark out to white with a gold halo. */
-  filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(197, 165, 114, 0.45));
+  filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(197, 165, 114, 0.45));
 }
 
 .navbar.is-scrolled .navbar-logo img {
-  height: 68px;
-  /* On the white plate the mark shows its own gold. */
-  filter: none;
+  height: 40px;
+  /* On the ivory plate the mark shows its own metals. The wordmark is silver,
+     which sat almost invisible against a warm light bar, so the contrast is
+     nudged up and the whole mark down a little: enough to give the silver an
+     edge without dulling the gold beside it. */
+  filter: contrast(1.15) brightness(0.92);
 }
 
 .desktop-nav {
@@ -1613,12 +1620,6 @@ ul {
   color: var(--text-main);
 }
 
-.ab-voice-role {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
-}
-
 .ab-dots {
   margin-top: 28px;
   display: flex;
@@ -2473,4 +2474,174 @@ ul {
   padding-top: 32px;
   border-top: 1px solid var(--border);
   text-align: center;
+}
+/* ─── Customer review form ────────────────────────────────────── */
+/* The trigger lives in the footer, which is .on-noir, so it is drawn as a
+   quiet outlined control on the dark ground rather than a filled button
+   competing with the newsletter's call to action above it. */
+.rv-trigger {
+  margin-top: 22px;
+  padding: 10px 20px;
+  background: none;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.rv-trigger:hover {
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+/* A native <dialog>: the browser centres it, traps focus and handles Escape.
+
+   The tokens are re-declared to their LIGHT values because this dialog is a
+   DOM child of the footer, which is .on-noir. A modal renders in the top
+   layer, but custom properties still inherit down the document tree — so
+   without this the panel would draw cream text on its own ivory surface and
+   read as blank. Same list as the :root light block. */
+.rv-dialog {
+  --surface: var(--canvas);
+  --surface-raised: var(--cream);
+  --text-main: var(--ink);
+  --text-muted: var(--ink-muted);
+  --text-faint: var(--ink-faint);
+  --accent-text: var(--accent-strong);
+  --border: #d7ccbc;
+  --border-strong: #c0b09a;
+
+  /* The reset at the top of this file sets `margin: 0` on every element,
+     which silently removed the UA stylesheet's `margin: auto` on dialog:modal
+     — the only thing centring a modal inside its inset:0 box. Without it the
+     panel pinned itself to the top-left corner. */
+  margin: auto;
+  width: min(520px, calc(100vw - 32px));
+  /* A long form on a short screen scrolls inside the panel rather than
+     overflowing off the top, where a modal cannot be scrolled back to. */
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-main);
+}
+.rv-dialog::backdrop {
+  background: rgba(26, 24, 21, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.rv-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.rv-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.rv-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.rv-close:hover { color: var(--text-main); background: var(--sunken); }
+
+.rv-form { display: flex; flex-direction: column; gap: 16px; }
+.rv-textarea { resize: vertical; min-height: 110px; }
+.rv-req { color: #e05555; }
+.rv-hint {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+  margin-top: 5px;
+}
+.rv-hint--foot { margin-top: 10px; }
+.rv-submit { min-width: 170px; justify-content: center; }
+
+/* Radio inputs, visually replaced by the star outlines. The input keeps the
+   keyboard and screen-reader behaviour; :focus-visible is mirrored onto the
+   label so tabbing to the group still shows where you are. */
+.rv-stars { display: flex; gap: 4px; }
+.rv-star { display: inline-flex; cursor: pointer; padding: 2px; border-radius: 4px; }
+.rv-star input { position: absolute; opacity: 0; width: 0; height: 0; }
+.rv-star:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Off-screen rather than display:none — a bot reading the DOM sees a normal
+   field, while nothing renders and tabbing skips it. */
+.rv-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.rv-done { text-align: center; padding: 12px 0 4px; }
+.rv-done-mark { font-size: 2rem; color: var(--accent-text); margin-bottom: 10px; }
+.rv-done-lead {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.rv-done-note {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-bottom: 22px;
+}
+
+/* Available to the whole site; the rating labels are its first use. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── /review ─────────────────────────────────────────────────── */
+/* The page version of the review form. The header is centred over the card
+   rather than left-aligned like the policy pages: this page is one short
+   column of fields, and an off-centre heading above a centred form reads as a
+   mistake. */
+.rv-page-header {
+  max-width: 560px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* The same panel treatment the dialog has, so the shared link lands on
+   something recognisably the same form. */
+.rv-page-card {
+  max-width: 560px;
+  margin: 0 auto 24px;
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+}
+
+@media (max-width: 600px) {
+  .rv-page-card { padding: 22px; }
 }

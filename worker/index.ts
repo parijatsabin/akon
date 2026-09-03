@@ -174,7 +174,11 @@ async function handle(request: Request, env: Env): Promise<Response> {
     if (!site) return asset;
 
     const routeMeta = route.meta(site);
-    const head = renderHead(route.path, routeMeta, site);
+    const head = renderHead(route.path, routeMeta, site, route.noindex);
+
+    // Belt and braces again, as with /admin above: the meta tag is in the
+    // document, the header travels with the response.
+    const out = route.noindex ? withHeader(asset, "x-robots-tag", "noindex, follow") : asset;
 
     return new HTMLRewriter()
         // The document gets the descriptive title because that is the string a
@@ -190,7 +194,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
                 el.append(`\n  ${head}\n`, { html: true });
             },
         })
-        .transform(asset);
+        .transform(out);
 }
 
 export default {

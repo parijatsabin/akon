@@ -16,8 +16,24 @@
  * Search Console and ignores the result.
  */
 
-import type { SiteData } from "../data/types";
+import type { SiteData, TestimonialItem } from "../data/types";
 import { SITE_ORIGIN, absoluteUrl } from "./routes";
+
+/**
+ * Delivery, as the brand actually runs it: free inside the Kathmandu valley,
+ * a flat fee everywhere else in Nepal. schema.org wants a number, so the
+ * outside-valley entry is only emitted once the real rate is filled in here —
+ * an invented figure in an OfferShippingDetails is a price commitment Google
+ * checks against the checkout, and a missing entry is the safer half-truth.
+ */
+const SHIPPING = {
+    /** NPR. Set to the real flat rate to publish the outside-valley entry. */
+    outsideValleyRate: null as number | null,
+    /** Business days spent packing before it is handed to the courier. */
+    handlingDays: [1, 2] as [number, number],
+    transitDaysValley: [1, 2] as [number, number],
+    transitDaysNepal: [2, 5] as [number, number],
+};
 
 /** Schema.org objects are open-ended by nature; this is the honest shape. */
 type JsonLd = Record<string, unknown>;
@@ -32,7 +48,11 @@ type JsonLd = Record<string, unknown>;
  * least correctable. If a second market is added this must become explicit.
  */
 function parsePrice(raw: string): { price: string; currency: string } | null {
-    const digits = raw.replace(/[^\d.]/g, "");
+    // The first number in the string, thousands separators and decimals
+    // included. Stripping every non-digit instead kept the full stop in the
+    // "Rs." prefix, and "Rs. 4,500" was published to Google as 0.45.
+    const match = raw.match(/\d[\d,]*(?:\.\d+)?/);
+    const digits = match ? match[0].replace(/,/g, "") : "";
     if (!digits || !Number.isFinite(Number(digits))) return null;
     const currency = /usd|\$/i.test(raw) ? "USD" : "NPR";
     return { price: String(Number(digits)), currency };
@@ -86,16 +106,42 @@ function website({ brand }: SiteData): JsonLd {
 }
 
 /**
- * `withOffer` tracks whether the price is actually rendered on the page being
- * described. Google requires a marked-up price to be visible to the reader, so
- * /fragrance -- which shows the product but deliberately no pricing -- gets the
- * Product entity without an Offer rather than a claim the page does not back up.
+ * `withOffer` and `withReviews` each track whether the thing being marked up is
+ * actually rendered on the page being described. Google requires both a price
+ * and a review to be visible to the reader, and the two pages differ:
+ *
+ *   /           shows the price, no reviews  -> Offer, no aggregateRating
+ *   /fragrance  shows reviews, no price      -> aggregateRating, no Offer
+ *
+ * The homepage carried review markup until the testimonials carousel was taken
+ * off it. Leaving the markup behind would have been a claim the page no longer
+ * backs up, which is the kind of thing that earns a manual action rather than a
+ * warning.
  */
-function product({ brand, featuredProduct: p }: SiteData, withOffer: boolean): JsonLd | null {
+function product(site: SiteData, withOffer: boolean, withReviews: boolean): JsonLd | null {
+    const { brand, featuredProduct: p } = site;
     if (!p?.name) return null;
 
     const image = p.images.map(absoluteAsset).filter((u): u is string => Boolean(u));
     const priced = parsePrice(p.price);
+
+    // Rounded to one decimal because that is how a rating reads; Google
+    // rejects an aggregateRating whose reviewCount is zero.
+    const voices = withReviews ? publishedTestimonials(site) : [];
+    const rated = voices.length > 0
+        ? {
+              aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: (
+                      voices.reduce((sum, t) => sum + t.rating, 0) / voices.length
+                  ).toFixed(1),
+                  reviewCount: voices.length,
+                  bestRating: "5",
+                  worstRating: "1",
+              },
+              review: reviews(voices),
+          }
+        : {};
 
     return {
         "@type": "Product",
@@ -105,6 +151,7 @@ function product({ brand, featuredProduct: p }: SiteData, withOffer: boolean): J
         ...(image.length > 0 ? { image } : {}),
         brand: { "@type": "Brand", name: brand.name },
         ...(p.collection ? { category: p.collection } : {}),
+        ...rated,
         // Only claim an offer when there is a real number behind it. An Offer
         // with a missing price is an invalid entity, not a partial one.
         ...(priced && withOffer
@@ -116,10 +163,97 @@ function product({ brand, featuredProduct: p }: SiteData, withOffer: boolean): J
                       priceCurrency: priced.currency,
                       availability: "https://schema.org/InStock",
                       seller: { "@id": `${SITE_ORIGIN}/#organization` },
+                      hasMerchantReturnPolicy: returnPolicy(),
+                      shippingDetails: shippingDetails(priced.currency),
                   },
               }
             : {}),
     };
+}
+
+/**
+ * Reviews shown on the page, as schema.org objects.
+ *
+ * These are the CMS testimonials — the same ones the reader sees in the
+ * carousel on this page. Google will not accept review markup for text that is
+ * not visible where the markup sits, which is why the carousel now renders on
+ * the homepage and /fragrance as well as /about.
+ */
+function reviews(items: TestimonialItem[]): JsonLd[] {
+    return items.map((t) => ({
+        "@type": "Review",
+        reviewRating: {
+            "@type": "Rating",
+            ratingValue: String(t.rating),
+            bestRating: "5",
+            worstRating: "1",
+        },
+        author: { "@type": "Person", name: t.author },
+        reviewBody: toPlainText(t.quote),
+    }));
+}
+
+/** Only the testimonials the CMS actually publishes, in display order. */
+function publishedTestimonials({ testimonials }: SiteData): TestimonialItem[] {
+    return testimonials.items
+        .filter((t) => t.visible && t.author && t.quote && t.rating >= 1 && t.rating <= 5)
+        .sort((a, b) => a.order - b.order);
+}
+
+/**
+ * Merchant listing fields. Both are conditions of the sale rather than
+ * properties of the bottle, so they hang off the Offer and are emitted only
+ * where an Offer is — the homepage.
+ *
+ * Returns are not accepted: a perfume leaves sealed and comes back unsellable.
+ * MerchantReturnNotPermitted is the honest category, and it satisfies the
+ * requirement as completely as a 30-day window would.
+ */
+function returnPolicy(): JsonLd {
+    return {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "NP",
+        returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+    };
+}
+
+function shippingDetails(currency: string): JsonLd[] {
+    const handling = {
+        "@type": "QuantitativeValue",
+        minValue: SHIPPING.handlingDays[0],
+        maxValue: SHIPPING.handlingDays[1],
+        unitCode: "DAY",
+    };
+    const transit = (range: [number, number]) => ({
+        "@type": "QuantitativeValue",
+        minValue: range[0],
+        maxValue: range[1],
+        unitCode: "DAY",
+    });
+
+    const entry = (rate: number, region: string | null, transitDays: [number, number]): JsonLd => ({
+        "@type": "OfferShippingDetails",
+        shippingRate: { "@type": "MonetaryAmount", value: rate, currency },
+        shippingDestination: {
+            "@type": "DefinedRegion",
+            addressCountry: "NP",
+            ...(region ? { addressRegion: region } : {}),
+        },
+        deliveryTime: {
+            "@type": "ShippingDeliveryTime",
+            handlingTime: handling,
+            transitTime: transit(transitDays),
+        },
+    });
+
+    // "Bagmati" is the province the valley sits in — the coarsest region code
+    // schema.org accepts here, and the closest honest fit for "free inside
+    // Kathmandu". The paid entry covers the rest of the country.
+    const list = [entry(0, "Bagmati", SHIPPING.transitDaysValley)];
+    if (SHIPPING.outsideValleyRate !== null) {
+        list.push(entry(SHIPPING.outsideValleyRate, null, SHIPPING.transitDaysNepal));
+    }
+    return list;
 }
 
 function faqPage({ faq }: SiteData): JsonLd | null {
@@ -148,8 +282,9 @@ export function buildJsonLd(path: string, site: SiteData): JsonLd | null {
     // The product is presented and bought on the homepage, and /fragrance is
     // its detail page. Those are the only two pages that are *about* it.
     if (path === "/" || path === "/fragrance") {
-        // Only the homepage renders the price, and only it may claim an Offer.
-        const p = product(site, path === "/");
+        // Only the homepage renders the price, and only /fragrance renders the
+        // reviews. Each page claims what it shows.
+        const p = product(site, path === "/", path === "/fragrance");
         if (p) nodes.push(p);
     }
 

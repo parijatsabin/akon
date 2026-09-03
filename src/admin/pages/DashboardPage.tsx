@@ -17,8 +17,9 @@ import { PageHeader } from "../components/ui/Page";
 /** Sections, in the order they appear in the sidebar. */
 const DESTINATIONS = [
     { to: "/admin/company", label: "Company", note: "Name, contact details, hours, social links" },
-    { to: "/admin/homepage", label: "Homepage", note: "Hero, about, commitment, testimonials, newsletter, footer" },
+    { to: "/admin/homepage", label: "Homepage", note: "Hero, about, commitment, newsletter, footer" },
     { to: "/admin/product", label: "Product", note: "Notes, pricing, sizes, imagery" },
+    { to: "/admin/testimonials", label: "Testimonials", note: "Customer reviews, and what is published" },
     { to: "/admin/pages", label: "Pages", note: "Contact, FAQ, privacy, terms" },
     { to: "/admin/seo", label: "SEO", note: "Meta tags and social sharing" },
 ];

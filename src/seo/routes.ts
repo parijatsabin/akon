@@ -139,6 +139,25 @@ export const ROUTES: RouteDef[] = [
         }),
     },
     {
+        // Not in the sitemap and not indexable: it is a form, reached from a
+        // message or a QR code rather than from a search result. It is listed
+        // here anyway because that is what gives the Worker a title, a
+        // description and an og:image to render — a route missing from this
+        // file is served with the bare index.html head, and the link would
+        // preview as nothing at all.
+        path: "/review",
+        priority: 0.1,
+        changefreq: "yearly",
+        noindex: true,
+        meta: ({ brand, featuredProduct: p }) => ({
+            title: `Share Your Experience | ${brand.name}`,
+            description: oneLine(`
+                Tell us how ${p.name} wears for you. Your review is read before it
+                is published, and your email is never shown on the site.`),
+            tabTitle: `${brand.name} · Write a Review`,
+        }),
+    },
+    {
         path: "/privacy",
         priority: 0.2,
         changefreq: "yearly",

@@ -8,6 +8,7 @@ import FragrancePage from "./pages/FragrancePage";
 import ContactPage from "./pages/ContactPage";
 import PolicyPage from "./pages/PolicyPage";
 import FaqPage from "./pages/FaqPage";
+import ReviewPage from "./pages/ReviewPage";
 
 const App: React.FC = () => (
   <BrowserRouter>
@@ -26,6 +27,8 @@ const App: React.FC = () => (
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/faq" element={<FaqPage />} />
+        {/* The shareable review link. See pages/ReviewPage. */}
+        <Route path="/review" element={<ReviewPage />} />
         <Route path="/privacy" element={<PolicyPage section="privacy" />} />
         <Route path="/terms" element={<PolicyPage section="terms" />} />
 

@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import CompanyPage from "./pages/CompanyPage";
 import HomepagePage from "./pages/HomepagePage";
+import TestimonialsPage from "./pages/TestimonialsPage";
 import FeaturedProductPage from "./pages/FeaturedProductPage";
 import PagesPage from "./pages/PagesPage";
 import SeoPage from "./pages/SeoPage";
@@ -37,6 +38,7 @@ const AdminApp: React.FC = () => (
                                     <Route path="company" element={<CompanyPage />} />
                                     <Route path="homepage" element={<HomepagePage />} />
                                     <Route path="product" element={<FeaturedProductPage />} />
+                                    <Route path="testimonials" element={<TestimonialsPage />} />
                                     <Route path="pages" element={<PagesPage />} />
                                     <Route path="seo" element={<SeoPage />} />
                                     <Route path="inbox" element={<InboxPage />} />
@@ -54,7 +56,6 @@ const AdminApp: React.FC = () => (
                                     {/* Legacy routes — the nav was regrouped, the URLs still resolve */}
                                     <Route path="settings" element={<Navigate to="/admin/homepage" replace />} />
                                     <Route path="featured" element={<Navigate to="/admin/product" replace />} />
-                                    <Route path="testimonials" element={<Navigate to="/admin/homepage" replace />} />
                                     <Route path="hero" element={<Navigate to="/admin/homepage" replace />} />
                                     <Route path="about" element={<Navigate to="/admin/homepage" replace />} />
                                     <Route path="commitment" element={<Navigate to="/admin/homepage" replace />} />

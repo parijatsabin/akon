@@ -22,6 +22,9 @@ const PublicSite: React.FC = () => (
         <Hero />
         <SignatureProduct />
         <Commitment />
+        {/* No testimonials here by choice: they live on /about and /fragrance.
+            The homepage's Product structured data drops its review markup to
+            match — see seo/structuredData. */}
         <Newsletter />
     </PageShell>
 );

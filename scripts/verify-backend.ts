@@ -56,13 +56,16 @@ async function main() {
         ["specs", p.specs],
         ["usage steps", p.usage],
         ["ingredients", p.ingredients],
-        ["testimonials", (site.testimonials as any).items],
-        ["pillars", (site.commitment as any).pillars],
         ["contact subjects", (site.contact as any).subjects],
         ["privacy sections", (site.privacy as any).sections],
         ["terms sections", (site.terms as any).sections],
         ["faq items", (site.faq as any).items],
     ];
+    // Testimonials and commitment pillars are deliberately absent from that
+    // list. Anon sees only APPROVED reviews, so an empty list is the honest
+    // state of a site whose queue is unpublished, and the pillar list is an
+    // editorial choice the About page renders a centred block for. Asserting
+    // they are non-empty would report an owner's decision as a failure.
     for (const [label, list] of nonEmpty) {
         check(Array.isArray(list) && list.length > 0, label.padEnd(18), `${list?.length ?? 0} item(s)`);
     }
@@ -125,13 +128,35 @@ async function main() {
     check(Boolean(insErr), "cannot insert content");
     if (!insErr) await svc.from("site_content").delete().eq("key", "rls-probe");
 
-    // Testimonials live inside site_content jsonb now, so RLS cannot filter
-    // them per row — get_site_data() does it. Verify that from the outside.
-    const { data: stored } = await svc.from("site_content").select("data").eq("key", "testimonials").single();
-    const total = ((stored?.data as any)?.items ?? []).length;
+    // ── Reviews ───────────────────────────────────────────────
+    // Reviews are a table the public can write to, so its boundary is the one
+    // most worth testing from the outside. See migration 0008.
+    const { count: totalReviews } = await svc
+        .from("reviews").select("id", { count: "exact", head: true });
     const shown = (site.testimonials as any).items as any[];
-    check(!shown.some((t) => t.visible === false), "hidden testimonials not exposed",
-        `${shown.length} of ${total} shown`);
+    check(!shown.some((t) => t.visible === false), "hidden reviews not exposed",
+        `${shown.length} of ${totalReviews ?? 0} shown`);
+
+    // The table itself is closed to anon: a readable row would leak both the
+    // unapproved queue and every reviewer's email address.
+    const { data: reviewRows } = await anon.from("reviews").select("*").limit(1);
+    check((reviewRows?.length ?? 0) === 0, "cannot read reviews");
+
+    // Anon must be able to submit one — the footer form depends on it.
+    const reviewProbe = `verify-review-${Date.now()}@example.invalid`;
+    const { error: revErr } = await anon.from("reviews").insert({
+        author: "verify", email: reviewProbe, quote: "probe", rating: 5, visible: false,
+    });
+    check(!revErr, "can submit a review", revErr?.message ?? "");
+
+    // ...but never as a published one. This is the whole moderation guarantee:
+    // it has to hold against someone posting straight at the API, not just
+    // against the form, so it is asserted here rather than trusted to the UI.
+    const { error: selfPubErr } = await anon.from("reviews").insert({
+        author: "verify", email: `pub-${reviewProbe}`, quote: "probe", rating: 5, visible: true,
+    });
+    check(Boolean(selfPubErr), "cannot self-publish a review");
+    await svc.from("reviews").delete().like("email", "%verify-review-%");
 
     // ── Payload ───────────────────────────────────────────────
     console.log("\n  Payload");

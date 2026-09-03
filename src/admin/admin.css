@@ -928,3 +928,82 @@
     display: none;
   }
 }
+
+/* ─── Reviews table ───────────────────────────────────────────── */
+/* Built on .adm-table and shaped like the Users table: text rows, a status
+   badge, and every action as an icon on the right. The only departure is the
+   review itself, which is prose and needs a measure and room to wrap. */
+.adm-table--reviews { min-width: 900px; }
+.adm-table--reviews td { vertical-align: top; }
+
+.adm-rv-quote {
+  max-width: 56ch;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* The header follows the page down. With submissions accumulating this list
+   only grows, and scrolling past the point where "Status" is off-screen turns
+   a column of identical badges into a guess. */
+.adm-table--reviews thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface-raised);
+}
+
+/* Marks the row being worked on. The actions sit at the far right of a wide
+   row, and without this the eye loses the line on the way over to them. */
+.adm-table--reviews tbody tr:hover td { background: var(--sunken); }
+
+/* .adm-icon-btn turns red on hover, which is right for delete and wrong for
+   the rest: moving or publishing a review is not a destructive act. */
+.adm-table--reviews .adm-icon-btn:hover:not(:disabled) {
+  color: var(--text-main);
+  background: var(--sunken-deep);
+}
+.adm-table--reviews .adm-icon-btn:last-child:hover:not(:disabled) {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+/* The publish switch, sized to sit in the action row beside the icon buttons
+   rather than to stand out from them: it is one control among several, and the
+   Status column is what announces the state. */
+.adm-rv-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+}
+.adm-rv-switch:hover { background: var(--sunken-deep); }
+.adm-rv-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.adm-rv-switch-track {
+  display: inline-flex;
+  align-items: center;
+  width: 30px;
+  height: 17px;
+  padding: 2px;
+  border-radius: 9px;
+  background: var(--border-strong);
+  transition: background var(--dur-fast) var(--ease);
+}
+.adm-rv-switch[aria-checked="true"] .adm-rv-switch-track { background: var(--accent); }
+
+.adm-rv-switch-knob {
+  display: block;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform var(--dur-fast) var(--ease);
+}
+.adm-rv-switch[aria-checked="true"] .adm-rv-switch-knob { transform: translateX(13px); }

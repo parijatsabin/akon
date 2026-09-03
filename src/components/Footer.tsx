@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useSiteData } from "../data/SiteDataProvider";
 import { SocialLinkList } from "./SocialLinks";
+import ReviewForm from "./ReviewForm";
 
 
 /**
@@ -81,6 +82,11 @@ const Footer: React.FC = () => {
             <div className="footer-brand-name">{BRAND.name}</div>
             <p className="footer-tagline">{FOOTER.tagline}</p>
             <SocialLinkList links={BRAND.socialLinks} />
+            {/* Sits with the brand rather than in the link columns: those are
+                routes, and this opens a dialog. It is in the footer so it
+                reaches a reader from any page, at the point they have
+                finished reading one. */}
+            <ReviewForm />
           </div>
 
           {/* Nav + Hours */}

@@ -22,7 +22,7 @@ import type { SiteData } from "./types";
 
 /** Sections stored verbatim as a `site_content` row. */
 const CONTENT_KEYS = [
-    "hero", "about", "testimonials", "commitment", "newsletter",
+    "hero", "about", "commitment", "newsletter",
     "footer", "contact", "seo", "faq", "privacy", "terms",
     "productLabels",
 ] as const;
@@ -43,11 +43,59 @@ function check(error: { message: string } | null, what: string): void {
  */
 export async function saveSiteSection<K extends keyof SiteData>(
     section: K,
-    value: SiteData[K]
+    value: SiteData[K],
+    /**
+     * Testimonials only: rows the editor explicitly removed. Saving does NOT
+     * delete every row missing from `value`, because `value` is a snapshot
+     * taken when the page loaded — a review submitted by a customer while the
+     * form sat open is absent from it, and a blind reconciliation would
+     * destroy the submission on the next save.
+     */
+    removedIds: readonly string[] = []
 ): Promise<void> {
     const key = String(section);
 
-    if (isContentKey(key)) {
+    if (key === "testimonials") {
+        const t = value as SiteData["testimonials"];
+        // The section's copy stays in site_content; the list lives in its own
+        // table now, because the public review form has to be able to write to
+        // it. See migration 0008.
+        const { items, ...copy } = t;
+        check(
+            (await supabase
+                .from("site_content")
+                .upsert({ key, data: copy }, { onConflict: "key" })).error,
+            key
+        );
+
+        if (removedIds.length > 0) {
+            check(
+                (await supabase.from("reviews").delete().in("id", removedIds as string[])).error,
+                "the removed reviews"
+            );
+        }
+
+        if (items.length > 0) {
+            // `email` is deliberately absent: it belongs to the submitter and
+            // the CMS never edits it. Omitting the column from the payload
+            // leaves the stored value untouched on conflict.
+            check(
+                (await supabase.from("reviews").upsert(
+                    items.map((t2, i) => ({
+                        id: t2.id,
+                        author: t2.author.trim(),
+                        title: t2.title.trim(),
+                        quote: t2.quote.trim(),
+                        rating: t2.rating,
+                        visible: t2.visible,
+                        sort_order: i,
+                    })),
+                    { onConflict: "id" }
+                )).error,
+                "the reviews"
+            );
+        }
+    } else if (isContentKey(key)) {
         // The whole section, exactly as the form holds it. No mapping, no
         // child tables, no ordering to maintain.
         check(

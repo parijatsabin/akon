@@ -18,10 +18,12 @@ export async function saveSection<K extends keyof SiteData>(
     section: K,
     value: SiteData[K],
     toast: Toast,
-    successMessage: string
+    successMessage: string,
+    /** Testimonials only — the rows the editor removed. See saveSiteSection. */
+    removedIds: readonly string[] = []
 ): Promise<boolean> {
     try {
-        await saveSiteSection(section, value);
+        await saveSiteSection(section, value, removedIds);
         toast(successMessage);
         return true;
     } catch (err) {

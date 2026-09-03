@@ -1,7 +1,11 @@
 /**
  * Homepage — every section a visitor scrolls through, in the order they see
- * them. Hero, About, Commitment, Testimonials, Newsletter, then the Footer
- * that closes every page.
+ * them. Hero, About, Commitment, Newsletter, then the Footer that closes
+ * every page.
+ *
+ * Testimonials were a tab here until the public could submit them; they have
+ * their own sidebar entry now, because approving a queue is a different job
+ * from editing a section.
  *
  * The tab order deliberately matches the rendered page order, so finding the
  * editor for something you are looking at is a matter of position rather than
@@ -13,13 +17,11 @@ import { PageHeader, Tabs, TabPanel, type TabDef } from "../components/ui/Page";
 import {
     HeroTab, AboutTab, CommitmentTab, NewsletterTab, FooterTab,
 } from "./editors";
-import { TestimonialsTab } from "./TestimonialsPage";
 
 const TABS = [
     { id: "hero", label: "Hero" },
     { id: "about", label: "About" },
     { id: "commitment", label: "Commitment" },
-    { id: "testimonials", label: "Testimonials" },
     { id: "newsletter", label: "Newsletter" },
     { id: "footer", label: "Footer" },
 ] as const satisfies readonly TabDef[];
@@ -35,7 +37,6 @@ const HomepagePage: React.FC = () => {
         hero: <HeroTab onSave={onSave} />,
         about: <AboutTab onSave={onSave} />,
         commitment: <CommitmentTab onSave={onSave} />,
-        testimonials: <TestimonialsTab onSave={onSave} />,
         newsletter: <NewsletterTab onSave={onSave} />,
         footer: <FooterTab onSave={onSave} />,
     };

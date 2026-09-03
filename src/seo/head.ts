@@ -63,14 +63,31 @@ function absolutise(url: string): string {
  * second product needs a route entry here and nothing else.
  */
 function socialImage(path: string, site: SiteData): string {
-    const isProductPage = path === "/" || path === "/fragrance";
+    // /review is on this list for the same reason as the other two: it is a
+    // page about the fragrance, and it is the one address here that exists to
+    // be pasted into a message. A logo tile is the weakest possible prompt to
+    // tap through and write a review; the bottle is the reason.
+    const isProductPage = path === "/" || path === "/fragrance" || path === "/review";
     const productShot = site.featuredProduct?.images?.[0] ?? "";
 
     if (isProductPage && productShot) return absolutise(productShot);
     return absolutise(site.seo.ogImage);
 }
 
-export function renderHead(path: string, routeMeta: RouteMeta, site: SiteData): string {
+export function renderHead(
+    path: string,
+    routeMeta: RouteMeta,
+    site: SiteData,
+    /**
+     * From the route's own `noindex` flag. RouteDef has carried one since the
+     * policy pages were written, and the sitemap has always honoured it — but
+     * nothing here did, so a route marked noindex was still served
+     * `robots: index, follow`. Being absent from the sitemap does not keep a
+     * page out of the index; a link to it is enough. The tag is what keeps it
+     * out, so the flag has to reach this far.
+     */
+    noindex = false,
+): string {
     const canonical = absoluteUrl(path);
     const { seo, brand } = site;
 
@@ -89,7 +106,12 @@ export function renderHead(path: string, routeMeta: RouteMeta, site: SiteData): 
         // max-image-preview:large is what allows a photo beside the result
         // rather than a thumbnail; the rest is the permissive default stated
         // explicitly so it survives a future robots.txt change.
-        meta("robots", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"),
+        //
+        // `follow` survives a noindex: the page should not be listed, but the
+        // links out of it still lead somewhere worth crawling.
+        meta("robots", noindex
+            ? "noindex, follow"
+            : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"),
 
         property("og:type", path === "/fragrance" ? "product" : "website"),
         property("og:site_name", brand.name),
