@@ -33,3 +33,10 @@ lerna-debug.log*
 # Supabase CLI local state (link target, tool versions) — machine-specific
 supabase/.temp
 supabase/.branches
+
+# Raw video masters kept beside the project while editing. Only the encoded
+# hero loop under public/media belongs in the repo; the sources are hundreds of
+# times its size and nothing references them.
+/*.mp4
+/*.MOV
+/*.mov

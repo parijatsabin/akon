@@ -437,7 +437,7 @@ export const HeroTab: React.FC<EditorProps> = ({ onSave }) => {
                 </Field>
             </Section>
             <Section title="Background Media">
-                <Field label="Video URL" hint="Direct MP4 link. Takes priority — clear this field to use the image below instead.">
+                <Field label="Video URL" hint="An MP4 — /media/hero-background.mp4 for the one shipped with the site, or a direct link — plays silently on a loop. A YouTube link works too. Takes priority; clear this field to use the image below instead.">
                     <Input value={form.videoUrl} onChange={(e) => set("videoUrl", e.target.value)} placeholder="https://..." />
                 </Field>
                 <ImageField
