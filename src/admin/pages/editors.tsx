@@ -436,18 +436,15 @@ export const HeroTab: React.FC<EditorProps> = ({ onSave }) => {
                     <Textarea value={form.description} onChange={(e) => set("description", e.target.value)} />
                 </Field>
             </Section>
-            <Section title="Background Media">
-                <Field label="Video URL" hint="An MP4 — /media/hero-background.mp4 for the one shipped with the site, or a direct link — plays silently on a loop. A YouTube link works too. Takes priority; clear this field to use the image below instead.">
-                    <Input value={form.videoUrl} onChange={(e) => set("videoUrl", e.target.value)} placeholder="https://..." />
-                </Field>
+            <Section title="Background Image">
                 <ImageField
                     label="Background Image"
-                    hint="Shown only when the video URL is blank."
+                    hint="Fills the hero behind the heading. A dark overlay is applied automatically."
                     prefix="hero"
                     value={form.backgroundImage}
                     onChange={(src) => set("backgroundImage", src)}
                 />
-                {!form.videoUrl && form.backgroundImage && (
+                {form.backgroundImage && (
                     <img src={form.backgroundImage} alt="" style={{ width: "100%", maxHeight: 160, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)" }} />
                 )}
             </Section>

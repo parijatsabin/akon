@@ -661,7 +661,7 @@ ul {
 }
 
 /* ─── Navbar ──────────────────────────────────────────────────── */
-/* Two states. Unscrolled it floats over the dark hero video, so it forces
+/* Two states. Unscrolled it floats over the dark hero image, so it forces
    light-on-dark tokens. Scrolled it becomes a white plate and inherits the
    page's own (light) tokens instead. */
 .navbar {
@@ -2314,49 +2314,6 @@ ul {
   object-fit: cover;
   z-index: 0;
   animation: heroFadeIn 1.4s ease-in-out;
-}
-
-/* YouTube backdrop. An iframe ignores object-fit, so the wrapper crops and the
-   frame is blown up past the short axis (16:9 in vh, 9:16 in vw) and re-centred,
-   which reproduces `cover` at any viewport shape. pointer-events are off so the
-   embed never swallows a click meant for the hero buttons — and never gets the
-   hover that summons YouTube's controls. */
-.hero-media-frame {
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.hero-media-frame iframe {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  /* Deliberate overscan: the frame is twice the viewport on both axes and
-     centred, so it always covers and every edge of YouTube's UI — the
-     title/share bar up top, the watermark bottom-right, the control strip —
-     falls well outside the crop. `controls=0` alone does not remove them and no
-     embed parameter does. */
-  width: 200vw;
-  height: 200vh;
-  transform: translate(-50%, -50%);
-  border: 0;
-}
-
-/* The embed paints its own poster and centre play button before playback
-   starts, and that button is mid-frame where overscan can't reach it. So the
-   still sits underneath and the frame stays invisible until the player reports
-   it is playing (useYouTubePlaying), then crosses over. */
-.hero-media-poster {
-  animation: none;
-}
-
-.hero-media-frame {
-  animation: none;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-}
-
-.hero-media-frame.is-playing {
-  opacity: 1;
 }
 
 /* ═══════════════════════════════════════════════════════════════

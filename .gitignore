@@ -34,9 +34,8 @@ lerna-debug.log*
 supabase/.temp
 supabase/.branches
 
-# Raw video masters kept beside the project while editing. Only the encoded
-# hero loop under public/media belongs in the repo; the sources are hundreds of
-# times its size and nothing references them.
+# Raw video masters kept beside the project. Nothing in the site references
+# them and they are hundreds of MB; they must never land in the repo.
 /*.mp4
 /*.MOV
 /*.mov

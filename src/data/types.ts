@@ -56,13 +56,7 @@ export interface HeroData {
     description: string;
     ctaPrimary: CtaButton;
     ctaSecondary: CtaButton;
-    /**
-     * Looping background video: either a direct file URL (.mp4/.webm) or a
-     * YouTube link, which is embedded as an iframe. Takes precedence over
-     * backgroundImage. See lib/videoUrl.ts.
-     */
-    videoUrl: string;
-    /** Still fallback, used when videoUrl is blank. */
+    /** Backdrop still, uploaded from the CMS. Blank renders no image. */
     backgroundImage: string;
 }
 

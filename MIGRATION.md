@@ -94,7 +94,7 @@ Exact shape as it exists in the JSON today (array lengths are current row counts
 |---|---|---|
 | `brand` | object | `hours` array[7] (`day,isClosed,openTime,closeTime`), `socialLinks` object (instagram, facebook, pinterest), plus `name, tagline, shortDescription, location, phone, phoneDisplay, email, useDefaultTime, mapEmbed` |
 | `navLinks` | array[3] | `label, href, enabled` |
-| `hero` | object | `smallLabel, smallLabelHighlight, mainHeading, description, videoUrl, backgroundImage` + `ctaPrimary`/`ctaSecondary` (`label, href`) |
+| `hero` | object | `smallLabel, smallLabelHighlight, mainHeading, description, backgroundImage` + `ctaPrimary`/`ctaSecondary` (`label, href`) |
 | `about` | object | `reasons` array[4] (`id, title, body`) + 10 scalar fields incl. `ctaStripImage` |
 | `featuredProduct` | object (single flagship product) | `images` array[3], `sizes` array[4], `highlights` array[3] (`id,title,body`), `specs` array[5] (`label,value`), `usage` array[3] (`id,title,body`), `notes` = `{top,heart,base}` each `{ingredients: string[], impression: string}` + `id,name,collection,concentration,headlineSize,tagline,description,price,orderingNote` |
 | `testimonials` | object | `sectionTag, headline` + `items` array[3] (`id:number, quote, author, title, rating, visible, order`) |
@@ -124,7 +124,7 @@ Measured sizes, on disk today:
 | `public/anok-1.jpeg` | 31 KB | not content — check `index.html` |
 | `public/favicon.ico` | 15 KB | `index.html` — stays static |
 
-**Total webp: 547 KB. Referenced webp: 463 KB.** `hero.videoUrl` / `hero.backgroundImage` are strings that may be blank.
+**Total webp: 547 KB. Referenced webp: 463 KB.** `hero.backgroundImage` is a string that may be blank.
 
 These numbers drive §2C. Note `logo.png` at 55 KB is oversized for a logo and `2.webp` at 163 KB is oversized for a background — both should shrink during migration, not merely move.
 

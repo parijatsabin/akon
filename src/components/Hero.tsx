@@ -1,54 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSiteData } from "../data/SiteDataProvider";
-import { parseHeroVideo } from "../lib/videoUrl";
-import { useYouTubePlaying } from "../hooks/useYouTubePlaying";
 
 
 const Hero: React.FC = () => {
   const { hero: HERO } = useSiteData();
-  /* The CMS field takes either a direct file URL or a YouTube link; each needs a
-     different element, so the shape is resolved here rather than in the markup. */
-  const video = parseHeroVideo(HERO.videoUrl);
-  /* Held back until the player is past its own poster and centre play button. */
-  const [frameRef, videoPlaying] = useYouTubePlaying(video?.kind === "youtube");
 
   return (
     <section id="home" className="hero-section">
-      {/* Video wins when set; otherwise a still. Either can be swapped from the CMS. */}
-      {video?.kind === "youtube" ? (
-        /* An iframe can't be object-fit: cover, so the wrapper clips and the
-           frame is over-sized to whichever axis is short — same filled backdrop
-           the <video> gives. It stays inert: the hero content sits above it,
-           and with no pointer events the player chrome is never summoned. */
-        <>
-          {HERO.backgroundImage && (
-            <img src={HERO.backgroundImage} alt="" aria-hidden="true" className="hero-media hero-media-poster" />
-          )}
-          <div className={`hero-media hero-media-frame${videoPlaying ? " is-playing" : ""}`} aria-hidden="true">
-            <iframe
-              ref={frameRef}
-              src={video.embedUrl}
-              title=""
-              tabIndex={-1}
-              frameBorder="0"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen={false}
-            />
-          </div>
-        </>
-      ) : video ? (
-        /* poster carries the still through the first frames, so the hero is
-           never a black rectangle while the file buffers. */
-        <video
-          src={video.src}
-          poster={HERO.backgroundImage || undefined}
-          autoPlay muted loop playsInline preload="auto"
-          className="hero-media"
-        />
-      ) : HERO.backgroundImage ? (
+      {/* The backdrop is a still, uploaded from the CMS; blank means no image. */}
+      {HERO.backgroundImage && (
         <img src={HERO.backgroundImage} alt="" aria-hidden="true" className="hero-media" />
-      ) : null}
+      )}
       <div className="hero-overlay-dark" />
       <div className="hero-overlay-radial" />
       <div className="hero-overlay-bottom" />
