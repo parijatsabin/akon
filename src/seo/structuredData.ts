@@ -105,6 +105,79 @@ function website({ brand }: SiteData): JsonLd {
     };
 }
 
+function localBusiness({ brand }: SiteData): JsonLd {
+    const logo = absoluteAsset("/logo.png");
+    const sameAs = brand.socialLinks.map((l) => l.url).filter(Boolean);
+
+    // Days of week mapping for schema.org
+    const openingHoursSpec = (brand.hours || [])
+        .filter((h) => !h.isClosed && h.openTime && h.closeTime)
+        .map((h) => ({
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: h.day,
+            opens: h.openTime,
+            closes: h.closeTime,
+        }));
+
+    return {
+        "@type": ["Store", "LocalBusiness"],
+        "@id": `${SITE_ORIGIN}/#localbusiness`,
+        name: brand.name,
+        url: `${SITE_ORIGIN}/`,
+        ...(logo ? { image: logo } : {}),
+        telephone: brand.phone || "+977-9800000000",
+        email: brand.email,
+        priceRange: "NPR Rs. 4,500 - Rs. 6,000",
+        ...(brand.shortDescription ? { description: brand.shortDescription } : {}),
+        address: {
+            "@type": "PostalAddress",
+            streetAddress: "Dhumbarahi",
+            addressLocality: "Kathmandu",
+            addressRegion: "Bagmati Province",
+            postalCode: "44600",
+            addressCountry: "NP",
+        },
+        geo: {
+            "@type": "GeoCoordinates",
+            latitude: 27.7285,
+            longitude: 85.3444,
+        },
+        ...(openingHoursSpec.length > 0 ? { openingHoursSpecification: openingHoursSpec } : {}),
+        ...(sameAs.length > 0 ? { sameAs } : {}),
+    };
+}
+
+function breadcrumbList(path: string, site: SiteData): JsonLd {
+    const items: Array<{ name: string; path: string }> = [
+        { name: "Home", path: "/" },
+    ];
+
+    if (path === "/fragrance") {
+        items.push({ name: site.featuredProduct?.name || "Fragrance Details", path: "/fragrance" });
+    } else if (path === "/about") {
+        items.push({ name: "About ANOK", path: "/about" });
+    } else if (path === "/contact") {
+        items.push({ name: "Contact & Boutique", path: "/contact" });
+    } else if (path === "/faq") {
+        items.push({ name: "Frequently Asked Questions", path: "/faq" });
+    } else if (path === "/privacy") {
+        items.push({ name: "Privacy Policy", path: "/privacy" });
+    } else if (path === "/terms") {
+        items.push({ name: "Terms & Conditions", path: "/terms" });
+    }
+
+    return {
+        "@type": "BreadcrumbList",
+        "@id": `${absoluteUrl(path)}#breadcrumbs`,
+        itemListElement: items.map((item, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: item.name,
+            item: absoluteUrl(item.path),
+        })),
+    };
+}
+
 /**
  * `withOffer` and `withReviews` each track whether the thing being marked up is
  * actually rendered on the page being described. Google requires both a price
@@ -130,23 +203,24 @@ function product(site: SiteData, withOffer: boolean, withReviews: boolean): Json
     const voices = withReviews ? publishedTestimonials(site) : [];
     const rated = voices.length > 0
         ? {
-              aggregateRating: {
-                  "@type": "AggregateRating",
-                  ratingValue: (
-                      voices.reduce((sum, t) => sum + t.rating, 0) / voices.length
-                  ).toFixed(1),
-                  reviewCount: voices.length,
-                  bestRating: "5",
-                  worstRating: "1",
-              },
-              review: reviews(voices),
-          }
+            aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: (
+                    voices.reduce((sum, t) => sum + t.rating, 0) / voices.length
+                ).toFixed(1),
+                reviewCount: voices.length,
+                bestRating: "5",
+                worstRating: "1",
+            },
+            review: reviews(voices),
+        }
         : {};
 
     return {
         "@type": "Product",
         "@id": `${SITE_ORIGIN}/#product`,
         name: p.name,
+        sku: p.id || "ANOK-EDP-100ML",
         ...(p.description ? { description: toPlainText(p.description) } : {}),
         ...(image.length > 0 ? { image } : {}),
         brand: { "@type": "Brand", name: brand.name },
@@ -156,17 +230,19 @@ function product(site: SiteData, withOffer: boolean, withReviews: boolean): Json
         // with a missing price is an invalid entity, not a partial one.
         ...(priced && withOffer
             ? {
-                  offers: {
-                      "@type": "Offer",
-                      url: absoluteUrl("/"),
-                      price: priced.price,
-                      priceCurrency: priced.currency,
-                      availability: "https://schema.org/InStock",
-                      seller: { "@id": `${SITE_ORIGIN}/#organization` },
-                      hasMerchantReturnPolicy: returnPolicy(),
-                      shippingDetails: shippingDetails(priced.currency),
-                  },
-              }
+                offers: {
+                    "@type": "Offer",
+                    url: absoluteUrl("/"),
+                    price: priced.price,
+                    priceCurrency: priced.currency,
+                    priceValidUntil: "2027-12-31",
+                    itemCondition: "https://schema.org/NewCondition",
+                    availability: "https://schema.org/InStock",
+                    seller: { "@id": `${SITE_ORIGIN}/#organization` },
+                    hasMerchantReturnPolicy: returnPolicy(),
+                    shippingDetails: shippingDetails(priced.currency),
+                },
+            }
             : {}),
     };
 }
@@ -277,7 +353,12 @@ function faqPage({ faq }: SiteData): JsonLd | null {
  * publisher both resolve to the single Organization node.
  */
 export function buildJsonLd(path: string, site: SiteData): JsonLd | null {
-    const nodes: JsonLd[] = [organization(site), website(site)];
+    const nodes: JsonLd[] = [
+        organization(site),
+        website(site),
+        localBusiness(site),
+        breadcrumbList(path, site),
+    ];
 
     // The product is presented and bought on the homepage, and /fragrance is
     // its detail page. Those are the only two pages that are *about* it.

@@ -43,7 +43,7 @@ const SeoPage: React.FC = () => {
                     </div>
                 </Field>
                 <Field label="Keywords" hint="Comma-separated. Less important for modern SEO but still useful.">
-                    <Input value={form.keywords} onChange={(e) => set("keywords", e.target.value)} placeholder="luxury perfume, fragrance, Kathmandu" />
+                    <Input value={form.keywords} onChange={(e) => set("keywords", e.target.value)} placeholder="himalayan-inspired perfume, fragrance, Kathmandu" />
                 </Field>
 
                 {/* Live SERP preview */}

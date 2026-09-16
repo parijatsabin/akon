@@ -71,11 +71,11 @@ export const ROUTES: RouteDef[] = [
         priority: 1.0,
         changefreq: "weekly",
         meta: ({ brand }) => ({
-            title: `Himalayan-Inspired Unisex Perfume in Nepal | ${brand.name}`,
+            title: `Buy Himalayan-Inspired Unisex Perfume Online in Nepal | ${brand.name}`,
             description: oneLine(`
-                ${brand.name} is a Nepali perfume brand drawing on Himalayan character —
-                a long-lasting unisex eau de parfum made for self-care, confidence
-                and quiet everyday presence.`),
+                Buy authentic, long-lasting unisex Eau de Parfum online in Nepal.
+                Handcrafted by ${brand.name} with Himalayan notes. Free delivery in
+                Kathmandu Valley and nationwide shipping.`),
             tabTitle: brand.name,
         }),
     },
@@ -84,16 +84,13 @@ export const ROUTES: RouteDef[] = [
         priority: 0.9,
         changefreq: "monthly",
         meta: ({ brand, featuredProduct: p }) => ({
-            // The concentration is the honest category term ("Eau de Parfum"),
-            // and it is also what people type. Falls back when the CMS field is
-            // blank rather than leaving a dangling dash.
             title: p.concentration
-                ? `${p.name} — ${p.concentration} | ${brand.name}`
-                : `${p.name} — Fragrance Details | ${brand.name}`,
+                ? `${p.name} — ${p.concentration} Nepal | Notes & Price | ${brand.name}`
+                : `${p.name} — Authentic Himalayan EDP in Nepal | ${brand.name}`,
             description: oneLine(`
-                Fragrance notes, full ingredient list, specifications and wearing
-                guidance for ${p.name}, the unisex signature fragrance from
-                ${brand.name} in Nepal.`),
+                Explore ${p.name} Eau de Parfum by ${brand.name}. Discover top, heart
+                and base notes, longevity guide, full ingredients, and authentic perfume
+                pricing in Nepal.`),
             tabTitle: `${brand.name} · ${p.name}`,
         }),
     },
@@ -102,10 +99,11 @@ export const ROUTES: RouteDef[] = [
         priority: 0.8,
         changefreq: "monthly",
         meta: ({ brand }) => ({
-            title: `Nepali Perfume Brand Inspired by the Himalayas | ${brand.name}`,
+            title: `Authentic Nepali Fragrance House — About Us | ${brand.name}`,
             description: oneLine(`
-                The story behind ${brand.name} — why a fragrance made in Nepal is
-                built around mindful self-care, and what goes into every bottle.`),
+                The story behind ${brand.name} — how an authentic Nepali perfume brand
+                creates artisanal, long-lasting fragrances inspired by Himalayan
+                botanicals and mindful presence.`),
             tabTitle: `${brand.name} · About`,
         }),
     },
@@ -114,15 +112,11 @@ export const ROUTES: RouteDef[] = [
         priority: 0.7,
         changefreq: "monthly",
         meta: ({ brand }) => ({
-            // MARKET, not brand.location. The CMS field holds a full postal
-            // address ("Dhumbarahi, Kathmandu 44600, Nepal"), which pushed this
-            // title past the width a search result renders and truncated the
-            // part that matters. The address still belongs on the page and in
-            // the JSON-LD; a title wants the city alone.
-            title: `Contact ${brand.name} — Perfume in ${MARKET}`,
+            title: `Contact & Boutique in Kathmandu | ${brand.name} Perfumes Nepal`,
             description: oneLine(`
-                Get in touch with ${brand.name} in ${MARKET} about the fragrance,
-                orders and availability.`),
+                Get in touch with ${brand.name} in ${MARKET}. Boutique location,
+                fragrance consultations, festival gifting orders, and delivery across
+                Kathmandu, Pokhara, Chitwan and nationwide.`),
             tabTitle: `${brand.name} · Contact`,
         }),
     },
@@ -131,10 +125,11 @@ export const ROUTES: RouteDef[] = [
         priority: 0.7,
         changefreq: "monthly",
         meta: ({ brand }) => ({
-            title: `Perfume FAQ — Longevity, Care & Authenticity | ${brand.name}`,
+            title: `Perfume Buying & Longevity FAQ Nepal | ${brand.name}`,
             description: oneLine(`
-                Common questions about ${brand.name} fragrance: how long it lasts,
-                how to store and wear it, ingredient safety, and buying in Nepal.`),
+                Common questions about perfume longevity in Nepal's climate, EDP vs EDT
+                concentration, authenticity guarantees, Cash on Delivery, and delivery
+                timelines by ${brand.name}.`),
             tabTitle: `${brand.name} · FAQ`,
         }),
     },

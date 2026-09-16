@@ -23,7 +23,7 @@ import PageShell from "../components/PageShell";
 import Reveal from "../components/Reveal";
 import Testimonials from "../components/Testimonials";
 import {
-    ProductHighlights, ProductSpecs, ProductUsage, ProductComposition,
+    ProductHighlights, ProductSpecs, ProductUsage, ProductComposition, ProductNotes,
 } from "../components/product/blocks";
 
 const FragrancePage: React.FC = () => {
@@ -50,6 +50,10 @@ const FragrancePage: React.FC = () => {
 
                     <Reveal className="sig-detail sig-detail--lead">
                         <ProductHighlights product={product} />
+
+                        <div style={{ marginBottom: "2rem" }}>
+                            <ProductNotes product={product} />
+                        </div>
 
                         <div className="sig-detail-grid">
                             <ProductSpecs product={product} />
