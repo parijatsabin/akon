@@ -16,8 +16,8 @@ import ReviewForm from "./ReviewForm";
  * invited it being changed by accident — so it lives with the build.
  */
 const BUILD_CREDIT = {
-  label: "Sabin Ghimire",
-  href: "https://ghimiresabin.com.np",
+  label: "Pivotsoft Pvt. Ltd.",
+  href: "https://pivotsoft.com.np",
 } as const;
 
 const FOOTER_NAV_COLUMNS = [
